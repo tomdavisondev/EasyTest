@@ -5,6 +5,10 @@ const ProjectSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	projectshorthand: {
+		type: String,
+		required: false
+	},
 	testcases: [
 		{
 			name: {

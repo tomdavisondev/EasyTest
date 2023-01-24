@@ -133,7 +133,12 @@ router.post('/:projectname/:testcasename/addteststep', (req, res) => {
 
 //New Project Handle
 router.post('/register', (req, res) => {
-    const {projectname} = req.body;
+    let projectname = req.body.projectname;
+    let projectshorthand = req.body.projectshorthand;
+    let projects = req.body.projects;
+    let user = req.user;
+    let name = user.name;
+
     let errors = [];
 
     if (!projectname) {
@@ -143,7 +148,11 @@ router.post('/register', (req, res) => {
     if (errors.length > 0) {
         res.render('dashboard', {
             errors,
-            projectname
+            name,
+            user,
+            projectname,
+            projectshorthand,
+            projects
         });
     } else {
         Project.findOne({projectname: projectname})
@@ -154,11 +163,15 @@ router.post('/register', (req, res) => {
                     res.render('dashboard', {
                         errors,
                         name,
-                        projectname
+                        user,
+                        projectname,
+                        projectshorthand,
+                        projects,
                     });
                 } else {
                     const newProject = new Project({
                         projectname,
+                        projectshorthand,
                     });
                     newProject.save()
                         .then(project => {

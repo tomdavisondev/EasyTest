@@ -1,18 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body class="container">
+	<meta charset="UTF-8">
+	<title>EJS Is Fun</title>
+	<!-- CSS (load bootstrap from a CDN) -->
+	<link href="/css/custom.css" type="text/css" rel="stylesheet">
+	<style>
+	  body { padding-top:50px; }
+	</style>
+
+<main>
 <div class="row">
-	<div class="col-sm-3".col-sm-3><h1 class="mt-4">Dashboard</h1></div>
-	<div class="col-sm-3".col-sm-3></div>
-	<div class="col-sm-3".col-sm-3></div>
-	<div class="col-sm-3".col-sm-3>
-		<!-- Nav Item - User Information -->
+	<div class="col-md-2"col-md-2><a href="/dashboard"><img class="homeimage" src="https://cdn-icons-png.flaticon.com/128/1946/1946488.png" width="50" height="50"></a></div>
+	<div class="col-md-6"col-md-6><h1 class="mt-6">Dashboard</h1></div>
+	<div class="col-md-2"col-md-2></div>
+	<div class="col-md-2"col-md-2>
 		<div class="nav-item dropdown no-arrow show">
-			<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<span class="mr-2 d-none d-lg-inline text-gray-600 small">
 					<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
 				</span>
 				<img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
 			</a>
 			<!-- Dropdown - User Information -->
-			<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in show" aria-labelledby="userDropdown">
+			<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
 				<a class="dropdown-item" href="#">
 					<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
 					Profile
@@ -35,34 +48,117 @@
 	</div>
 </div>
 
-<p><%- include('partials/messages') %><p>
+<div class="row">
+	<div class="col-md-2"col-md-2></div>
+	<div class="col-md-8"col-md-8><p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have contextual functionality that hasn't been implemented yet...</p><p><%- include('partials/messages') %><p></p></div>
+	<div class="col-md-2"col-md-2></div>
+</div>
 
-<div class="dropdown">
-	<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		Projects
-	</button>
-	<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-		<form class="px-4 py-3" action="/projects/register" method="POST">
-			<div class="form-group">
-				<label for="projectname">Project</label>
-				<input
-						type="projectname"
-						id="projectname"
-						name="projectname"
-						class="form-control"
-						placeholder="Enter project"
-						value="<%= typeof projectname != 'undefined' ? projectname : '' %>"
-				/>
-			</div>
-			<button type="submit" class="btn btn-primary btn-block">
-				Register
+
+<div class="row">
+	<div class="col-md-2"col-md-2>
+		<!-- //projects tab -->
+		<div class="dropdown">
+			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Projects
 			</button>
-		</form>
-		<div class="dropdown-divider"></div>
-		<% projects.forEach(function (projects) { %>
-		<a href="/project/<%= projects.projectname %>" class="dropdown-item">
-			<%= projects.projectname %>
-		</a>
-		<% }) %>
+			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<form class="px-4 py-3" action="/projects/register" method="POST">
+					<div class="form-group">
+						<label for="projectname">Project</label>
+						<input
+								type="projectname"
+								id="projectname"
+								name="projectname"
+								class="form-control"
+								value="<%= typeof projectname != 'undefined' ? projectname : '' %>"
+						/>
+						<label for="projectshorthand">Shorthand</label>
+						<input
+								type="projectshorthand"
+								id="projectshorthand"
+								name="projectshorthand"
+								class="form-control"
+								placeholder="Enter shorthand"
+								value="<%= typeof projectshorthand != 'undefined' ? projectshorthand : '' %>"
+						/>
+					</div>
+					<button type="submit" class="btn btn-primary btn-block">
+						Register
+					</button>
+				</form>
+				<div class="dropdown-divider"></div>
+				<% projects.forEach(function (projects) { %>
+				<a href="/project/<%= projects.projectname %>" class="dropdown-item">
+					<%= projects.projectname %>
+				</a>
+				<% }) %>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-2"col-md-2>
+		<!-- Coverage % + data -->
+		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+			<div class="card-body text-secondary">
+			  <h5 class="card-title">Test Coverage</h5>
+			  <h3 class="card-text">75%</h3>
+			</div>
+		  </div>
+	</div>
+	<div class="col-md-2"col-md-2>
+		<!-- Coverage % + data -->
+		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+			<div class="card-body text-secondary">
+			  <h5 class="card-title">Unmet Requirements</h5>
+			  <h3 class="card-text">24</h3>
+			</div>
+		  </div>
+	</div>
+	<div class="col-md-2"col-md-2>
+		<!-- Coverage % + data -->
+		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+			<div class="card-body text-secondary">
+			  <h5 class="card-title">Test Coverage</h5>
+			  <h3 class="card-text">75%</h3>
+			</div>
+		  </div>
+	</div>
+	<div class="col-md-2"col-md-2>
+		<!-- Coverage % + data -->
+		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+			<div class="card-body text-secondary">
+			  <h5 class="card-title">Test Coverage</h5>
+			  <h3 class="card-text">75%</h3>
+			</div>
+		  </div>
 	</div>
 </div>
+<div class="row">
+	<div class="col-md-2"col-md-2></div>
+	<div class="col-md-8"col-md-8>
+		<table class="table table-borderless">
+			<thead>
+			  <tr>
+				<th scope="col" class="col-md-2">Shorthand</th>
+				<th scope="col" class="col-md-6">Project</th>
+				<th scope="col" class="col-md-2"></th>
+				<th scope="col" class="col-md-1">Coverage</th>
+			  </tr>
+			</thead>
+			<tbody>
+				<% projects.forEach(function (projects) { %>
+					<tr class= "hover-color" onclick="location.href='/project/<%= projects.projectname %>'">
+					  <th scope="row"><%= projects.projectshorthand %></th>
+					  <td>
+						  <%= projects.projectname %>
+					  </td>
+					  </td>
+					  <td></td>
+					  <td>75%</td>
+					</tr>
+				  <% }) %>
+			</tbody>
+		  </table>
+	</div>
+</div>
+</main>
