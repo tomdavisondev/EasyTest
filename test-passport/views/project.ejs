@@ -1,193 +1,201 @@
-<head>
-    <link href="/css/custom.css" type="text/css" rel="stylesheet">
-</head>
-<!-- Bit of a hack here -->
-</div>
-<div class="container" style="width:auto;
-    padding-right: 0px;
-    padding-left: 0px;
-    margin-right: 0px;
-    margin-left: 0px;
-    max-width: 2000px">
-    <div class="wrapper">
-        <!-- Sidebar  -->
-        <nav id="sidebar">
-            <div class="sidebar-header">
-                <h3>Test Software</h3>
-            </div>
-
-            <ul class="list-unstyled components">
-                <p><%= project.projectname %></p>
-                <li>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false"
-                       class="dropdown-toggle">New Test Case</a>
-                    <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li>
-                            <form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase" method="POST">
-                                <div class="form-group">
-                                    <label for="testcasename">Test Case Details</label>
-                                    <input
-                                            type="testcasename"
-                                            id="testcasename"
-                                            name="testcasename"
-                                            class="form-control"
-                                            placeholder="Enter Test Case"
-                                            value="<%= typeof testcasename != 'undefined' ? testcasename : '' %>"
-                                    />
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-block">
-                                    Add Test Case
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <% testcases.forEach(function (testcases) { %>
-                    <a href="/project/<%= project.projectname %>/<%= testcases.name %>" class="dropdown-toggle">
-                    <%= testcases.name %>
-                    </a>
-                    <% }) %>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-            </ul>
-        </nav>
-
-        <!-- Page Content  -->
-        <div id="content">
-            <% if (typeof testcasename != "undefined" && testcasename) {  %>
-            <div class="row">
-                <div class="col-sm-3" .col-sm-3></div>
-                <div class="col-sm-3" .col-sm-3></div>
-                <div class="col-sm-3" .col-sm-3></div>
-                <div class="col-sm-3" .col-sm-3>
-                    <!-- Nav Item - User Information -->
-                    <div class="nav-item dropdown no-arrow show">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+<layout>
+</layout>
+<body>
+<div class="row">
+	<div class="col-md-2"col-md-2><a href="/dashboard"><img class="homeimage" src="https://cdn-icons-png.flaticon.com/128/1946/1946488.png" width="50" height="50"></a></div>
+	<div class="col-md-6"col-md-6><h1 class="mt-6"><%= project.projectname %></h1></div>
+	<div class="col-md-2"col-md-2></div>
+	<div class="col-md-2"col-md-2>
+		<div class="nav-item dropdown no-arrow show">
+			<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<span class="mr-2 d-none d-lg-inline text-gray-600 small">
-					<%= name.substring(0, 1).toLocaleUpperCase() + name.substring(1); %>
+					<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
 				</span>
-                            <img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
-                        </a>
-                        <!-- Dropdown - User Information -->
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in show"
-                             aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Profile
-                            </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Settings
-                            </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Activity Log
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/users/logout">
-                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Logout
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <p>
-                <%- include('partials/messages') %>
-            <p>
-
-        
-            <p></p>
-            <% %>
-            <% let testcase = project.testcases.find(({ name }) => name === testcasename) %>
-            <% testcase.teststeps.forEach(function (teststep) { %>
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="card">
-                        <div class="card text-white bg-primary mb-4">
-                            <div class="card-header">Method</div>
-                            <div class="card-body">
-                                <a class="card-text" style="color: white;" href="#"><%= teststep.stepmethod %></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="card">
-                        <div class="card text-white bg-primary mb-4">
-                            <div class="card-header">Expected</div>
-                            <div class="card-body">
-                                <a class="card-text" style="color: white;" href="#"><%=teststep.stepexpected%></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="card">
-                        <div class="card text-white bg-primary mb-4">
-                            <div class="card-header">Actual Results</div>
-                            <div class="card-body">
-                                <a class="card-text" style="color: white;" href="#"><%=teststep.stepactual%></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <% }) %>
-            <br>
-            <form action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/addteststep" method="POST">
-                <label for="newStep">Method</label>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <input
-                                type="textarea"
-                                id="newStepMethodField"
-                                name="newStepMethodField"
-                                rows="3"
-                                class="form-control"
-                                placeholder="What is the expected user action"
-                                value="<%= typeof textarea != 'undefined' ? textarea : ''%>"
-                            />
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label for="newStepExpectedResultsField">Expected Results</label>
-                            <input
-                                type="textarea"
-                                id="newStepExpectedResultsField"
-                                name="newStepExpectedResultsField"
-                                rows="3"
-                                class="form-control"
-                                placeholder="What is the expected system outcome"
-                                value="<%= typeof textarea != 'undefined' ? textarea : ''%>"
-                            />
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label for="newStepActualResultsField">Actual Results</label>
-                            <input
-                                type="textarea"
-                                id="newStepActualResultsField"
-                                name="newStepActualResultsField"
-                                rows="3"
-                                class="form-control"
-                                placeholder="What is the actual system outcome"
-                                value="<%= typeof textarea != 'undefined' ? textarea : ''%>"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </form>
-        </div>
-        <%}%>
-    </div>
+				<img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
+			</a>
+			<!-- Dropdown - User Information -->
+			<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+					Profile
+				</a>
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+					Settings
+				</a>
+				<a class="dropdown-item" href="#">
+					<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+					Activity Log
+				</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="/users/logout">
+					<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+					Logout
+				</a>
+			</div>
+		</div>
+	</div>
 </div>
+
+<div class="row">
+	<div class="col-md-2"col-md-2></div>
+	<div class="col-md-8"col-md-8><p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have contextual functionality that hasn't been implemented yet...</p><p><%- include('partials/messages') %><p></p></div>
+	<div class="col-md-2"col-md-2></div>
+</div>
+
+
+<div class="row">
+	<div class="col-md-2"col-md-2>
+	</div>
+	<div class="col-md-2"col-md-2>
+		<!-- Coverage % + data -->
+		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+			<div class="card-body text-secondary">
+			  <h5 class="card-title">Test Coverage</h5>
+			  <h3 class="card-text">75%</h3>
+			</div>
+		  </div>
+	</div>
+	<div class="col-md-2"col-md-2>
+		<!-- Coverage % + data -->
+		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+			<div class="card-body text-secondary">
+			  <h5 class="card-title">Unmet Requirements</h5>
+			  <h3 class="card-text">24</h3>
+			</div>
+		  </div>
+	</div>
+	<div class="col-md-2"col-md-2>
+		<!-- Coverage % + data -->
+		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+			<div class="card-body text-secondary">
+			  <h5 class="card-title">Test Coverage</h5>
+			  <h3 class="card-text">75%</h3>
+			</div>
+		  </div>
+	</div>
+	<div class="col-md-2"col-md-2>
+		<!-- Coverage % + data -->
+		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+			<div class="card-body text-secondary">
+			  <h5 class="card-title">Test Coverage</h5>
+			  <h3 class="card-text">75%</h3>
+			</div>
+		  </div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-2"col-md-2>
+	</div>
+	<div class="col-md-10"col-md-10>
+		<!-- //projects tab -->
+		<div class="dropdown">
+			<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Projects
+			</button>
+			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<form class="px-4 py-3" action="/projects/addproject" method="POST">
+					<div class="form-group">
+						<label for="projectname">Project</label>
+						<input
+								type="projectname"
+								id="projectname"
+								name="projectname"
+								class="form-control"
+								value="<%= typeof projectname != 'undefined' ? projectname : '' %>"
+						/>
+						<label for="projectshorthand">Shorthand</label>
+						<input
+								type="projectshorthand"
+								id="projectshorthand"
+								name="projectshorthand"
+								class="form-control"
+								placeholder="Enter shorthand"
+								value="<%= typeof projectshorthand != 'undefined' ? projectshorthand : '' %>"
+						/>
+					</div>
+					<button type="submit" class="btn btn-primary btn-block">
+						Register
+					</button>
+				</form>
+				<div class="dropdown-divider"></div>
+				<% projects.forEach(function (projects) { %>
+				<a href="/project/<%= projects.projectname %>" class="dropdown-item">
+					<%= projects.projectname %>
+				</a>
+				<% }) %>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-2"col-md-2></div>
+	<div class="col-md-10"col-md-10>
+		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            New Test Case
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase" method="POST">
+                <div class="form-group">
+                    <label for="testcasename">Name</label>
+                    <input
+                            type="testcasename"
+                            id="testcasename"
+                            name="testcasename"
+                            class="form-control"
+                            placeholder="Test Case Name"
+                            value="<%= typeof testcasename != 'undefined' ? testcasename : '' %>"
+                    />
+					<label for="testcasedescription">Description</label>
+                    <input
+                            type="testcasedescription"
+                            id="testcasedescription"
+                            name="testcasedescription"
+                            class="form-control"
+                            placeholder="This test aims to..."
+                            value="<%= typeof testcasedescription != 'undefined' ? testcasedescription : '' %>"
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    Add Test Case
+                </button>
+            </form>
+            <div class="dropdown-divider"></div>
+        </div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-2"col-md-2>
+    </div>
+
+	<div class="col-md-8"col-md-8>
+		<table class="table table-borderless">
+			<thead>
+			  <tr>
+				<th scope="col" class="col-md-2">Shorthand</th>
+				<th scope="col" class="col-md-6">Test case name</th>
+				<th scope="col" class="col-md-2"></th>
+				<th scope="col" class="col-md-1">Edited Last</th>
+			  </tr>
+			</thead>
+			<tbody>
+                    <% testcases.forEach(function (testcases) { %>
+					<tr class= "hover-color" onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
+					  <th scope="row"><%= projects.projectshorthand %></th>
+					  <td>
+                        <%= testcases.name %>
+					  </td>
+					  </td>
+					  <td></td>
+					  <td>75%</td>
+					</tr>
+                <% }) %>
+			</tbody>
+		  </table>
+	</div>
+</div>
+</main>
+</body>

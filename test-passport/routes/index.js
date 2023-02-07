@@ -32,13 +32,14 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, (req, res
 		Project.findOne({projectname: req.params.projectname})
 			.then(project => {
 				if (project) {
-					Project.findOne({testcasename: req.params.testcasename})
-						.then(testcase => {
-							//console.log(testcase;
-						});
-					res.render('project', {
+					var testcase = project.testcases.find(obj => {
+						return obj.name === req.params.testcasename
+					});
+					//console.log(testcase);
+					res.render('testcase', {
 						name: req.user.name,
 						project: project,
+						testcase,
 						testcases: project.testcases,
 						testcasename: req.params.testcasename,
 						projectname: project.projectname,

@@ -13,6 +13,17 @@ body {
     height: auto; /* desired height */
 }
 
+.text-area-large {
+    width: auto;
+    height: 150px;
+
+    white-space: pre-wrap;       /* CSS3 */   
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
 p {
     font-family: 'Poppins', sans-serif;
     font-size: 1.1em;
@@ -135,9 +146,21 @@ ul.CTAs a {
     margin-bottom: 5px;
 }
 
+.row {
+    padding: 5px 0;
+    width: 100%;
+}
+
 a.download {
     background: #fff;
     color: #7386D5;
+}
+
+.hover-color {
+    background-color: transparent;
+}
+.hover-color:hover {
+    background: lightgray;
 }
 
 a.article,
