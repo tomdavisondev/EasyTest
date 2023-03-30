@@ -1,355 +1,335 @@
-<layout>
-</layout>
+
 <body>
-<div class="row">
-	<% let testcase = project.testcases.find(({ name }) => name === testcasename) %>
-	<div class="col-md-2"col-md-2><a href="/dashboard"><img class="homeimage" src="https://cdn-icons-png.flaticon.com/128/1946/1946488.png" width="50" height="50"></a></div>
-	<div class="col-md-6"col-md-6>
-		<h1 class="mt-6" id="title-text" onclick="editTitle()">
-			<%= testcasename %>
-		</h1>
-		<form id="title-form" class="d-none" action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/updatetestcasetitle" method="POST">
-			<textarea id="title-input" name="title"></textarea>
-			<button type="submit" class="btn btn-primary" id="title-save-button">Save</button>
-			<button type="button" value="Cancel" id="title-cancel-button" onclick="cancelTitleEdit()" class="btn btn-secondary">Cancel</button>
-	  	</form>
-	</div>
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-2"col-md-2>
-		<div class="nav-item dropdown no-arrow show">
-			<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="mr-2 d-none d-lg-inline text-gray-600 small">
-					<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
-				</span>
-				<img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
-			</a>
-			<!-- Dropdown - User Information -->
-			<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-					Profile
-				</a>
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-					Settings
-				</a>
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-					Activity Log
-				</a>
-				<div class="dropdown-divider"></div>
-				<a class="dropdown-item" href="/users/logout">
-					<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-					Logout
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"></div>
-	<div class="col-md-8">
-		<p id="description-text" onclick="editDescription()">
-			<%= testcase.description %>
-	  	</p>
-	  	<form id="description-form" class="d-none" action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/updatedescription" method="POST">
-			<textarea id="description-input" name="description"></textarea>
-			<button type="submit" class="btn btn-primary" id="description-save-button">Save</button>
-			<button type="button" value="Cancel" id="description-cancel-button" onclick="canceldescriptionEdit()" class="btn btn-secondary">Cancel</button>
-	  	</form>
-	</div>
-	<div class="col-md-2"></div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"></div>
-	<div class="col-md-8"><%- include('partials/messages') %></div>
-	<div class="col-md-2"></div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"col-md-2>
-	</div>
-	<div class="col-md-2"col-md-2>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h5 class="card-title">Linked Requirements</h5>
-			  <h3 class="card-text">4</h3>
-			</div>
-		  </div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"col-md-2>
-	</div>
-	<div class="col-md-8"col-md-8>
-		<button class="btn btn-primary" data-toggle="collapse" data-target="#projects-table">Projects</button>
-
-		<div id="projects-table" class="collapse">
-		<table class="table table-borderless">
-		<thead>
-			<tr>
-				<th scope="col" class="col-md-2">Shorthand</th>
-				<th scope="col" class="col-md-6">Project Name</th>
-				<th scope="col" class="col-md-2"></th>
-				<th scope="col" class="col-md-1"></th>
-			</tr>
-		</thead>
-		<tbody>
-			<% projects.forEach(function (project) { %>
-				<tr class="hover-color"
-					onclick="location.href='/project/<%= project.projectname %>/<%= project.name %>'">
-					<th scope="row">
-						<%= project.projectshorthand %>
-					</th>
-					<td>
-						<%= project.projectname %>
-					</td>
-					</td>
-					<td></td>
-					<td>75%</td>
-				</tr>
-				<% }) %>
-		</tbody>
-		</table>
-	</div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"col-md-2>
-    </div>
-
-	<div class="col-md-8"col-md-8>
-  		<button class="btn btn-primary" data-toggle="collapse" data-target="#testcases-table">Test Cases</button>
-		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New Test Case</button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase" method="POST">
-                <div class="form-group">
-                    <label for="testcasename">Name</label>
-                    <input
-                            type="testcasename"
-                            id="testcasename"
-                            name="testcasename"
-                            class="form-control"
-                            placeholder="Test Case Name"
-                            value="<%= typeof testcasename != 'undefined' ? testcasename : '' %>"
-                    />
-					<label for="testcasedescription">Description</label>
-                    <input
-                            type="testcasedescription"
-                            id="testcasedescription"
-                            name="testcasedescription"
-                            class="form-control"
-                            placeholder="This test aims to..."
-                            value="<%= typeof testcasedescription != 'undefined' ? testcasedescription : '' %>"
-                    />
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">
-                    Add Test Case
-                </button>
-            </form>
-            <div class="dropdown-divider"></div>
-        </div>
-  		<div id="testcases-table" class="collapse">
-    		<table class="table table-borderless">
-      		<thead>
-        	<tr>
-          		<th scope="col" class="col-md-2">Shorthand</th>
-          		<th scope="col" class="col-md-6">Test case name</th>
-          		<th scope="col" class="col-md-2"></th>
-          		<th scope="col" class="col-md-1">Edited Last</th>
-        	</tr>
-      	</thead>
-      	<tbody>
-        <% testcases.forEach(function (testcases) { %>
-          <tr class= "hover-color" onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
-            <th scope="row"><%= projects.projectshorthand %></th>
-            	<td>
-              		<%= testcases.name %>
-            	</td>
-            	</td>
-            	<td></td>
-            	<td>75%</td>
-          	</tr>
-        	<% }) %>
-      		</tbody>
-    		</table>
-  		</div>
-	</div>
-</div>
-
-<% testcase.teststeps.forEach(function (teststep, i) { %>
-<div class="row" id="teststep<%=i%>" onclick="editTestStep(<%=i%>)">
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-3"col-md-3>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h6 class="card-title">User Action</h6>
-			  <p class="card-text"><%= teststep.stepmethod %></p>
-			</div>
-		  </div>
-	</div>
-	<div class="col-md-3"col-md-3>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h6 class="card-title">Expected Result</h6>
-			  <p class="card-text"><%=teststep.stepexpected%></p>
-			</div>
-		  </div>
-	</div>
-	<div class="col-md-3"col-md-3>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h6 class="card-title">Actual Result</h6>
-			  <p class="card-text"><%=teststep.stepactual%></p>
-			</div>
-		  </div>
-	</div>
-</div>
-
-<div class="row" id="teststepfield<%=i%>" style="display:none">
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-10"col-md-10>
-		<form action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/updateteststep" method="POST">
-			<input type="hidden" name="project" value="<%= project %>">
-			<input type="hidden" name="projectId" value="<%= project._id %>">
-			<input type="hidden" name="testcaseId" value="<%= testcase._id %>">
-			<input type="hidden" name="stepId" value="<%= teststep._id %>">
+	<section class="sidebar-content ignore-clicks">
+		<div class="container-fluid">
+			<div class="row align-items-center">
+				<div class="col-md-6">
+					<% let testcase = project.testcases.find(({ name }) => name === testcasename) %>
+					<h1 class="mt-6" id="title-text" onclick="editTitle()">
+						<%= testcasename %>
+					</h1>
+					<form id="title-form" class="d-none" action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/updatetestcasetitle" method="POST">
+						<textarea id="title-input" name="title"></textarea>
+						<button type="submit" class="btn btn-primary" id="title-save-button">Save</button>
+						<button type="button" value="Cancel" id="title-cancel-button" onclick="cancelTitleEdit()" class="btn btn-secondary">Cancel</button>
+					</form>
+				</div>
+				<div class="col-md-6 d-flex justify-content-end">
 			
-			<div class="row">
-				<div class="col-sm-4">
-					<div class="form-group">
-						<label for="updatedStepMethodField">Method</label>
-						<textarea
-							type="textarea"
-							id="updatedStepMethodField"
-							name="updatedStepMethodField"
-							rows="4"
-							class="form-control text-area-large"
-						><%= teststep.stepmethod %></textarea>
+					<div class="nav-item dropdown no-arrow show">
+					  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<span class="mr-2 d-none d-lg-inline text-gray-600 small">
+						  <%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
+						</span>
+						<img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
+					  </a>
+					  <!-- Dropdown - User Information -->
+					  <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+						<a class="dropdown-item" href="#">
+						  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+						  Profile
+						</a>
+						<a class="dropdown-item" href="#">
+						  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+						  Settings
+						</a>
+						<a class="dropdown-item" href="#">
+						  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+						  Activity Log
+						</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/users/logout">
+						  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+						  Logout
+						</a>
+					  </div>
 					</div>
+				  </div>
 				</div>
-				<div class="col-sm-4">
-					<div class="form-group">
-						<label for="updatedStepExpectedResultsField">Expected Results</label>
-						<textarea
-							type="textarea"
-							id="updatedStepExpectedResultsField"
-							name="updatedStepExpectedResultsField"
-							rows="4"
-							class="form-control text-area-large"
-						><%= teststep.stepexpected %></textarea>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="form-group">
-						<label for="updatedStepActualResultsField">Actual Results</label>
-						<textarea
-							type="textarea"
-							id="updatedStepActualResultsField"
-							name="updatedStepActualResultsField"
-							rows="4"
-							class="form-control text-area-large"
-						><%= teststep.stepactual%></textarea>
-					</div>
-				</div>
-			</div>
-			<button type="submit" class="btn btn-primary">Save</button>
-			<button type="button" value="Cancel" id="teststepcancel" onclick="cancelTestStepEdit(<%=i%>)" class="btn btn-secondary">Cancel</button>
-		</form>
-	</div>
-</div>
-<% }) %>
 
-<div class="row">
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-10"col-md-10>
-		<form action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/addteststep" method="POST">
-		<div class="row">
-			<div class="col-sm-4">
-				<div class="form-group">
-					<label for="newStep">Method</label>
-					<textarea
-						type="textarea"
-						id="newStepMethodField"
-						name="newStepMethodField"
-						rows="4"
-						class="form-control text-area-large"
-					></textarea>
+				<div class="row">
+					<div class="col-md-8">
+						<p id="description-text" onclick="editDescription()">
+							<%= testcase.description %>
+						</p>
+						<form id="description-form" class="d-none"
+							action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/updatedescription"
+							method="POST">
+							<textarea id="description-input" name="description"></textarea>
+							<button type="submit" class="btn btn-primary" id="description-save-button">Save</button>
+							<button type="button" value="Cancel" id="description-cancel-button"
+								onclick="canceldescriptionEdit()" class="btn btn-secondary">Cancel</button>
+						</form>
+					</div>
+					<div class="col-md-2"></div>
 				</div>
-			</div>
-			<div class="col-sm-4">
-				<div class="form-group">
-					<label for="newStepExpectedResultsField">Expected Results</label>
-					<textarea
-						type="textarea"
-						id="newStepExpectedResultsField"
-						name="newStepExpectedResultsField"
-						rows="4"
-						class="form-control text-area-large"
-					></textarea>
+
+				<div class="row">
+					<div class="col-md-8"><%- include('partials/messages') %></div>
+					<div class="col-md-2"></div>
 				</div>
-			</div>
-			<div class="col-sm-4">
-				<div class="form-group">
-					<label for="newStepActualResultsField">Actual Results</label>
-					<textarea
-						type="textarea"
-						id="newStepActualResultsField"
-						name="newStepActualResultsField"
-						rows="4"
-						class="form-control text-area-large"
-					></textarea>
+
+				<div class="row">
+					<div class="col-md-2" col-md-2>
+						<!-- Coverage % + data -->
+						<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+							<div class="card-body text-secondary">
+								<h5 class="card-title">Linked Requirements</h5>
+								<h3 class="card-text">4</h3>
+							</div>
+						</div>
+					</div>
 				</div>
+
+				<div class="row">
+					<div class="col-md-8" col-md-8>
+						<button class="btn btn-primary" data-toggle="collapse"
+							data-target="#projects-table">Projects</button>
+
+						<div id="projects-table" class="collapse">
+							<table class="table table-borderless">
+								<thead>
+									<tr>
+										<th scope="col" class="col-md-2">Shorthand</th>
+										<th scope="col" class="col-md-6">Project Name</th>
+										<th scope="col" class="col-md-2"></th>
+										<th scope="col" class="col-md-1"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<% projects.forEach(function (project) { %>
+										<tr class="hover-color"
+											onclick="location.href='/project/<%= project.projectname %>/<%= project.name %>'">
+											<th scope="row">
+												<%= project.projectshorthand %>
+											</th>
+											<td>
+												<%= project.projectname %>
+											</td>
+											</td>
+											<td></td>
+											<td>75%</td>
+										</tr>
+										<% }) %>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+
+					<div class="col-md-8" col-md-8>
+						<button class="btn btn-primary" data-toggle="collapse" data-target="#testcases-table">Test
+							Cases</button>
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New Test Case</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase"
+								method="POST">
+								<div class="form-group">
+									<label for="testcasename">Name</label>
+									<input type="testcasename" id="testcasename" name="testcasename"
+										class="form-control" placeholder="Test Case Name"
+										value="<%= typeof testcasename != 'undefined' ? testcasename : '' %>" />
+									<label for="testcasedescription">Description</label>
+									<input type="testcasedescription" id="testcasedescription"
+										name="testcasedescription" class="form-control"
+										placeholder="This test aims to..."
+										value="<%= typeof testcasedescription != 'undefined' ? testcasedescription : '' %>" />
+								</div>
+								<button type="submit" class="btn btn-primary btn-block">
+									Add Test Case
+								</button>
+							</form>
+							<div class="dropdown-divider"></div>
+						</div>
+						<div id="testcases-table" class="collapse">
+							<table class="table table-borderless">
+								<thead>
+									<tr>
+										<th scope="col" class="col-md-2">Shorthand</th>
+										<th scope="col" class="col-md-6">Test case name</th>
+										<th scope="col" class="col-md-2"></th>
+										<th scope="col" class="col-md-1">Edited Last</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% testcases.forEach(function (testcases) { %>
+										<tr class="hover-color"
+											onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
+											<th scope="row">
+												<%= projects.projectshorthand %>
+											</th>
+											<td>
+												<%= testcases.name %>
+											</td>
+											</td>
+											<td></td>
+											<td>75%</td>
+										</tr>
+										<% }) %>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<% testcase.teststeps.forEach(function (teststep, i) { %>
+					<div class="row" id="teststep<%=i%>" onclick="editTestStep(<%=i%>)">
+						<div class="col-md-3" col-md-3>
+							<!-- Coverage % + data -->
+							<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
+								<div class="card-body text-secondary">
+									<h6 class="card-title">User Action</h6>
+									<p class="card-text">
+										<%= teststep.stepmethod %>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3" col-md-3>
+							<!-- Coverage % + data -->
+							<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
+								<div class="card-body text-secondary">
+									<h6 class="card-title">Expected Result</h6>
+									<p class="card-text">
+										<%=teststep.stepexpected%>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3" col-md-3>
+							<!-- Coverage % + data -->
+							<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
+								<div class="card-body text-secondary">
+									<h6 class="card-title">Actual Result</h6>
+									<p class="card-text">
+										<%=teststep.stepactual%>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row" id="teststepfield<%=i%>" style="display:none">
+						<div class="col-md-10" col-md-10>
+							<form
+								action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/updateteststep"
+								method="POST">
+								<input type="hidden" name="project" value="<%= project %>">
+								<input type="hidden" name="projectId" value="<%= project._id %>">
+								<input type="hidden" name="testcaseId" value="<%= testcase._id %>">
+								<input type="hidden" name="stepId" value="<%= teststep._id %>">
+
+								<div class="row">
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label for="updatedStepMethodField">Method</label>
+											<textarea type="textarea" id="updatedStepMethodField"
+												name="updatedStepMethodField" rows="4"
+												class="form-control text-area-large"><%= teststep.stepmethod %></textarea>
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label for="updatedStepExpectedResultsField">Expected Results</label>
+											<textarea type="textarea" id="updatedStepExpectedResultsField"
+												name="updatedStepExpectedResultsField" rows="4"
+												class="form-control text-area-large"><%= teststep.stepexpected %></textarea>
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label for="updatedStepActualResultsField">Actual Results</label>
+											<textarea type="textarea" id="updatedStepActualResultsField"
+												name="updatedStepActualResultsField" rows="4"
+												class="form-control text-area-large"><%= teststep.stepactual%></textarea>
+										</div>
+									</div>
+								</div>
+								<button type="submit" class="btn btn-primary">Save</button>
+								<button type="button" value="Cancel" id="teststepcancel"
+									onclick="cancelTestStepEdit(<%=i%>)" class="btn btn-secondary">Cancel</button>
+							</form>
+						</div>
+					</div>
+					<% }) %>
+
+						<div class="row">
+							<div class="col-md-10" col-md-10>
+								<form
+									action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/addteststep"
+									method="POST">
+									<div class="row">
+										<div class="col-sm-4">
+											<div class="form-group">
+												<label for="newStep">Method</label>
+												<textarea type="textarea" id="newStepMethodField"
+													name="newStepMethodField" rows="4"
+													class="form-control text-area-large"></textarea>
+											</div>
+										</div>
+										<div class="col-sm-4">
+											<div class="form-group">
+												<label for="newStepExpectedResultsField">Expected Results</label>
+												<textarea type="textarea" id="newStepExpectedResultsField"
+													name="newStepExpectedResultsField" rows="4"
+													class="form-control text-area-large"></textarea>
+											</div>
+										</div>
+										<div class="col-sm-4">
+											<div class="form-group">
+												<label for="newStepActualResultsField">Actual Results</label>
+												<textarea type="textarea" id="newStepActualResultsField"
+													name="newStepActualResultsField" rows="4"
+													class="form-control text-area-large"></textarea>
+											</div>
+										</div>
+									</div>
+									<button type="submit" class="btn btn-primary">Save</button>
+								</form>
+							</div>
+						</div>
 			</div>
 		</div>
-		<button type="submit" class="btn btn-primary">Save</button>
-	</form>
-	</div>
-</div>
-</main>
+	</section>
+	</main>
 </body>
 
 <script>
 	function editTitle() {
 		document.getElementById("title-text").style.display = "none";
-	  	document.getElementById("title-form").style.display = "block";
-	  	document.getElementById("title-save-button").style.display = "block";
-	  	document.getElementById("title-cancel-button").style.display = "block";
-	  	document.getElementById("title-form").classList.remove("d-none");
-      	document.getElementById("title-save-button").classList.remove("d-none");
-	  	document.getElementById("title-cancel-button").classList.remove("d-none");
-	  	document.getElementById("title-input").value = "<%=testcasename%>";
+		document.getElementById("title-form").style.display = "block";
+		document.getElementById("title-save-button").style.display = "block";
+		document.getElementById("title-cancel-button").style.display = "block";
+		document.getElementById("title-form").classList.remove("d-none");
+		document.getElementById("title-save-button").classList.remove("d-none");
+		document.getElementById("title-cancel-button").classList.remove("d-none");
+		document.getElementById("title-input").value = "<%=testcasename%>";
 	}
 
 	function cancelTitleEdit() {
 		document.getElementById("title-text").style.display = "block";
-	  	document.getElementById("title-form").style.display = "none";
-	  	document.getElementById("title-save-button").style.display = "none";
+		document.getElementById("title-form").style.display = "none";
+		document.getElementById("title-save-button").style.display = "none";
 	}
 
 	function editDescription() {
-	  document.getElementById("description-text").style.display = "none";
-	  document.getElementById("description-form").style.display = "block";
-	  document.getElementById("description-save-button").style.display = "block";
-	  document.getElementById("description-cancel-button").style.display = "block";
-	  document.getElementById("description-form").classList.remove("d-none");
-      document.getElementById("description-save-button").classList.remove("d-none");
-	  document.getElementById("description-cancel-button").classList.remove("d-none");
-	  document.getElementById("description-input").value = "<%=testcase.description%>";
+		document.getElementById("description-text").style.display = "none";
+		document.getElementById("description-form").style.display = "block";
+		document.getElementById("description-save-button").style.display = "block";
+		document.getElementById("description-cancel-button").style.display = "block";
+		document.getElementById("description-form").classList.remove("d-none");
+		document.getElementById("description-save-button").classList.remove("d-none");
+		document.getElementById("description-cancel-button").classList.remove("d-none");
+		document.getElementById("description-input").value = "<%=testcase.description%>";
 	}
 
 	function canceldescriptionEdit() {
-	  document.getElementById("description-text").style.display = "block";
-	  document.getElementById("description-form").style.display = "none";
-	  document.getElementById("description-save-button").style.display = "none";
+		document.getElementById("description-text").style.display = "block";
+		document.getElementById("description-form").style.display = "none";
+		document.getElementById("description-save-button").style.display = "none";
 	}
 
 	function editTestStep(stepNumber) {
@@ -359,4 +339,3 @@
 		document.getElementById("teststepfield" + stepNumber).style.display = "none";
 	}
 </script>
-  

@@ -10,6 +10,7 @@ router.get('/project/:projectname', ensureAuthenticated, (req, res) => {
 			.then(project => {
 				if (project) {
 					res.render('project', {
+						req: req,
 						name: req.user.name,
 						project: project,
 						testcases: project.testcases,
@@ -37,6 +38,7 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, (req, res
 					});
 					//console.log(testcase);
 					res.render('testcase', {
+						req: req,
 						name: req.user.name,
 						project: project,
 						testcase,
@@ -64,6 +66,7 @@ router.get('/dashboard', ensureAuthenticated, (req, res) =>
 		res.render('dashboard', {
 			name: req.user.name,
 			projects: projects,
+			req: req
 		})
 	}));
 

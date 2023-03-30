@@ -34,3 +34,32 @@ function populateTestcases(testcases) {
 	  tableBody.appendChild(row);
 	});
   }
+
+  const submenus = document.querySelectorAll('.submenu');
+
+  function toggleSubmenu(submenu) {
+	submenu.classList.toggle('open');
+	const submenuItems = submenu.querySelector('.submenu-items');
+	if (submenuItems) {
+	  submenuItems.classList.toggle('show');
+	}
+  }
+  
+  function handleSubmenuClick(event) {
+	const ignoreClicks = event.target.closest('.ignore-clicks');
+	if (ignoreClicks) {
+	  return;
+	}
+	event.preventDefault();
+	const submenu = event.target.closest('.submenu');
+	if (submenu) {
+	  toggleSubmenu(submenu);
+	}
+  }
+  
+  function initSidebar() {
+	document.addEventListener('click', handleSubmenuClick);
+  }
+  
+  document.addEventListener('DOMContentLoaded', initSidebar);
+  

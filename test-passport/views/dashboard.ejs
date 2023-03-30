@@ -1,199 +1,119 @@
-<layout>
-</layout>
 <body>
-<div class="row">
-	<div class="col-md-2"col-md-2><a href="/dashboard"><img class="homeimage" src="https://cdn-icons-png.flaticon.com/128/1946/1946488.png" width="50" height="50"></a></div>
-	<div class="col-md-6"col-md-6><h1 class="mt-6">Dashboard</h1></div>
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-2"col-md-2>
-		<div class="nav-item dropdown no-arrow show">
-			<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="mr-2 d-none d-lg-inline text-gray-600 small">
+  
+	<section class="sidebar-content ignore-clicks">
+		<div class="container-fluid">
+		  <div class="row align-items-center">
+			<div class="col-md-6">
+			  <h1 class="mt-6">Dashboard</h1>
+			</div>
+			<div class="col-md-6 d-flex justify-content-end">
+			  <div class="nav-item dropdown no-arrow show">
+				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  <span class="mr-2 d-none d-lg-inline text-gray-600 small">
 					<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
-				</span>
-				<img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
-			</a>
-			<!-- Dropdown - User Information -->
-			<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-				<a class="dropdown-item" href="#">
+				  </span>
+				  <img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
+				</a>
+				<!-- Dropdown - User Information -->
+				<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+				  <a class="dropdown-item" href="#">
 					<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
 					Profile
-				</a>
-				<a class="dropdown-item" href="#">
+				  </a>
+				  <a class="dropdown-item" href="#">
 					<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
 					Settings
-				</a>
-				<a class="dropdown-item" href="#">
+				  </a>
+				  <a class="dropdown-item" href="#">
 					<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
 					Activity Log
-				</a>
-				<div class="dropdown-divider"></div>
-				<a class="dropdown-item" href="/users/logout">
+				  </a>
+				  <div class="dropdown-divider"></div>
+				  <a class="dropdown-item" href="/users/logout">
 					<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
 					Logout
-				</a>
+				  </a>
+				</div>
+			  </div>
 			</div>
-		</div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-8"col-md-8><p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have contextual functionality that hasn't been implemented yet...</p><p><%- include('partials/messages') %><p></p></div>
-	<div class="col-md-2"col-md-2></div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"col-md-2>
-	</div>
-	<div class="col-md-5"col-md-5>
-		<!-- //projects tab -->
-		<div class="dropdown">
-			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				New Project
-			</button>
-			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				<form class="px-4 py-3" action="/projects/addproject" method="POST">
-					<div class="form-group">
-						<label for="projectname">Name</label>
-						<input
-								type="projectname"
-								id="projectname"
-								name="projectname"
-								class="form-control"
-								value="<%= typeof projectname != 'undefined' ? projectname : '' %>"
-						/>
-						<label for="projectshorthand">Shorthand</label>
-						<input
-								type="projectshorthand"
-								id="projectshorthand"
-								name="projectshorthand"
-								class="form-control"
-								placeholder="Enter shorthand"
-								value="<%= typeof projectshorthand != 'undefined' ? projectshorthand : '' %>"
-						/>
-					</div>
-					<button type="submit" class="btn btn-primary btn-block">
-						Register
-					</button>
-				</form>
+		  </div>
+		  <div class="row align-items-left">
+			<div class="col-md-8"col-md-12><p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have contextual functionality that hasn't been implemented yet...</p><p><%- include('partials/messages') %><p></p></div>
+		  </div>
+		  <div class="row align-items-center">
+			<div class="col-md-4"col-md-4>
+				<!-- //projects tab -->
 			</div>
-		</div>
-	</div>
-	<div class="col-md-5"col-md-5>
-		<div class="dropdown">
-			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				New Requirement
-			</button>
-			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				<form class="px-4 py-3" action="/projects/addrequirement" method="POST">
-					<div class="form-group">
-						<label for="requirementname">Name</label>
-						<input
-								type="requirementname"
-								id="requirementname"
-								name="requirementname"
-								class="form-control"
-								value="<%= typeof requirementname != 'undefined' ? requirementname : '' %>"
-						/>
-						<label for="requirementid">ID</label>
-						<input
-								type="requirementid"
-								id="requirementid"
-								name="requirementid"
-								class="form-control"
-								placeholder="Enter shorthand"
-								value="<%= typeof projectshorthand != 'undefined' ? projectshorthand : '' %>"
-						/>
+			<div class="col-md-4"col-md-4>
+			</div>
+			<div class="col-md-4"col-md-4></div>
+		  </div>
+		  <div class="row align-items-center">
+			<div class="col-md-2"col-md-2>
+				<!-- Coverage % + data -->
+				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+					<div class="card-body text-secondary">
+					  <h5 class="card-title">Test Coverage</h5>
+					  <h3 class="card-text">75%</h3>
 					</div>
-					<label for="requirementlink">Links</label>
-					<table id="projects-table" class="table table-borderless">
+				  </div>
+			</div>
+			<div class="col-md-2"col-md-2>
+				<!-- Coverage % + data -->
+				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+					<div class="card-body text-secondary">
+					  <h5 class="card-title">Unmet Requirements</h5>
+					  <h3 class="card-text">24</h3>
+					</div>
+				  </div>
+			</div>
+			<div class="col-md-2"col-md-2>
+				<!-- Coverage % + data -->
+				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+					<div class="card-body text-secondary">
+					  <h5 class="card-title">Test Coverage</h5>
+					  <h3 class="card-text">75%</h3>
+					</div>
+				  </div>
+			</div>
+			<div class="col-md-2"col-md-2>
+				<!-- Coverage % + data -->
+				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+					<div class="card-body text-secondary">
+					  <h5 class="card-title">Test Coverage</h5>
+					  <h3 class="card-text">75%</h3>
+					</div>
+				  </div>
+			</div>
+			<div class="row align-items-center">
+				<div class="col-md-8"col-md-10>
+					<table class="table table-borderless">
+						<thead>
+						  <tr>
+							<th scope="col" class="col-md-2">Shorthand</th>
+							<th scope="col" class="col-md-6">Project</th>
+							<th scope="col" class="col-md-2"></th>
+							<th scope="col" class="col-md-1">Coverage</th>
+						  </tr>
+						</thead>
 						<tbody>
-						  <% projects.forEach(function(project) { %>
-							<tr class="hover-color test-projects" onclick="<%= populateTestcases('JSON.stringify(project.testcases) ')%>">
-							  <th scope="row"><%= project.projectshorthand %></th>
-							  <td><%= project.projectname %></td>
-							</tr>
-						  <% }) %>
+							<% projects.forEach(function (projects) { %>
+								<tr class= "hover-color" onclick="location.href='/project/<%= projects.projectname %>'">
+								  <th scope="row"><%= projects.projectshorthand %></th>
+								  <td>
+									  <%= projects.projectname %>
+								  </td>
+								  </td>
+								  <td></td>
+								  <td>75%</td>
+								</tr>
+							  <% }) %>
 						</tbody>
 					  </table>
-					<button type="submit" class="btn btn-primary btn-block">
-						Register
-					</button>
-				</form>
+				</div>
 			</div>
+		  </div>
 		</div>
-	</div>
-</div>
-
-
-<div class="row">
-	<div class="col-md-2"col-md-2>
-	</div>
-	<div class="col-md-2"col-md-2>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h5 class="card-title">Test Coverage</h5>
-			  <h3 class="card-text">75%</h3>
-			</div>
-		  </div>
-	</div>
-	<div class="col-md-2"col-md-2>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h5 class="card-title">Unmet Requirements</h5>
-			  <h3 class="card-text">24</h3>
-			</div>
-		  </div>
-	</div>
-	<div class="col-md-2"col-md-2>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h5 class="card-title">Test Coverage</h5>
-			  <h3 class="card-text">75%</h3>
-			</div>
-		  </div>
-	</div>
-	<div class="col-md-2"col-md-2>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h5 class="card-title">Test Coverage</h5>
-			  <h3 class="card-text">75%</h3>
-			</div>
-		  </div>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-8"col-md-8>
-		<table class="table table-borderless">
-			<thead>
-			  <tr>
-				<th scope="col" class="col-md-2">Shorthand</th>
-				<th scope="col" class="col-md-6">Project</th>
-				<th scope="col" class="col-md-2"></th>
-				<th scope="col" class="col-md-1">Coverage</th>
-			  </tr>
-			</thead>
-			<tbody>
-				<% projects.forEach(function (projects) { %>
-					<tr class= "hover-color" onclick="location.href='/project/<%= projects.projectname %>'">
-					  <th scope="row"><%= projects.projectshorthand %></th>
-					  <td>
-						  <%= projects.projectname %>
-					  </td>
-					  </td>
-					  <td></td>
-					  <td>75%</td>
-					</tr>
-				  <% }) %>
-			</tbody>
-		  </table>
-	</div>
-</div>
+	  </section> 
 </main>
 </body>

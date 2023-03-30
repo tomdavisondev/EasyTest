@@ -183,6 +183,7 @@ router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
     if (errors.length > 0) {
         Project.find({}).exec((err, projects) => {
             res.render('dashboard', {
+                req: req,
                 errors,
                 projects,
                 name: req.user.name
@@ -229,7 +230,8 @@ router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
                 res.render('dashboard', {
                     errors: [{ msg: "Something went wrong, step was not updated" }],
                     projects,
-                    name: req.user.name
+                    name: req.user.name,
+                    req:req,
                 });
             });
         });
@@ -263,6 +265,7 @@ router.post('/:projectname/:testcasename/addteststep', (req, res) => {
             projects,
             testcases,
             name: user.name,
+            req: req,
         });
     } else {
         Project.find({}).exec(function(err, projects) 
@@ -297,7 +300,8 @@ router.post('/:projectname/:testcasename/addteststep', (req, res) => {
                     errors,
                     projects,
                     testcases,
-                    name: user.name
+                    name: user.name,
+                    req: req,
                 });
             }
         })
@@ -337,7 +341,8 @@ router.post('/addproject', (req, res) => {
                 user,
                 projectname,
                 projectshorthand,
-                projects
+                projects,
+                req:req
             });
         } else {
             Project.findOne({projectname: { $regex: new RegExp("^" + projectname + "$", "i") }})
