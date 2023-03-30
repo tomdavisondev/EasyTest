@@ -82,43 +82,66 @@
 				</div>
 
 				<div class="row">
-					<div class="col-md-8" col-md-8>
-						<button class="btn btn-primary" data-toggle="collapse"
-							data-target="#projects-table">Projects</button>
-
-						<div id="projects-table" class="collapse">
-							<table class="table table-borderless">
-								<thead>
-									<tr>
-										<th scope="col" class="col-md-2">Shorthand</th>
-										<th scope="col" class="col-md-6">Project Name</th>
-										<th scope="col" class="col-md-2"></th>
-										<th scope="col" class="col-md-1"></th>
-									</tr>
-								</thead>
-								<tbody>
-									<% projects.forEach(function (project) { %>
-										<tr class="hover-color"
-											onclick="location.href='/project/<%= project.projectname %>/<%= project.name %>'">
-											<th scope="row">
-												<%= project.projectshorthand %>
-											</th>
-											<td>
-												<%= project.projectname %>
-											</td>
-											</td>
+					<div class="col-md-8">
+						<button class="btn btn-primary" data-toggle="collapse" data-target="#testcases-table">Requirements</button>
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New Requirement</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase" method="POST">
+								<div class="form-group">
+									<label for="requirementname">Name</label>
+									<input type="requirementname" id="requirementname" name="requirementname" class="form-control" placeholder="Requirement Name" value="<%= typeof requirementname != 'undefined' ? requirementname : '' %>" />
+									<label for="requirementid">ID</label>
+									<input type="requirementid" id="requirementid" name="requirementid" class="form-control" placeholder="" value="<%= typeof requirementid != 'undefined' ? requirementid : '' %>" />
+								</div>
+								<button type="submit" class="btn btn-primary btn-block">Add Requirement</button>
+							</form>
+							<div class="dropdown-divider"></div>
+						</div>
+						<div id="testcases-table" class="collapse">
+							<form action="/projects/<%= project.projectname %>/<%= testcasename %>/addrequirements" method="POST">
+								<table class="table table-borderless">
+									<thead>
+										<tr>
+											<th scope="col" class="col-md-1"></th>
+											<th scope="col" class="col-md-2">ID</th>
+											<th scope="col" class="col-md-6">Requirement Name</th>
+											<th scope="col" class="col-md-2"></th>
+											<th scope="col" class="col-md-1">Selected</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% requirements.forEach(function (requirement) { %>
+										<% var requirementLinked = false; %>
+										<% project.testcases.forEach(function(testcase) {
+											if (testcase.linkedrequirements.toString() === requirement._id.toString()) {
+												requirementLinked = true;
+											}
+										}) %>
+										<tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
 											<td></td>
-											<td>75%</td>
+											<th scope="row"><%= requirement.requirementid %></th>
+											<td><%= requirement.requirementname %></td>
+											<td></td>
+											<td>
+												<% if (requirementLinked) { %>
+													<input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>" checked>
+												<% } else { %>
+													<input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>">
+												<% } %>
+											</td>
 										</tr>
 										<% }) %>
-								</tbody>
-							</table>
+									</tbody>
+									
+								</table>
+								<button type="submit" class="btn btn-primary btn-block">Submit Selected Requirements</button>
+							</form>
 						</div>
 					</div>
 				</div>
+				
 
 				<div class="row">
-
 					<div class="col-md-8" col-md-8>
 						<button class="btn btn-primary" data-toggle="collapse" data-target="#testcases-table">Test
 							Cases</button>

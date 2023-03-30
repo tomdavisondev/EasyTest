@@ -1,28 +1,16 @@
 const mongoose = require('mongoose');
 
-const ProjectSchema = new mongoose.Schema({
+const RequirementsSchema = new mongoose.Schema({
     requirementname: {
       type: String,
       required: true  
     },
-    documentreference: {
+    requirementid: {
         type: String, 
         required: false
     },
-    testcaselinks: [
-		{
-			testcaseid: {
-				type: String,	
-				required: true
-			},
-			testcasename: {
-				type: String,
-				required: true
-			}
-		}
-	],
 });
 
-const Project = mongoose.model('Project', ProjectSchema);
+const Requirement = mongoose.model('Requirement', RequirementsSchema);
 
-module.exports = Project;
+module.exports = Requirement;

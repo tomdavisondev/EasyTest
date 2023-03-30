@@ -97,7 +97,7 @@ router.get('/logout', (req, res) => {
 	req.logout(function(err) {
 		if (err) { return next(err); }
 		req.flash('success_msg', 'You are logged out');
-		res.redirect('/users/login', {req:req} );
+		res.redirect('/users/login');
 	  });
 });
 

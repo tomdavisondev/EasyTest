@@ -7,7 +7,7 @@
 						<%= project.projectname %>
 					</h1>
 				</div>
-				<div class="col-md-6 d-flex justify-content-end ignore-clicks">
+				<div class="col-md-6 d-flex justify-content-end">
 					<div class="nav-item dropdown no-arrow show">
 						<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
 							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -39,116 +39,116 @@
 						</div>
 					</div>
 				</div>
+			</div>
 
-				<div class="row">
-					<div class="col-md-8" col-md-8>
-						<p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have
-							contextual functionality that hasn't been implemented yet...</p>
-						<p><%- include('partials/messages') %>
-								<p></p>
-					</div>
-					<div class="col-md-4" col-md-4></div>
+			<div class="row">
+				<div class="col-md-8" col-md-8>
+					<p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have
+						contextual functionality that hasn't been implemented yet...</p>
+					<p><%- include('partials/messages') %>
+							<p></p>
 				</div>
+				<div class="col-md-4" col-md-4></div>
+			</div>
 
 
-				<div class="row">
-					<div class="col-md-2" col-md-2>
-						<!-- Coverage % + data -->
-						<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-							<div class="card-body text-secondary">
-								<h5 class="card-title">Test Coverage</h5>
-								<h3 class="card-text">75%</h3>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-2" col-md-2>
-						<!-- Coverage % + data -->
-						<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-							<div class="card-body text-secondary">
-								<h5 class="card-title">Unmet Requirements</h5>
-								<h3 class="card-text">24</h3>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-2" col-md-2>
-						<!-- Coverage % + data -->
-						<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-							<div class="card-body text-secondary">
-								<h5 class="card-title">Test Coverage</h5>
-								<h3 class="card-text">75%</h3>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-2" col-md-2>
-						<!-- Coverage % + data -->
-						<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-							<div class="card-body text-secondary">
-								<h5 class="card-title">Test Coverage</h5>
-								<h3 class="card-text">75%</h3>
-							</div>
+			<div class="row">
+				<div class="col-md-2" col-md-2>
+					<!-- Coverage % + data -->
+					<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+						<div class="card-body text-secondary">
+							<h5 class="card-title">Test Coverage</h5>
+							<h3 class="card-text">75%</h3>
 						</div>
 					</div>
 				</div>
-
-				<div class="row ignore-clicks">
-					<div class="col-md-10" col-md-10>
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							New Test Case
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase"
-								method="POST">
-								<div class="form-group">
-									<label for="testcasename">Name</label>
-									<input type="testcasename" id="testcasename" name="testcasename"
-										class="form-control" placeholder="Test Case Name"
-										value="<%= typeof testcasename != 'undefined' ? testcasename : '' %>" />
-									<label for="testcasedescription">Description</label>
-									<input type="testcasedescription" id="testcasedescription"
-										name="testcasedescription" class="form-control"
-										placeholder="This test aims to..."
-										value="<%= typeof testcasedescription != 'undefined' ? testcasedescription : '' %>" />
-								</div>
-								<button type="submit" class="btn btn-primary btn-block">
-									Add Test Case
-								</button>
-							</form>
-							<div class="dropdown-divider"></div>
+				<div class="col-md-2" col-md-2>
+					<!-- Coverage % + data -->
+					<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+						<div class="card-body text-secondary">
+							<h5 class="card-title">Unmet Requirements</h5>
+							<h3 class="card-text">24</h3>
 						</div>
 					</div>
 				</div>
+				<div class="col-md-2" col-md-2>
+					<!-- Coverage % + data -->
+					<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+						<div class="card-body text-secondary">
+							<h5 class="card-title">Test Coverage</h5>
+							<h3 class="card-text">75%</h3>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2" col-md-2>
+					<!-- Coverage % + data -->
+					<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+						<div class="card-body text-secondary">
+							<h5 class="card-title">Test Coverage</h5>
+							<h3 class="card-text">75%</h3>
+						</div>
+					</div>
+				</div>
+			</div>
 
-				<div class="row">
+			<div class="row">
+				<div class="col-md-10" col-md-10>
+					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						New Test Case
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase" method="POST">
+							<div class="form-group">
+								<label for="testcasename">Name</label>
+								<input type="testcasename" id="testcasename" name="testcasename" class="form-control"
+									placeholder="Test Case Name"
+									value="<%= typeof testcasename != 'undefined' ? testcasename : '' %>" />
+								<label for="testcasedescription">Description</label>
+								<input type="testcasedescription" id="testcasedescription" name="testcasedescription"
+									class="form-control" placeholder="This test aims to..."
+									value="<%= typeof testcasedescription != 'undefined' ? testcasedescription : '' %>" />
+							</div>
+							<button type="submit" class="btn btn-primary btn-block">
+								Add Test Case
+							</button>
+						</form>
+						<div class="dropdown-divider"></div>
+					</div>
+				</div>
+			</div>
 
-					<div class="col-md-8" col-md-8>
-						<table class="table table-borderless">
-							<thead>
-								<tr>
-									<th scope="col" class="col-md-2">Shorthand</th>
-									<th scope="col" class="col-md-6">Test case name</th>
-									<th scope="col" class="col-md-2"></th>
-									<th scope="col" class="col-md-1">Edited Last</th>
+			<div class="row">
+
+				<div class="col-md-8" col-md-8>
+					<table class="table table-borderless">
+						<thead>
+							<tr>
+								<th scope="col" class="col-md-2">Shorthand</th>
+								<th scope="col" class="col-md-6">Test case name</th>
+								<th scope="col" class="col-md-2"></th>
+								<th scope="col" class="col-md-1">Edited Last</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% testcases.forEach(function (testcases) { %>
+								<tr class="hover-color"
+									onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
+									<th scope="row">
+										<%= projects.projectshorthand %>
+									</th>
+									<td>
+										<%= testcases.name %>
+									</td>
+									</td>
+									<td></td>
+									<td>75%</td>
 								</tr>
-							</thead>
-							<tbody>
-								<% testcases.forEach(function (testcases) { %>
-									<tr class="hover-color"
-										onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
-										<th scope="row">
-											<%= projects.projectshorthand %>
-										</th>
-										<td>
-											<%= testcases.name %>
-										</td>
-										</td>
-										<td></td>
-										<td>75%</td>
-									</tr>
-									<% }) %>
-							</tbody>
-						</table>
-					</div>
+								<% }) %>
+						</tbody>
+					</table>
 				</div>
+			</div>
+		</div>
 	</section>
 </body>

@@ -21,13 +21,10 @@ const ProjectSchema = new mongoose.Schema({
 			},
 			linkedrequirements: [
 				{
-					requirementid: {
-						type: String,
-					},
-					requirementname: {
-						type: String
-					}
-				}
+					type: mongoose.Schema.Types.ObjectId,
+					ref: 'Project',
+					required: true
+				},
 			],
 			teststeps: [ 
 				{

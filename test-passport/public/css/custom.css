@@ -76,11 +76,6 @@ a:focus {
     display: flex;
   }
   
-  .sidebar {
-    width: 200px;
-    height: 100vh;
-    background-color: #ccc;
-  }
   
   .sidebar-content {
     flex-grow: 1;
@@ -92,6 +87,7 @@ a:focus {
     width: 15%;
     background: #7386D5;
     color: #fff;
+    height: 100vh;
     transition: all 0.3s;
 }
 
@@ -187,6 +183,13 @@ ul.CTAs a {
     padding: 5px 0;
     width: 100%;
 }
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
 
 a.download {
     background: #fff;
