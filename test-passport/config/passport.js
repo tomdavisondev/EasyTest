@@ -10,6 +10,17 @@ module.exports = function(passport) {
         new LocalStrategy({
             usernameField: 'email'
         }, (email, password, done) => {
+            //For demo purposes only
+            if(email == "guest@example.com")
+            {
+                const guestUser = { 
+                    name: "Guest",
+                    email: "guest@example.com",
+                    password: "guest",
+                    date: null
+                }
+                return done(null, guestUser);
+            }
             // Match user
             User.findOne({
                     email: email
@@ -39,12 +50,23 @@ module.exports = function(passport) {
     );
 
     passport.serializeUser(function(user, done) {
-        done(null, user.id);
+        if (user.email === "guest@example.com") {
+            // Don't serialize guest users
+            done(null, user);
+        } else {
+            done(null, user.id);
+        }
     });
 
     passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user) {
-            done(err, user);
-        });
+        if (typeof id === "object" && id.email === "guest@example.com") {
+            // If the id is the guest user object, return it directly
+            done(null, id);
+        } else {
+            // Otherwise, assume id is the ObjectId of a regular user and query the database
+            User.findById(id, function(err, user) {
+                done(err, user);
+            });
+        }
     });
 };
