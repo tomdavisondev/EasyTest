@@ -46,7 +46,7 @@
 <div class="row">
 	<div class="col-md-2"col-md-2>
 	</div>
-	<div class="col-md-10"col-md-10>
+	<div class="col-md-5"col-md-5>
 		<!-- //projects tab -->
 		<div class="dropdown">
 			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -73,6 +73,50 @@
 								value="<%= typeof projectshorthand != 'undefined' ? projectshorthand : '' %>"
 						/>
 					</div>
+					<button type="submit" class="btn btn-primary btn-block">
+						Register
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-5"col-md-5>
+		<div class="dropdown">
+			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				New Requirement
+			</button>
+			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<form class="px-4 py-3" action="/projects/addrequirement" method="POST">
+					<div class="form-group">
+						<label for="requirementname">Name</label>
+						<input
+								type="requirementname"
+								id="requirementname"
+								name="requirementname"
+								class="form-control"
+								value="<%= typeof requirementname != 'undefined' ? requirementname : '' %>"
+						/>
+						<label for="requirementid">ID</label>
+						<input
+								type="requirementid"
+								id="requirementid"
+								name="requirementid"
+								class="form-control"
+								placeholder="Enter shorthand"
+								value="<%= typeof projectshorthand != 'undefined' ? projectshorthand : '' %>"
+						/>
+					</div>
+					<label for="requirementlink">Links</label>
+					<table id="projects-table" class="table table-borderless">
+						<tbody>
+						  <% projects.forEach(function(project) { %>
+							<tr class="hover-color test-projects" onclick="<%= populateTestcases('JSON.stringify(project.testcases) ')%>">
+							  <th scope="row"><%= project.projectshorthand %></th>
+							  <td><%= project.projectname %></td>
+							</tr>
+						  <% }) %>
+						</tbody>
+					  </table>
 					<button type="submit" class="btn btn-primary btn-block">
 						Register
 					</button>

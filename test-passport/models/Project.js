@@ -19,6 +19,16 @@ const ProjectSchema = new mongoose.Schema({
 				type: String,
 				required: true
 			},
+			linkedrequirements: [
+				{
+					requirementid: {
+						type: String,
+					},
+					requirementname: {
+						type: String
+					}
+				}
+			],
 			teststeps: [ 
 				{
 					stepnumber: {
