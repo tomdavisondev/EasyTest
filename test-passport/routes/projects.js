@@ -370,50 +370,53 @@ router.post('/addproject', (req, res) => {
     });
 });
 
+async function getAllRequirements() {
+    try {
+      const requirements = await Requirement.find({});
+      return requirements;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to get requirements');
+    }
+  }
+
 router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
     const { projectname, testcasename } = req.params;
-    const linkedRequirements = req.body['selected-requirements[]'];
-    
+    const linkedRequirements = Array.isArray(req.body['selected-requirements']) ? req.body['selected-requirements'] : [req.body['selected-requirements']];
+    let projects = req.body.projects;
+  
+    console.log("Linked requirements:" + linkedRequirements);
+  
     try {
-      // Find the project by name and the testcase by name
-      const project = await Project.findOne({ projectname });
-      const testcase = project.testcases.find(t => t.name === testcasename);
+      
+      let requirements = await getAllRequirements();
+      console.log("Requirements:", requirements);
+      const requirementIds = requirements.map(req => req._id);
   
-      // Find and return all requirements found in the linkedRequirements list by searching name
-      const requirements = await Promise.all(linkedRequirements.map(name =>
-        Requirement.findOne({ requirementname: name })
-      ));
-  
-      // Add the new linked requirements to the testcase
-      const linkedRequirementsIdsToAdd = [];
-      for (const requirement of requirements) {
-        console.log(requirement);
-        if (!testcase.linkedrequirements.includes(requirement._id)) {
-          linkedRequirementsIdsToAdd.push(requirement._id);
-        }
-      }
-  
-      // Add the new linked requirements to the testcase
-      for (const linkedRequirement of linkedRequirementsIdsToAdd) {
-        if (!testcase.linkedrequirements.includes(linkedRequirement)) {
-          testcase.linkedrequirements.push(linkedRequirement);
-        } else {
-          console.log(`Requirement ${linkedRequirement} already linked to ${testcasename}`);
-        }
-      }
-  
-      // Save the project
-      await project.save();
+      console.log("Requirements:", requirements);
+      console.log("Requirement IDs:", requirementIds);
+      
+      const updatedTestCase = await Project.findOneAndUpdate(
+        { projectname, 'testcases.name': testcasename },
+        { $set: { 'testcases.$.linkedrequirements': requirementIds } },
+        { new: true }
+      );
+      
+      // Save the updated test case
+      await updatedTestCase.save();
   
       // Send back a success response
-      req.flash('success_msg', "Requirement Linked");
+      req.flash('success_msg', 'Requirement Linked');
       res.redirect('/project/' + projectname + '/' + testcasename);
     } catch (err) {
       console.error(err);
-      req.flash('error_msg', "Could not link requirement")
+      req.flash('error_msg', 'Could not link requirement');
       res.redirect('../dashboard');
     }
   });
+  
+
+  
   
 
 

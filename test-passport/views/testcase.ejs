@@ -110,28 +110,25 @@
 										</tr>
 									</thead>
 									<tbody>
-										<% requirements.forEach(function (requirement) { %>
-										<% var requirementLinked = false; %>
-										<% project.testcases.forEach(function(testcase) {
+										<% requirements.forEach((requirement) => {
+										  let requirementLinked = false;
+										  project.testcases.forEach((testcase) => {
 											if (testcase.linkedrequirements.toString() === requirement._id.toString()) {
-												requirementLinked = true;
+											  requirementLinked = true;
 											}
-										}) %>
-										<tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
+										  });
+										%>
+										  <tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
 											<td></td>
 											<th scope="row"><%= requirement.requirementid %></th>
 											<td><%= requirement.requirementname %></td>
 											<td></td>
 											<td>
-												<% if (requirementLinked) { %>
-													<input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>" checked>
-												<% } else { %>
-													<input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>">
-												<% } %>
+											  <input type="checkbox" name="selected-requirements" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
 											</td>
-										</tr>
+										  </tr>
 										<% }) %>
-									</tbody>
+									  </tbody>
 									
 								</table>
 								<button type="submit" class="btn btn-primary btn-block">Submit Selected Requirements</button>

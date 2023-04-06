@@ -22,8 +22,7 @@ const ProjectSchema = new mongoose.Schema({
 			linkedrequirements: [
 				{
 					type: mongoose.Schema.Types.ObjectId,
-					ref: 'Project',
-					required: true
+					ref: 'Requirements'
 				},
 			],
 			teststeps: [ 
