@@ -62,4 +62,18 @@ function populateTestcases(testcases) {
   }
   
   document.addEventListener('DOMContentLoaded', initSidebar);
+
   
+  function submitSelectedRequirements() {
+	console.log("Submitting selected requirements");
+    const form = document.forms['requirement-form'];
+    const checkboxes = form.elements['selected-requirements'];
+    let selectedRequirements = [];
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) {
+        selectedRequirements.push(checkboxes[i].value);
+      }
+    }
+    form.elements['selected-requirements'].value = JSON.stringify(selectedRequirements);
+    form.submit();
+  }

@@ -380,20 +380,23 @@ async function getAllRequirements() {
     }
   }
 
-router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
+  router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
     const { projectname, testcasename } = req.params;
-    const linkedRequirements = Array.isArray(req.body['selected-requirements']) ? req.body['selected-requirements'] : [req.body['selected-requirements']];
+    const linkedRequirements = (req.body['selected-requirements'] || []).map(name => {
+        return Requirement.find({ requirementname: name });
+      });
+      
+    const requirements = (await Promise.all(linkedRequirements)).flat();
+      
     let projects = req.body.projects;
-  
+
+    console.log("Requirements:" + requirements);
+
     console.log("Linked requirements:" + linkedRequirements);
   
     try {
-      
-      let requirements = await getAllRequirements();
-      console.log("Requirements:", requirements);
-      const requirementIds = requirements.map(req => req._id);
-  
-      console.log("Requirements:", requirements);
+      let requirementIds = requirements.map(req => req._id);
+      //console.log("Requirements:", requirements);
       console.log("Requirement IDs:", requirementIds);
       
       const updatedTestCase = await Project.findOneAndUpdate(
@@ -413,7 +416,9 @@ router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
       req.flash('error_msg', 'Could not link requirement');
       res.redirect('../dashboard');
     }
-  });
+});
+
+
   
 
   

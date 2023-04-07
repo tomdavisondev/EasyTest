@@ -83,7 +83,7 @@
 
 				<div class="row">
 					<div class="col-md-8">
-						<button class="btn btn-primary" data-toggle="collapse" data-target="#testcases-table">Requirements</button>
+						<button class="btn btn-primary" data-toggle="collapse" data-target="#requirements-table">Requirements</button>
 						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New Requirement</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 							<form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase" method="POST">
@@ -97,42 +97,45 @@
 							</form>
 							<div class="dropdown-divider"></div>
 						</div>
-						<div id="testcases-table" class="collapse">
-							<form action="/projects/<%= project.projectname %>/<%= testcasename %>/addrequirements" method="POST">
+						<div id="requirements-table" class="collapse">
+							<form action="/projects/<%= project.projectname %>/<%= testcasename %>/addrequirements" method="POST" name="requirement-form">
 								<table class="table table-borderless">
-									<thead>
-										<tr>
-											<th scope="col" class="col-md-1"></th>
-											<th scope="col" class="col-md-2">ID</th>
-											<th scope="col" class="col-md-6">Requirement Name</th>
-											<th scope="col" class="col-md-2"></th>
-											<th scope="col" class="col-md-1">Selected</th>
-										</tr>
-									</thead>
-									<tbody>
-										<% requirements.forEach((requirement) => {
-										  let requirementLinked = false;
-										  project.testcases.forEach((testcase) => {
-											if (testcase.linkedrequirements.toString() === requirement._id.toString()) {
-											  requirementLinked = true;
-											}
-										  });
-										%>
-										  <tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
-											<td></td>
-											<th scope="row"><%= requirement.requirementid %></th>
-											<td><%= requirement.requirementname %></td>
-											<td></td>
-											<td>
-											  <input type="checkbox" name="selected-requirements" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
-											</td>
-										  </tr>
-										<% }) %>
-									  </tbody>
-									
+								  <thead>
+									<tr>
+									  <th scope="col" class="col-md-1"></th>
+									  <th scope="col" class="col-md-2">ID</th>
+									  <th scope="col" class="col-md-6">Requirement Name</th>
+									  <th scope="col" class="col-md-2"></th>
+									  <th scope="col" class="col-md-1">Linked</th>
+									</tr>
+								  </thead>
+								  <tbody>
+									<% requirements.forEach((requirement) => {
+										let requirementLinked = false;
+										project.testcases.forEach((testcase) => {
+										  if (testcase.linkedrequirements.includes(requirement._id.toString())) {
+											requirementLinked = true;
+										  }
+										});
+									  %>
+									  
+									  <tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
+										<td></td>
+										<th scope="row"><%= requirement.requirementid %></th>
+										<td><%= requirement.requirementname %></td>
+										<td></td>
+										<td>
+										  <label>
+											<input type="checkbox" name="selected-requirements" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
+										  </label>
+										</td>
+									  </tr>
+									<% }) %>
+								  </tbody>
 								</table>
-								<button type="submit" class="btn btn-primary btn-block">Submit Selected Requirements</button>
-							</form>
+								<input type="hidden" name="selected-requirements" value="">
+								<button type="button" class="btn btn-primary btn-block" onclick="submitSelectedRequirements()">Submit Selected Requirements</button>
+							  </form>
 						</div>
 					</div>
 				</div>
