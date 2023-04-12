@@ -382,29 +382,34 @@ async function getAllRequirements() {
 
   router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
     const { projectname, testcasename } = req.params;
-    const linkedRequirements = (req.body['selected-requirements'] || []).map(name => {
-        return Requirement.find({ requirementname: name });
-      });
-      
-    const requirements = (await Promise.all(linkedRequirements)).flat();
-      
-    let projects = req.body.projects;
-
-    console.log("Requirements:" + requirements);
-
-    console.log("Linked requirements:" + linkedRequirements);
+    const linkedRequirements = req.body['selected-requirements[]'];
+    if (!linkedRequirements || linkedRequirements.length === 0) {
+        req.flash('error_msg', 'No requirements were selected');
+        res.redirect('/project/' + projectname + '/' + testcasename);
+        return;
+      }
+    let requirementIds = [];
   
     try {
-      let requirementIds = requirements.map(req => req._id);
-      //console.log("Requirements:", requirements);
-      console.log("Requirement IDs:", requirementIds);
-      
+      const promises = linkedRequirements.map(async (requirementName) => {
+        const requirement = await Requirement.findOne({ requirementid: requirementName });
+        if (requirement) {
+          console.log("Found requirement:", requirement);
+          requirementIds.push(requirement._id);
+        } else {
+          console.log("No requirement found");
+        }
+      });
+      await Promise.all(promises);
+  
+      console.log(requirementIds);
+  
       const updatedTestCase = await Project.findOneAndUpdate(
         { projectname, 'testcases.name': testcasename },
         { $set: { 'testcases.$.linkedrequirements': requirementIds } },
         { new: true }
       );
-      
+  
       // Save the updated test case
       await updatedTestCase.save();
   
@@ -414,16 +419,8 @@ async function getAllRequirements() {
     } catch (err) {
       console.error(err);
       req.flash('error_msg', 'Could not link requirement');
-      res.redirect('../dashboard');
+      res.redirect('/project/' + projectname + '/' + testcasename);
     }
-});
-
-
+  });
   
-
-  
-  
-
-
-
 module.exports = router;

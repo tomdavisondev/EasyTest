@@ -112,11 +112,10 @@
 								  <tbody>
 									<% requirements.forEach((requirement) => {
 										let requirementLinked = false;
-										project.testcases.forEach((testcase) => {
 										  if (testcase.linkedrequirements.includes(requirement._id.toString())) {
 											requirementLinked = true;
 										  }
-										});
+	
 									  %>
 									  
 									  <tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
@@ -126,7 +125,7 @@
 										<td></td>
 										<td>
 										  <label>
-											<input type="checkbox" name="selected-requirements" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
+											<input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
 										  </label>
 										</td>
 									  </tr>
@@ -182,7 +181,7 @@
 										<tr class="hover-color"
 											onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
 											<th scope="row">
-												<%= projects.projectshorthand %>
+												<%= testcases.description %>
 											</th>
 											<td>
 												<%= testcases.name %>

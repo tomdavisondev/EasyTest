@@ -92,34 +92,46 @@
 			</div>
 
 			<div class="row">
-
-				<div class="col-md-8" col-md-8>
+				<div class="col-md-8 table-wrap" col-md-8>
+					<h3>Linked Test Cases</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-8 table-wrap" col-md-8>
 					<table class="table table-borderless">
 						<thead>
-							<tr>
-								<th scope="col" class="col-md-2">Shorthand</th>
-								<th scope="col" class="col-md-6">Test case name</th>
-								<th scope="col" class="col-md-2"></th>
-								<th scope="col" class="col-md-1">Edited Last</th>
-							</tr>
+						  <tr>
+							<th>Project Name</th>
+							<th>Test Case Name</th>
+							<th>Test Case Description</th>
+						  </tr>
 						</thead>
 						<tbody>
-							<% requirements.forEach(function (requirement) { %>
-								<tr class="hover-color"
-									onclick="location.href='/requirements/<%= requirements.requirementname %>'">
-									<td>
-										<%= requirement.requirementid %>
-									</td>
-									<td>
-										<%= requirement.requirementname %>
-									</td>
-									</td>
-									<td></td>
-									<td>75%</td>
-								</tr>
-								<% }) %>
-						</tbody>
-					</table>
+							<% projects.forEach(function(project) { %>
+							  <% project.testcases.forEach(function(testcase) { %>
+								<% console.log("test case " + testcase.linkedrequirements) %>
+								<% testcase.linkedrequirements.some(function(req) { console.log("req " + req + "\n" + "requirement: " + requirement._id) }) %>
+								<% if (testcase.linkedrequirements.some(function(req) { return req.toString() == requirement._id.toString() })) { %>
+								<tr class="hover-color"onclick="location.href='/project/<%= project.projectname %>/<%= testcase.name %>'">
+									<td><%= project.projectname %></td>
+									<td><%= testcase.name %></td>
+									<td><%= testcase.description %></td>
+								  </tr>
+								  <% console.log('Match found for test case', testcase.name, 'in project', project.projectname); %>
+								<% } else { %>
+								  <% console.log('No match found for test case', testcase.name, 'in project', project.projectname); %>
+								<% } %>
+							  <% }) %>
+							<% }) %>
+							<% if (projects.length === 0) { %>
+							  <tr>
+								<td colspan="4">No test cases found for this requirement.</td>
+							  </tr>
+							  <% console.log('No test cases found for requirement', requirement.requirementname); %>
+							<% } %>
+						  </tbody>
+						  
+					  </table>
 				</div>
 			</div>
 		</div>

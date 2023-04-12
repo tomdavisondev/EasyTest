@@ -11,11 +11,17 @@ const Requirements = require('../models/Requirements');
 Requirements.watch().on('change', async () => {
 	console.log('Requirement collection has changed, invalidating cache...');
 	await cache.del('requirements');
+	requirements = await Requirements.find({}).exec();
+	console.log(requirements);
+	await cache.set("requirements", requirements);
   });
 
 Project.watch().on('change', async () => {
-	console.log('Project collection has changed, invalidating cache...');
+	console.log('Projects collection has changed, invalidating cache...');
 	await cache.del('projects');
+	projects = await Project.find({}).exec();
+	console.log(projects);
+	await cache.set("projects", projects);
   });
 
 router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
@@ -33,15 +39,20 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 			await cache.set("projects", projects);
 		}
 
-		let project = await cache.get(`project-${req.params.projectname}`);
+		let project = await cache.get(`projects-${req.params.projectname}`);
 		if (!project) {
-			project = await Project.findOne({ projectname: req.params.projectname }).exec();
+			console.log("no project found");
+			project = await Project.findOne({ projectname: req.params.projectname }).populate('project.testcases').exec();
 			if (project) {
 				await cache.set(`project-${req.params.projectname}`, project);
 			}
 		}
+		else {
+			console.log("Project found! " + project);
+		}
 
 		if (project) {
+			console.log("Testcases: " + "\n" + project.testcases);
 			res.render('project', {
 				req: req,
 				name: req.user.name,
@@ -115,7 +126,14 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (re
 		await cache.set("projects", projects);
 	}
 
-	const project = await Project.findOne({projectname: req.params.projectname});
+	
+	let project = await cache.get(`projects-${req.params.projectname}`);
+	if (!project) {
+		project = await Project.findOne({ projectname: req.params.projectname }).populate('project.testcases.linkedrequirements').exec();
+		if (project) {
+			await cache.set(`project-${req.params.projectname}`, project);
+		}
+	}
 
 	if (project) {
 		const testcase = project.testcases.find(obj => {
