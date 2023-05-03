@@ -96,17 +96,16 @@
 						  </tr>
 						</thead>
 						<tbody>
-							<% projects.forEach(function (projects) { %>
-								<tr class= "hover-color" onclick="location.href='/project/<%= projects.projectname %>'">
-								  <th scope="row"><%= projects.projectshorthand %></th>
-								  <td>
-									  <%= projects.projectname %>
-								  </td>
+							<% console.log(projects); %>
+							<% for (let i = 0; i < projects.length; i++) { %>
+								<tr class="hover-color" onclick="location.href='/project/<%= projects[i].projectname %>'">
+									<th scope="row"><%= projects[i].projectshorthand %></th>
+									<td><%= projects[i].projectname %></td>
 								  </td>
 								  <td></td>
 								  <td>75%</td>
 								</tr>
-							  <% }) %>
+							  <% } %>
 						</tbody>
 					  </table>
 				</div>
