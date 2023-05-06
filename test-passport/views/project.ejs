@@ -117,38 +117,93 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="row">
-
 				<div class="col-md-8" col-md-8>
-					<table class="table table-borderless">
-						<thead>
-							<tr>
-								<th scope="col" class="col-md-2">Shorthand</th>
-								<th scope="col" class="col-md-6">Test case name</th>
-								<th scope="col" class="col-md-2"></th>
-								<th scope="col" class="col-md-1">Edited Last</th>
-							</tr>
-						</thead>
-						<tbody>
-							<% testcases.forEach(function (testcases) { %>
-								<tr class="hover-color"
-									onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
-									<th scope="row">
-										<%= projects.projectshorthand %>
-									</th>
-									<td>
-										<%= testcases.name %>
-									</td>
-									</td>
-									<td></td>
-									<td>75%</td>
-								</tr>
-								<% }) %>
-						</tbody>
-					</table>
+				  <table class="table table-borderless">
+					<thead>
+					  <tr>
+						<th scope="col" class="col-md-2">Shorthand</th>
+						<th scope="col" class="col-md-6">Test case name</th>
+						<th scope="col" class="col-md-2">Edited Last</th>
+						<th scope="col" class="col-md-1"></th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <% testcases.forEach(function (testcase) { %>
+					  <tr class="hover-color" onclick="location.href='/project/<%= project.projectname %>/<%= testcase.name %>'">
+						<th scope="row">
+						  <%= projects.projectshorthand %>
+						</th>
+						<td>
+						  <%= testcase.name %>
+						</td>
+						<td>75%</td>
+						<td>
+							<div class="dropdown">
+								<button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
+					  				<path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"></path>
+									</svg>
+								</button>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<form id="delete-form" action="/projects/<%= project.projectname %>/<%= testcase.name %>/delete" method="POST">
+									  <input type="hidden" name="_method" value="DELETE">
+									  <button type="submit" class="dropdown-item">Delete</button>
+									</form>
+									<a class="dropdown-item" href="/projects/<%= project.projectname %>/<%=testcase.name%>/clone-here">Clone Here</a>
+									<a class="dropdown-item" href="/project/<%= project.projectname %>/<%=testcase.name%>/clone-to">Clone to</a>
+								  </div>							  
+							</div>							  
+						</td>
+					  </tr>
+					  <% }) %>
+					</tbody>
+				  </table>
 				</div>
-			</div>
+			  </div>			  
 		</div>
 	</section>
 </body>
+
+<script>
+// Get all the table rows
+const rows = document.querySelectorAll('.hover-color');
+
+// Add a click event listener to each row
+rows.forEach(row => {
+  row.addEventListener('click', event => {
+    // Prevent the default navigation behavior
+    event.preventDefault();
+  });
+
+  // Add a click event listener to the button inside the row
+  const button = row.querySelector('.dropdown-toggle');
+  button.addEventListener('click', event => {
+    // Open the dropdown menu
+    const dropdownMenu = button.nextElementSibling;
+    dropdownMenu.classList.toggle('show');
+
+    // Prevent the dropdown from closing when clicking on the button
+    event.stopPropagation();
+  });
+});
+
+// Add a click event listener to the document
+document.addEventListener('click', event => {
+  // Close the dropdown menu if the user clicked outside of it
+  const dropdownMenus = document.querySelectorAll('.dropdown-menu.show');
+  dropdownMenus.forEach(dropdownMenu => {
+    if (!dropdownMenu.contains(event.target)) {
+      dropdownMenu.classList.remove('show');
+    }
+  });
+});
+
+var dropdownItems = document.querySelectorAll('.dropdown-item');
+dropdownItems.forEach(function (item) {
+  item.addEventListener('click', function (event) {
+	event.stopPropagation();
+  });
+});
+
+</script>

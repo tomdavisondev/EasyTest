@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const methodOverride = require('method-override');
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
 }));
+
+app.use(methodOverride('_method'));
 
 // Passport middleware
 app.use(passport.initialize());

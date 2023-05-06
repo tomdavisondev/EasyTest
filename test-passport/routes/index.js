@@ -52,7 +52,6 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 		}
 
 		if (project) {
-			console.log("Testcases: " + "\n" + project.testcases);
 			res.render('project', {
 				req: req,
 				name: req.user.name,
