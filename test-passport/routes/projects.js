@@ -223,6 +223,20 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
         res.redirect('/project/' + projectname);
       });
   });
+
+  router.post('/:projectname/delete', (req, res) => {
+    const { projectname } = req.params;
+  
+    Project.deleteOne({ projectname })
+      .then(() => {
+        req.flash('success_msg', 'Project deleted successfully');
+        res.redirect('/dashboard');
+      })
+      .catch((err) => {
+        req.flash('error_msg', 'Something went wrong, project could not be deleted');
+        res.redirect('/dashboard');
+      });
+  });
   
 
 router.post('/:projectname/:testcasename/updateteststep', (req, res) => {

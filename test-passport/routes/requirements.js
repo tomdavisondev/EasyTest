@@ -83,5 +83,20 @@ router.post('/addrequirement', async (req, res) => {
     });
 });
 
+router.post('/:requirementname/delete', (req, res) => {
+    const { requirementname } = req.params;
+  
+    Requirement.deleteOne({ requirementname })
+      .then(() => {
+        req.flash('success_msg', 'Requirement deleted successfully');
+        res.redirect('/dashboard');
+      })
+      .catch((err) => {
+        req.flash('error_msg', 'Something went wrong, requirement could not be deleted');
+        res.redirect('/dashboard');
+      });
+  });
+  
+
 
 module.exports = router;
