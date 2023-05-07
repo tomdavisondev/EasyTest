@@ -12,7 +12,6 @@ Requirements.watch().on('change', async () => {
 	console.log('Requirement collection has changed, invalidating cache...');
 	await cache.del('requirements');
 	requirements = await Requirements.find({}).exec();
-	console.log(requirements);
 	await cache.set("requirements", requirements);
   });
 
@@ -20,7 +19,6 @@ Project.watch().on('change', async () => {
 	console.log('Projects collection has changed, invalidating cache...');
 	await cache.del('projects');
 	projects = await Project.find({}).exec();
-	console.log(projects);
 	await cache.set("projects", projects);
   });
 
@@ -35,7 +33,7 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 		}
 
 		if (projects == undefined) {
-			projects = await Project.find({}).exec();
+			projects = await Project.find({}).exec(); 
 			await cache.set("projects", projects);
 		}
 
@@ -112,55 +110,56 @@ router.get('/requirements/:requirementname', ensureAuthenticated, async (req, re
 
 router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (req, res) => {
 	try {
-	const requirements = await cache.get("requirements");
-	const projects = await cache.get("projects");
+		const requirements = await cache.get("requirements");
+		let projects = await cache.get("projects");
 
-	if (!requirements) {
-		const requirements = await Requirements.find({}).exec();
-		await cache.set("requirements", requirements);
-	}
-
-	if (!projects) {
-		const projects = await Project.find({}).exec();
-		await cache.set("projects", projects);
-	}
-
-	
-	let project = await cache.get(`projects-${req.params.projectname}`);
-	if (!project) {
-		project = await Project.findOne({ projectname: req.params.projectname }).populate('project.testcases.linkedrequirements').exec();
-		if (project) {
-			await cache.set(`project-${req.params.projectname}`, project);
+		if (!requirements) {
+			const requirements = await Requirements.find({}).exec();
+			await cache.set("requirements", requirements);
 		}
-	}
 
-	if (project) {
-		const testcase = project.testcases.find(obj => {
-			return obj.name === req.params.testcasename;
-		});
+		if (!projects) {
+			console.log("Projects had to be generated");
+			projects = await Project.find({}).exec();
+			await cache.set("projects", projects);
+		}
 
-		res.render('testcase', {
-			req: req,
-			name: req.user.name,
-			project: project,
-			testcase,
-			testcases: project.testcases,
-			testcasename: req.params.testcasename,
-			projectname: project.projectname,
-			teststeps: testcase.teststeps,
-			projects: projects,
-			requirements: requirements,
-		});
-	} else {
-		//TODO: Proper validation when a project is not found
-		// this shouldn't ever happen but worth doing
-		console.log("Error: project not found error");
-		console.log(req.params);
-	}
+		let project = await cache.get(`projects-${req.params.projectname}`);
+		if (!project) {
+			project = await Project.findOne({ projectname: req.params.projectname }).populate('project.testcases.linkedrequirements').exec();
+			if (project) {
+				await cache.set(`project-${req.params.projectname}`, project);
+			}
+		}
+
+		if (project && projects) {
+			const testcase = project.testcases.find(obj => {
+				return obj.name === req.params.testcasename;
+			});
+
+			res.render('testcase', {
+				req: req,
+				name: req.user.name,
+				project: project,
+				testcase,
+				testcases: project.testcases,
+				testcasename: req.params.testcasename,
+				projectname: project.projectname,
+				teststeps: testcase.teststeps,
+				projects: projects,
+				requirements: requirements,
+			});
+		} else {
+			//TODO: Proper validation when a project is not found
+			// this shouldn't ever happen but worth doing
+			console.log("Error: project not found error");
+			console.log(req.params);
+		}
 	} catch (error) {
 		console.log(error);
 	}
 });
+
 
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 	try {

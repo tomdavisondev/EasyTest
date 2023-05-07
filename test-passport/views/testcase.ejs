@@ -86,14 +86,37 @@
 						<button class="btn btn-primary" data-toggle="collapse" data-target="#requirements-table">Requirements</button>
 						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New Requirement</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase" method="POST">
+							<form class="px-4 py-3" action="/requirements/addrequirement" method="POST">
 								<div class="form-group">
 									<label for="requirementname">Name</label>
-									<input type="requirementname" id="requirementname" name="requirementname" class="form-control" placeholder="Requirement Name" value="<%= typeof requirementname != 'undefined' ? requirementname : '' %>" />
+									<input
+											type="requirementname"
+											id="requirementname"
+											name="requirementname"
+											class="form-control"
+											value="<%= typeof requirementname != 'undefined' ? requirementname : '' %>"
+									/>
 									<label for="requirementid">ID</label>
-									<input type="requirementid" id="requirementid" name="requirementid" class="form-control" placeholder="" value="<%= typeof requirementid != 'undefined' ? requirementid : '' %>" />
+									<input
+											type="requirementid"
+											id="requirementid"
+											name="requirementid"
+											class="form-control"
+											placeholder="Enter shorthand"
+											value="<%= typeof requirementid != 'undefined' ? requirementid : '' %>"
+									/>
 								</div>
-								<button type="submit" class="btn btn-primary btn-block">Add Requirement</button>
+								<label for="projects">
+									<input type="hidden" name="projects" value="<%= projects %>">
+								</label>
+								<label for="requirementlink">Links</label>
+								<table id="projects-table" class="table table-borderless">
+									<tbody>
+									</tbody>
+								  </table>
+								<button type="submit" class="btn btn-primary btn-block">
+									Register
+								</button>
 							</form>
 							<div class="dropdown-divider"></div>
 						</div>
@@ -179,7 +202,7 @@
 								<tbody>
 									<% testcases.forEach(function (testcases) { %>
 										<tr class="hover-color"
-											onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
+											onclick="location.href='/projects/<%= project.projectname %>/<%= testcases.name %>'">
 											<th scope="row">
 												<%= testcases.description %>
 											</th>
@@ -232,6 +255,22 @@
 								</div>
 							</div>
 						</div>
+						<div class="dropdown">
+							<button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
+								  <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"></path>
+								</svg>
+							</button>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								<form id="delete-form" action="/projects/<%= project.projectname %>/<%= testcase.name %>/deleteteststep" method="POST">
+									<input type="hidden" name="_method" value="DELETE">
+									<input type="hidden" name="stepId" value="<%= teststep._id %>">
+									<input type="hidden" name="stepIndex" value="<%= i %>">
+									<button type="submit" class="dropdown-item">Delete</button>
+								  </form>
+								<a class="dropdown-item" href="/projects/<%= project.projectname %>/<%= testcase.name %>/clone-step-here">Clone Here</a>
+							  </div>							  
+						</div>	
 					</div>
 
 					<div class="row" id="teststepfield<%=i%>" style="display:none">

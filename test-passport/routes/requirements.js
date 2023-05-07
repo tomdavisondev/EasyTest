@@ -55,7 +55,7 @@ router.post('/addrequirement', async (req, res) => {
                         if (requirement) {
                             //Requirement exists
                             req.flash('error_msg', "Requirement already exists under that name")
-                            res.redirect('dashboard');
+                            res.redirect('/dashboard');
                         } else {
                             const newRequirement = new Requirement({
                                 requirementname,
@@ -64,16 +64,7 @@ router.post('/addrequirement', async (req, res) => {
                             newRequirement.save()
                                 .then(requirement => {
                                     req.flash('success_msg', "New requirement created");
-                                    res.render('dashboard', {
-                                        req,
-                                        name,
-                                        errors,
-                                        user,
-                                        projects: projectlist,
-                                        requirements: requirementlist,
-                                        requirementname,
-                                        requirementid
-                                    });
+                                    res.redirect(`/dashboard`);
                                 })
                                 .catch(err => console.log(err));
                         }
