@@ -73,16 +73,16 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 
 router.get('/requirements/:requirementname', ensureAuthenticated, async (req, res) => {
 	try {
-	const projects = await cache.get("projects");
-	const requirements = await cache.get("requirements");
+	let projects = await cache.get("projects");
+	let requirements = await cache.get("requirements");
 	
-	if (!requirements) {
-		const requirements = await Requirements.find({}).exec();
+	if (requirements == undefined) {
+		requirements = await Requirements.find({}).exec();
 		await cache.set("requirements", requirements);
 	}
 
-	if (!projects) {
-		const projects = await Project.find({}).exec();
+	if (projects == undefined) {
+		projects = await Project.find({}).exec(); 
 		await cache.set("projects", projects);
 	}
 

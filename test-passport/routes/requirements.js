@@ -74,6 +74,52 @@ router.post('/addrequirement', async (req, res) => {
     });
 });
 
+router.post('/edit', async (req, res) => {
+    const { reqId, requirementname, description, documentlink } = req.body;
+    let linkedprojectNames = req.body['linkedprojects[]'] || [];
+    if (!Array.isArray(linkedprojectNames)) {
+        linkedprojectNames = [linkedprojectNames];
+    }
+
+    // Find the corresponding Project objects using their names
+    const linkedprojects = await Project.find({ projectname: { $in: linkedprojectNames } }, '_id');
+
+    Requirement.findOne({ _id: reqId })
+    .then((requirement) => {
+      if (!requirement) {
+        // Requirement not found
+        req.flash('error_msg', 'Requirement not found');
+        res.redirect('/dashboard');
+      } else {
+        // Update the requirement fields
+        requirement.requirementname = requirementname;
+        requirement.linkedprojects = linkedprojects;
+        requirement.description = description;
+        requirement.documentLink = documentlink;
+
+        // Save the updated requirement
+        requirement.save()
+          .then((updatedRequirement) => {
+            req.flash('success_msg', 'Requirement updated successfully');
+            res.redirect(`/requirements/${requirementname}`);
+          })
+          .catch((err) => {
+            console.log(err);
+            req.flash('error_msg', 'An error occurred while updating the requirement');
+            res.redirect(`/requirements/${requirementname}`);
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      req.flash('error_msg', 'An error occurred while finding the requirement');
+      res.redirect('/dashboard');
+    });
+});
+
+      
+  
+
 router.post('/:requirementname/delete', (req, res) => {
     const { requirementname } = req.params;
   
