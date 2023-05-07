@@ -1,9 +1,12 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const ObjectId = require('mongodb').ObjectID;
+const methodOverride = require('method-override');
 
 // Project model
 const Project = require('../models/Project')
+const Requirement = require('../models/Requirements')
 const User = require('../models/User');
 
 router.post('/:projectname/:testcasename/updatetestcasetitle', (req, res) => {
@@ -116,7 +119,7 @@ router.post('/:projectname/addtestcase', (req, res) => {
     let user = req.user;
     let projectname = req.params.projectname;
     
-    if (!testcasename || !testcasedescription || !projectname) {
+    if (!testcasename || !testcasedescription) {
         errors.push({msg: 'Please fill in all fields'});
     }
     
@@ -169,6 +172,94 @@ router.post('/:projectname/addtestcase', (req, res) => {
 });
 });
 
+router.get('/:projectname/:testcasename/clone-here', async (req, res) => {
+    const { projectname, testcasename } = req.params;
+  
+    try {
+      // Find the original test case
+      const project = await Project.findOne({ projectname });
+      const testcase = project.testcases.find(tc => tc.name === testcasename);
+  
+      // Make a copy of the test case
+      let clonedName = `${testcase.name} (1)`;
+      let i = 2;
+      while (project.testcases.some(tc => tc.name === clonedName)) {
+        clonedName = `${testcase.name} (${i++})`;
+      }
+      const clonedTestcase = { ...testcase.toObject(), name: clonedName };
+  
+      // Add the cloned test case to the project and save it
+      project.testcases.push(clonedTestcase);
+      await project.save();
+  
+      req.flash('success_msg', "Test case cloned successfully");
+      res.redirect('/project/' + projectname);
+    } catch (err) {
+        req.flash('error_msg', "Something went wrong, step could not be cloned");
+        res.redirect('/project/' + projectname);
+    }
+  });
+  
+
+router.post('/:projectname/:testcasename/clone-to', (req, res) => {
+
+});
+
+router.post('/:projectname/:testcasename/delete', (req, res) => {
+    const { projectname, testcasename } = req.params;
+  
+    console.log("got here");
+  
+    Project.findOneAndUpdate(
+      { projectname },
+      { $pull: { testcases: { name: testcasename } } }
+    )
+      .then(() => {
+        req.flash('success_msg', "Test case deleted successfully");
+        res.redirect('/project/' + projectname);
+      })
+      .catch((err) => {
+        req.flash('error_msg', "Something went wrong, step could not be deleted");
+        res.redirect('/project/' + projectname);
+      });
+  });
+
+  router.post('/:projectname/delete', (req, res) => {
+    const { projectname } = req.params;
+  
+    Project.deleteOne({ projectname })
+      .then(() => {
+        req.flash('success_msg', 'Project deleted successfully');
+        res.redirect('/dashboard');
+      })
+      .catch((err) => {
+        req.flash('error_msg', 'Something went wrong, project could not be deleted');
+        res.redirect('/dashboard');
+      });
+  });
+  
+  router.post('/:projectname/:testcasename/deleteteststep', (req, res) => {
+    const { projectname, testcasename } = req.params;
+    const { stepId, stepIndex } = req.body;
+
+    console.log("Test case steps" + Project.find({projectname, 'testcases.name': testcasename}) + "\n StepId" +stepId)
+  
+    Project.findOneAndUpdate(
+      { projectname, 'testcases.name': testcasename },
+      { $pull: { [`testcases.$.teststeps`]: { _id: stepId } } }
+    )
+      .then(() => {
+        req.flash('success_msg', 'Test step deleted successfully');
+        res.redirect(`/project/${projectname}/${testcasename}`);
+      })
+      .catch((err) => {
+        req.flash('error_msg', 'Something went wrong, test step could not be deleted');
+        res.redirect(`/project/${projectname}/${testcasename}`);
+      });
+  });
+  
+  
+
 router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
     let projectId = req.body.projectId;
     let testcaseId = req.body.testcaseId;
@@ -183,6 +274,7 @@ router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
     if (errors.length > 0) {
         Project.find({}).exec((err, projects) => {
             res.render('dashboard', {
+                req: req,
                 errors,
                 projects,
                 name: req.user.name
@@ -229,7 +321,8 @@ router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
                 res.render('dashboard', {
                     errors: [{ msg: "Something went wrong, step was not updated" }],
                     projects,
-                    name: req.user.name
+                    name: req.user.name,
+                    req:req,
                 });
             });
         });
@@ -238,84 +331,66 @@ router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
 
 
 
-//New Test Case Step Handle
-router.post('/:projectname/:testcasename/addteststep', (req, res) => {
-    console.log('Debug Log: Adding test step');
-    let errors = [];
-    console.log(req)
+router.post('/:projectname/:testcasename/addteststep', async (req, res) => {
+  try {
+    const projectname = req.params.projectname;
+    const testcasename = req.params.testcasename;
 
-    let testcasename = req.params.testcasename;
-    let user = req.user;
-    let projectname = req.params.projectname;
-
-    console.log('Debug Log: user = ' + user + " projectname = " + projectname + " testcasename = " + testcasename );
-
-    if (!projectname) {
-        errors.push({msg: 'Please fill in all fields'});
+    // Find the project that contains the test case
+    const project = await Project.findOne({ projectname }).exec();
+    if (!project) {
+      req.flash('error', 'Project not found');
+      res.redirect('back');
     }
 
-    Project.find({}).exec(function(err, projects) {
+    // Find the test case within the project
+    const testcase = project.testcases.find(tc => tc.name === testcasename);
+    if (!testcase) {
+      req.flash('error', 'Test case not found');
+      res.redirect('back');
+    }
 
-    if (errors.length > 0) {
-        res.render('dashboard', {
-            errors,
-            projectname,
-            projects,
-            testcases,
-            name: user.name,
-        });
-    } else {
-        Project.find({}).exec(function(err, projects) 
-        {
-        Project.findOne({projectname: projectname})
-        .then(project => 
-        {
-            if (project) 
-            {
-                var testcase = project.testcases.find(obj => {
-                    return obj.name === testcasename
-                })
+    // Append the new test step to the test case
+    const newStep = {
+      stepnumber: testcase.teststeps.length + 1,
+      stepmethod: req.body.stepmethod,
+      stepexpected: req.body.stepexpected,
+      stepactual: req.body.stepactual,
+    };
+    testcase.teststeps.push(newStep);
 
-                    if(testcase)
-                    {
-                        let stepnumber = project.testcases.length + 1;
-                        Project.update(
-                            { _id : project._id, "testcases._id": testcase._id},
-                            {$push:{"testcases.$.teststeps":{"stepnumber":stepnumber, "stepmethod":req.body.newStepMethodField, "stepexpected": req.body.newStepExpectedResultsField, "stepactual": req.body.newStepActualResultsField}}}
-                        )
-                    .then(project => 
-                    {
-                        req.flash('error_msg', "Step added")
-                        res.redirect('/project/' + projectname + '/' + testcasename);
-                    })
-                    }
-            } else 
-            {
-                req.flash('error_msg', "Something went wrong, test case was not added");
-                res.render('dashboard', 
-                {
-                    errors,
-                    projects,
-                    testcases,
-                    name: user.name
-                });
-            }
-        })
-    });
-}
+    // Save the updated project
+    await project.save();
+
+    // Redirect back to the test case page with success message
+    req.flash('success_msg', 'Test step added successfully!');
+    res.redirect(`/project/${projectname}/${testcasename}`);
+  } catch (error) {
+    console.error(error);
+    req.flash('error_msg', 'An error occurred');
+    res.redirect('back');
+  }
 });
-});
+
+
   
 
 //New Project Handle
 router.post('/addproject', (req, res) => {
     let projectname = req.body.projectname;
+    let requirements = req.body.requirements;
     let projectshorthand = req.body.projectshorthand;
     let projects = req.body.projects;
     let user = req.user;
     let name = user.name;
 
     let errors = [];
+
+    if (requirements == undefined) {
+        Requirement.find({}).exec(function(err, requirementlist) {
+            requirements = requirementlist;
+        });
+    }
 
     if (!projectname || !projectshorthand) {
         errors.push({msg: 'Please fill in all fields'});
@@ -337,7 +412,9 @@ router.post('/addproject', (req, res) => {
                 user,
                 projectname,
                 projectshorthand,
-                projects
+                projects,
+                requirements: requirements,
+                req:req
             });
         } else {
             Project.findOne({projectname: { $regex: new RegExp("^" + projectname + "$", "i") }})
@@ -363,5 +440,61 @@ router.post('/addproject', (req, res) => {
     });
 });
 
+async function getAllRequirements() {
+    try {
+      const requirements = await Requirement.find({});
+      return requirements;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to get requirements');
+    }
+  }
 
+  router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
+    const { projectname, testcasename } = req.params;
+    let linkedRequirements = req.body['selected-requirements[]'];
+    if (!linkedRequirements) {
+      linkedRequirements = [];
+    }
+    if (!Array.isArray(linkedRequirements)) {
+      linkedRequirements = [linkedRequirements];
+    }
+    let requirementIds = [];
+    
+    try {
+      const promises = linkedRequirements.map(async (requirementName) => {
+        const requirement = await Requirement.findOne({ requirementid: requirementName });
+        if (requirement) {
+          console.log("Found requirement:", requirement);
+          requirementIds.push(requirement._id);
+        } else {
+          console.log("No requirement found");
+        }
+      });
+      await Promise.all(promises);
+  
+      console.log(requirementIds);
+      
+      const updatedTestCase = await Project.findOneAndUpdate(
+        { projectname, 'testcases.name': testcasename },
+        { $set: { 'testcases.$.linkedrequirements': requirementIds } },
+        { new: true }
+      );
+      
+      // Save the updated test case
+      await updatedTestCase.save();
+      
+      // Send back a success response
+      const redirectUrl = '/project/' + projectname + '/' + testcasename;
+      req.flash('success_msg', 'Requirement Linked');
+      res.redirect(redirectUrl);
+    } catch (err) {
+      console.error("Could not link requirement:", err);
+      req.flash('error_msg', 'Could not link requirement');
+      const redirectUrl = '/project/' + projectname + '/' + testcasename;
+      res.redirect(redirectUrl);
+    }
+  });
+  
+  
 module.exports = router;

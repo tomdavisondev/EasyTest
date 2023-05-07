@@ -72,17 +72,50 @@ a:focus {
     align-items: stretch;
 }
 
+.sidebar-wrapper {
+    display: flex;
+  }
+  
+  
+  .sidebar-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #fff;
+  }
+
 #sidebar {
-    min-width: 250px;
-    max-width: 250px;
+    width: 15%;
     background: #7386D5;
     color: #fff;
+    height: 100vh;
     transition: all 0.3s;
+}
+
+#sidebar .sidebar-content {
+    position: absolute;
+    padding-left: 20%;
+    left: 250px;
 }
 
 #sidebar.active {
     margin-left: -250px;
 }
+
+.submenu-btn {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    padding: 0;
+  }
+
+.submenu-items {
+    display: none;
+  }
+  
+  .show {
+    display: block;
+  }
 
 #sidebar .sidebar-header {
     padding: 20px;
@@ -151,6 +184,13 @@ ul.CTAs a {
     width: 100%;
 }
 
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
 a.download {
     background: #fff;
     color: #7386D5;
@@ -178,20 +218,4 @@ a.article:hover {
     padding: 20px;
     min-height: 100vh;
     transition: all 0.3s;
-}
-
-/* ---------------------------------------------------
-    MEDIAQUERIES
------------------------------------------------------ */
-
-@media (max-width: 768px) {
-    #sidebar {
-        margin-left: -250px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-    }
-    #sidebarCollapse span {
-        display: none;
-    }
 }

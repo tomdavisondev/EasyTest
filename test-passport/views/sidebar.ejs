@@ -1,0 +1,110 @@
+<script type="text/javascript" src="/js/utils.js"></script>
+<div class="sidebar-wrapper">
+	<nav class="sidebar vertical-scroll" id="sidebar">
+	  <div class="sidebar-header ignore-clicks">
+		<!-- <img src="logo.png" alt="Logo"> -->
+		<h1> <a href="/dashboard">EasyTest</a></h1>
+	  </div>
+	  <ul class="components">
+		<li class="menu-item submenu">
+				<a href="#">Projects</a>
+				<ul class="submenu-items">
+				  <li>
+					<div class="dropdown ignore-clicks">
+					  <button class="btn dropdown-toggle submenu-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						New Project
+					  </button>
+					  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<form class="px-4 py-3" action="/projects/addproject" method="POST">
+						  <div class="form-group">
+							<label for="projectname">Name</label>
+							<input
+							  type="projectname"
+							  id="projectname"
+							  name="projectname"
+							  class="form-control"
+							  value="<%= typeof projectname != 'undefined' ? projectname : '' %>"
+							/>
+							<label for="projectshorthand">Shorthand</label>
+							<input
+							  type="projectshorthand"
+							  id="projectshorthand"
+							  name="projectshorthand"
+							  class="form-control"
+							  placeholder="Enter shorthand"
+							  value="<%= typeof projectshorthand != 'undefined' ? projectshorthand : '' %>"
+							/>
+						  </div>
+						  <button type="submit" class="btn btn-primary btn-block">
+							Register
+						  </button>
+						</form>
+					  </div>
+					</div>
+				  </li>
+                  <% projects.forEach(function (project) { %>
+                  <li class="menu-item ignore-clicks">
+                    <a href="/project/<%= project.projectname %>"><%= project.projectname %></a>
+                  </li>
+                  <% }) %>
+				</ul>
+		</li>
+		<li class="menu-item submenu">
+		  <a href="#" aria-expanded="false">Requirements</a>
+		  <ul class="submenu-items">
+			<li>
+				<div class="dropdown ignore-clicks">
+					<button class="btn dropdown-toggle submenu-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						New Requirement
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<form class="px-4 py-3" action="/requirements/addrequirement" method="POST">
+							<div class="form-group">
+								<label for="requirementname">Name</label>
+								<input
+										type="requirementname"
+										id="requirementname"
+										name="requirementname"
+										class="form-control"
+										value="<%= typeof requirementname != 'undefined' ? requirementname : '' %>"
+								/>
+								<label for="requirementid">ID</label>
+								<input
+										type="requirementid"
+										id="requirementid"
+										name="requirementid"
+										class="form-control"
+										placeholder="Enter shorthand"
+										value="<%= typeof requirementid != 'undefined' ? requirementid : '' %>"
+								/>
+							</div>
+							<label for="projects">
+								<input type="hidden" name="projects" value="<%= projects %>">
+							</label>
+							<label for="requirementlink">Links</label>
+							<table id="projects-table" class="table table-borderless">
+								<tbody>
+								</tbody>
+							  </table>
+							<button type="submit" class="btn btn-primary btn-block">
+								Register
+							</button>
+						</form>
+					</div>
+				</div>
+			</li>
+			<% requirements.forEach(function (requirement) { %>
+				<li class="menu-item ignore-clicks">
+				  <a href="/requirements/<%= requirement.requirementname %>"><%= requirement.requirementname %></a>
+				</li>
+			<% }) %>
+		  </ul>
+		</li>
+		<li class="menu-item">
+		  <a href="#">Settings</a>
+		</li>
+		<li class="menu-item">
+		  <a href="#">About</a>
+		</li>
+	  </ul>
+	</nav>

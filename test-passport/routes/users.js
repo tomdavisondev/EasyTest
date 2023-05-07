@@ -8,10 +8,10 @@ var session = require('express-session');
 const User = require('../models/User')
 
 // Login Page
-router.get('/login', (req, res) => res.render('login'));
+router.get('/login', (req, res) => res.render('login', {req:req} ));
 
 // Register Page
-router.get('/register', (req, res) => res.render('register'));
+router.get('/register', (req, res) => res.render('register', {req:req} ));
 
 // Register Handle
 router.post('/register', (req, res) => {
@@ -39,7 +39,8 @@ router.post('/register', (req, res) => {
 			name,
 			email,
 			password,
-			password2
+			password2,
+			req: req,
 		});
 	} else {
 		// Validation passed

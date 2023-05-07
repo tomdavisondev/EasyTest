@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const methodOverride = require('method-override');
 
 const app = express();
 
@@ -33,6 +34,8 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+app.use(methodOverride('_method'));
+
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,6 +56,7 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 app.use('/projects', require('./routes/projects'));
+app.use('/requirements', require('./routes/requirements'));
 
 const PORT = process.env.PORT || 7000;
 

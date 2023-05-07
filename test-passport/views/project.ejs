@@ -1,201 +1,209 @@
-<layout>
-</layout>
 <body>
-<div class="row">
-	<div class="col-md-2"col-md-2><a href="/dashboard"><img class="homeimage" src="https://cdn-icons-png.flaticon.com/128/1946/1946488.png" width="50" height="50"></a></div>
-	<div class="col-md-6"col-md-6><h1 class="mt-6"><%= project.projectname %></h1></div>
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-2"col-md-2>
-		<div class="nav-item dropdown no-arrow show">
-			<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="mr-2 d-none d-lg-inline text-gray-600 small">
-					<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
-				</span>
-				<img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
-			</a>
-			<!-- Dropdown - User Information -->
-			<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-					Profile
-				</a>
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-					Settings
-				</a>
-				<a class="dropdown-item" href="#">
-					<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-					Activity Log
-				</a>
-				<div class="dropdown-divider"></div>
-				<a class="dropdown-item" href="/users/logout">
-					<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-					Logout
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-8"col-md-8><p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have contextual functionality that hasn't been implemented yet...</p><p><%- include('partials/messages') %><p></p></div>
-	<div class="col-md-2"col-md-2></div>
-</div>
-
-
-<div class="row">
-	<div class="col-md-2"col-md-2>
-	</div>
-	<div class="col-md-2"col-md-2>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h5 class="card-title">Test Coverage</h5>
-			  <h3 class="card-text">75%</h3>
-			</div>
-		  </div>
-	</div>
-	<div class="col-md-2"col-md-2>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h5 class="card-title">Unmet Requirements</h5>
-			  <h3 class="card-text">24</h3>
-			</div>
-		  </div>
-	</div>
-	<div class="col-md-2"col-md-2>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h5 class="card-title">Test Coverage</h5>
-			  <h3 class="card-text">75%</h3>
-			</div>
-		  </div>
-	</div>
-	<div class="col-md-2"col-md-2>
-		<!-- Coverage % + data -->
-		<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-			<div class="card-body text-secondary">
-			  <h5 class="card-title">Test Coverage</h5>
-			  <h3 class="card-text">75%</h3>
-			</div>
-		  </div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"col-md-2>
-	</div>
-	<div class="col-md-10"col-md-10>
-		<!-- //projects tab -->
-		<div class="dropdown">
-			<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				Projects
-			</button>
-			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				<form class="px-4 py-3" action="/projects/addproject" method="POST">
-					<div class="form-group">
-						<label for="projectname">Project</label>
-						<input
-								type="projectname"
-								id="projectname"
-								name="projectname"
-								class="form-control"
-								value="<%= typeof projectname != 'undefined' ? projectname : '' %>"
-						/>
-						<label for="projectshorthand">Shorthand</label>
-						<input
-								type="projectshorthand"
-								id="projectshorthand"
-								name="projectshorthand"
-								class="form-control"
-								placeholder="Enter shorthand"
-								value="<%= typeof projectshorthand != 'undefined' ? projectshorthand : '' %>"
-						/>
+	<section class="sidebar-content ignore-clicks">
+		<div class="container-fluid">
+			<div class="row align-items-center">
+				<div class="col-md-6" col-md-6>
+					<h1 class="mt-6">
+						<%= project.projectname %>
+					</h1>
+				</div>
+				<div class="col-md-6 d-flex justify-content-end">
+					<div class="nav-item dropdown no-arrow show">
+						<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="mr-2 d-none d-lg-inline text-gray-600 small">
+								<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
+							</span>
+							<img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
+						</a>
+						<!-- Dropdown - User Information -->
+						<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+							aria-labelledby="userDropdown">
+							<a class="dropdown-item" href="#">
+								<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+								Profile
+							</a>
+							<a class="dropdown-item" href="#">
+								<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+								Settings
+							</a>
+							<a class="dropdown-item" href="#">
+								<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+								Activity Log
+							</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="/users/logout">
+								<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+								Logout
+							</a>
+						</div>
 					</div>
-					<button type="submit" class="btn btn-primary btn-block">
-						Register
-					</button>
-				</form>
-				<div class="dropdown-divider"></div>
-				<% projects.forEach(function (projects) { %>
-				<a href="/project/<%= projects.projectname %>" class="dropdown-item">
-					<%= projects.projectname %>
-				</a>
-				<% }) %>
+				</div>
 			</div>
+
+			<div class="row">
+				<div class="col-md-8" col-md-8>
+					<p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have
+						contextual functionality that hasn't been implemented yet...</p>
+					<p><%- include('partials/messages') %>
+							<p></p>
+				</div>
+				<div class="col-md-4" col-md-4></div>
+			</div>
+
+
+			<div class="row">
+				<div class="col-md-2" col-md-2>
+					<!-- Coverage % + data -->
+					<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+						<div class="card-body text-secondary">
+							<h5 class="card-title">Test Coverage</h5>
+							<h3 class="card-text">75%</h3>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2" col-md-2>
+					<!-- Coverage % + data -->
+					<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+						<div class="card-body text-secondary">
+							<h5 class="card-title">Unmet Requirements</h5>
+							<h3 class="card-text">24</h3>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2" col-md-2>
+					<!-- Coverage % + data -->
+					<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+						<div class="card-body text-secondary">
+							<h5 class="card-title">Test Coverage</h5>
+							<h3 class="card-text">75%</h3>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2" col-md-2>
+					<!-- Coverage % + data -->
+					<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
+						<div class="card-body text-secondary">
+							<h5 class="card-title">Test Coverage</h5>
+							<h3 class="card-text">75%</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-10" col-md-10>
+					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						New Test Case
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase" method="POST">
+							<div class="form-group">
+								<label for="testcasename">Name</label>
+								<input type="testcasename" id="testcasename" name="testcasename" class="form-control"
+									placeholder="Test Case Name"
+									value="<%= typeof testcasename != 'undefined' ? testcasename : '' %>" />
+								<label for="testcasedescription">Description</label>
+								<input type="testcasedescription" id="testcasedescription" name="testcasedescription"
+									class="form-control" placeholder="This test aims to..."
+									value="<%= typeof testcasedescription != 'undefined' ? testcasedescription : '' %>" />
+							</div>
+							<button type="submit" class="btn btn-primary btn-block">
+								Add Test Case
+							</button>
+						</form>
+						<div class="dropdown-divider"></div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-8" col-md-8>
+				  <table class="table table-borderless">
+					<thead>
+					  <tr>
+						<th scope="col" class="col-md-2">Shorthand</th>
+						<th scope="col" class="col-md-6">Test case name</th>
+						<th scope="col" class="col-md-2">Edited Last</th>
+						<th scope="col" class="col-md-1"></th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <% testcases.forEach(function (testcase) { %>
+					  <tr class="hover-color" onclick="location.href='/project/<%= project.projectname %>/<%= testcase.name %>'">
+						<th scope="row">
+						  <%= projects.projectshorthand %>
+						</th>
+						<td>
+						  <%= testcase.name %>
+						</td>
+						<td>75%</td>
+						<td>
+							<div class="dropdown">
+								<button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
+					  				<path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"></path>
+									</svg>
+								</button>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<form id="delete-form" action="/projects/<%= project.projectname %>/<%= testcase.name %>/delete" method="POST">
+									  <input type="hidden" name="_method" value="DELETE">
+									  <button type="submit" class="dropdown-item">Delete</button>
+									</form>
+									<a class="dropdown-item" href="/projects/<%= project.projectname %>/<%=testcase.name%>/clone-here">Clone Here</a>
+									<a class="dropdown-item" href="/project/<%= project.projectname %>/<%=testcase.name%>/clone-to">Clone to</a>
+								  </div>							  
+							</div>							  
+						</td>
+					  </tr>
+					  <% }) %>
+					</tbody>
+				  </table>
+				</div>
+			  </div>			  
 		</div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"col-md-2></div>
-	<div class="col-md-10"col-md-10>
-		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            New Test Case
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase" method="POST">
-                <div class="form-group">
-                    <label for="testcasename">Name</label>
-                    <input
-                            type="testcasename"
-                            id="testcasename"
-                            name="testcasename"
-                            class="form-control"
-                            placeholder="Test Case Name"
-                            value="<%= typeof testcasename != 'undefined' ? testcasename : '' %>"
-                    />
-					<label for="testcasedescription">Description</label>
-                    <input
-                            type="testcasedescription"
-                            id="testcasedescription"
-                            name="testcasedescription"
-                            class="form-control"
-                            placeholder="This test aims to..."
-                            value="<%= typeof testcasedescription != 'undefined' ? testcasedescription : '' %>"
-                    />
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">
-                    Add Test Case
-                </button>
-            </form>
-            <div class="dropdown-divider"></div>
-        </div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-2"col-md-2>
-    </div>
-
-	<div class="col-md-8"col-md-8>
-		<table class="table table-borderless">
-			<thead>
-			  <tr>
-				<th scope="col" class="col-md-2">Shorthand</th>
-				<th scope="col" class="col-md-6">Test case name</th>
-				<th scope="col" class="col-md-2"></th>
-				<th scope="col" class="col-md-1">Edited Last</th>
-			  </tr>
-			</thead>
-			<tbody>
-                    <% testcases.forEach(function (testcases) { %>
-					<tr class= "hover-color" onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
-					  <th scope="row"><%= projects.projectshorthand %></th>
-					  <td>
-                        <%= testcases.name %>
-					  </td>
-					  </td>
-					  <td></td>
-					  <td>75%</td>
-					</tr>
-                <% }) %>
-			</tbody>
-		  </table>
-	</div>
-</div>
-</main>
+	</section>
 </body>
+
+<script>
+// Get all the table rows
+const rows = document.querySelectorAll('.hover-color');
+
+// Add a click event listener to each row
+rows.forEach(row => {
+  row.addEventListener('click', event => {
+    // Prevent the default navigation behavior
+    event.preventDefault();
+  });
+
+  // Add a click event listener to the button inside the row
+  const button = row.querySelector('.dropdown-toggle');
+  button.addEventListener('click', event => {
+    // Open the dropdown menu
+    const dropdownMenu = button.nextElementSibling;
+    dropdownMenu.classList.toggle('show');
+
+    // Prevent the dropdown from closing when clicking on the button
+    event.stopPropagation();
+  });
+});
+
+// Add a click event listener to the document
+document.addEventListener('click', event => {
+  // Close the dropdown menu if the user clicked outside of it
+  const dropdownMenus = document.querySelectorAll('.dropdown-menu.show');
+  dropdownMenus.forEach(dropdownMenu => {
+    if (!dropdownMenu.contains(event.target)) {
+      dropdownMenu.classList.remove('show');
+    }
+  });
+});
+
+var dropdownItems = document.querySelectorAll('.dropdown-item');
+dropdownItems.forEach(function (item) {
+  item.addEventListener('click', function (event) {
+	event.stopPropagation();
+  });
+});
+
+</script>
