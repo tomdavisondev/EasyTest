@@ -4,7 +4,7 @@
 			<div class="row align-items-center">
 				<div class="col-md-6" col-md-6>
 					<h1 class="mt-6">
-						<%= requirement.requirementname %>
+						[<%= requirement.requirementid %>]<%= requirement.requirementname %>
 					</h1>
 				</div>
 				<div class="col-md-6 d-flex justify-content-end">
@@ -42,14 +42,84 @@
 			</div>
 
 			<div class="row">
-				<div class="col-md-8" col-md-8>
-					<p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have
-						contextual functionality that hasn't been implemented yet...</p>
-					<p><%- include('partials/messages') %>
-							<p></p>
+				<div class="col-md-8">
+				  <p><%- include('partials/messages') %></p>
+				  <div class="col-md-2">
+				  <button id="edit-requirement-button" class="btn btn-primary btn-block">Edit Requirement</button>
+				  <button id="cancel-edit-requirement-button" class="btn btn-primary btn-block">Cancel</button>
+				  </div>
+				  <div id="requirement-details">
+					<h4>Name:</h4> <p><%= requirement.requirementname %></p>
+					<h4>Linked Projects:</strong></h4>
+					<table class="table table-borderless">
+						<thead>
+						  <tr>
+							<th>Project Name</th>
+							<th>Test Case Name</th>
+							<th>Test Case Description</th>
+						  </tr>
+						</thead>
+						<tbody>
+							<% projects.forEach(function(project) { %>
+							  <% project.testcases.forEach(function(testcase) { %>
+								<% console.log("test case " + testcase.linkedrequirements) %>
+								<% testcase.linkedrequirements.some(function(req) { console.log("req " + req + "\n" + "requirement: " + requirement._id) }) %>
+								<% if (testcase.linkedrequirements.some(function(req) { return req.toString() == requirement._id.toString() })) { %>
+								<tr class="hover-color"onclick="location.href='/project/<%= project.projectname %>/<%= testcase.name %>'">
+									<td><%= project.projectname %></td>
+									<td><%= testcase.name %></td>
+									<td><%= testcase.description %></td>
+								  </tr>
+								  <% console.log('Match found for test case', testcase.name, 'in project', project.projectname); %>
+								<% } else { %>
+								  <% console.log('No match found for test case', testcase.name, 'in project', project.projectname); %>
+								<% } %>
+							  <% }) %>
+							<% }) %>
+							<% if (projects.length === 0) { %>
+							  <tr>
+								<td colspan="4">No test cases found for this requirement.</td>
+							  </tr>
+							  <% console.log('No test cases found for requirement', requirement.requirementname); %>
+							<% } %>
+						  </tbody>
+						  
+					  </table>
+					<h4>Description:<h4> <p><%= requirement.description %></p>
+					<h4>Document Link:</h4> <p><%= requirement.documentLink %></p>
+				  </div>
+				  <form id="requirement-form" action="/requirements/edit" method="POST" style="display: none;">
+					<input type="hidden" id="reqId" name="reqId" value="<%= requirement._id %>">
+					<div class="form-group">
+					  <label for="requirementname">Name</label>
+					  <input type="text" id="requirementname" name="requirementname" class="form-control" value="<%= requirement.requirementname %>" required />
+					</div>
+					<div class="form-group">
+						<label for="linkedprojects">Linked Projects</label>
+						<select id="linkedprojects" name="linkedprojects[]" class="form-control" multiple>
+						  <% projects.forEach(function (project) { %>
+							<% if (requirement.linkedprojects.includes(project._id)) { %>
+							  <option value="<%= project.projectname %>" selected><%= project.projectname %></option>
+							<% } else { %>
+							  <option value="<%= project.projectname %>"><%= project.projectname %></option>
+							<% } %>
+						  <% }) %>
+						</select>
+					  </div>					  
+					<div class="form-group">
+					  <label for="description">Description</label>
+					  <textarea id="description" name="description" class="form-control"><%= requirement.description %></textarea>
+					</div>
+					<div class="form-group">
+					  <label for="documentlink">Document Link</label>
+					  <input type="text" id="documentlink" name="documentlink" class="form-control" value="<%= requirement.documentLink %>" />
+					</div>
+					<button type="submit" class="btn btn-primary btn-block">Add Requirement</button>
+				  </form>
 				</div>
-				<div class="col-md-4" col-md-4></div>
-			</div>
+				<div class="col-md-4"></div>
+			  </div>
+			
 
 
 			<div class="row">
@@ -90,50 +160,34 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="row">
 				<div class="col-md-8 table-wrap" col-md-8>
-					<h3>Linked Test Cases</h3>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-8 table-wrap" col-md-8>
-					<table class="table table-borderless">
-						<thead>
-						  <tr>
-							<th>Project Name</th>
-							<th>Test Case Name</th>
-							<th>Test Case Description</th>
-						  </tr>
-						</thead>
-						<tbody>
-							<% projects.forEach(function(project) { %>
-							  <% project.testcases.forEach(function(testcase) { %>
-								<% console.log("test case " + testcase.linkedrequirements) %>
-								<% testcase.linkedrequirements.some(function(req) { console.log("req " + req + "\n" + "requirement: " + requirement._id) }) %>
-								<% if (testcase.linkedrequirements.some(function(req) { return req.toString() == requirement._id.toString() })) { %>
-								<tr class="hover-color"onclick="location.href='/project/<%= project.projectname %>/<%= testcase.name %>'">
-									<td><%= project.projectname %></td>
-									<td><%= testcase.name %></td>
-									<td><%= testcase.description %></td>
-								  </tr>
-								  <% console.log('Match found for test case', testcase.name, 'in project', project.projectname); %>
-								<% } else { %>
-								  <% console.log('No match found for test case', testcase.name, 'in project', project.projectname); %>
-								<% } %>
-							  <% }) %>
-							<% }) %>
-							<% if (projects.length === 0) { %>
-							  <tr>
-								<td colspan="4">No test cases found for this requirement.</td>
-							  </tr>
-							  <% console.log('No test cases found for requirement', requirement.requirementname); %>
-							<% } %>
-						  </tbody>
-						  
-					  </table>
+					
 				</div>
 			</div>
 		</div>
 	</section>
 </body>
+
+
+
+<script>
+	const editButton = document.getElementById("edit-requirement-button");
+	const requirementDetails = document.getElementById("requirement-details");
+	const canceleditButton = document.getElementById("cancel-edit-requirement-button");
+	const form = document.getElementById("requirement-form");
+  
+	canceleditButton.style.display = "none";
+
+	editButton.addEventListener("click", () => {
+	  form.style.display = "block";
+	  canceleditButton.style.display = "initial";
+	  requirementDetails.style.display = "none";
+	});
+
+	canceleditButton.addEventListener("click", () => {
+	  form.style.display = "none";
+	  canceleditButton.style.display = "none";
+	  requirementDetails.style.display = "block";
+	});
+</script>
