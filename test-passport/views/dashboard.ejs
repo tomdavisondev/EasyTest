@@ -48,23 +48,56 @@
 			<div class="col-md-4"col-md-4></div>
 		  </div>
 		  <div class="row align-items-center">
-			<div class="col-md-2"col-md-2>
+			<% 
+			// Calculate percentage of requirements included in test cases across all projects
+			numRequirements = requirements.length;
+			numRequirementsWithTests = 0;
+			numTestCases = 0;
+			for (const project of projects) {
+			  for (const testcase of project.testcases) {
+				numTestCases++;
+				for (const reqId of testcase.linkedrequirements) {
+					const req = requirements.find(req => req._id.toString() === reqId.toString());
+					if (req) {
+					  numRequirementsWithTests++;
+					  break; // Found a linked requirement, move on to next test case
+					}
+				  }
+				}
+			  }
+			percentageWithTests = Math.round(numRequirementsWithTests / numRequirements * 100);
+			if (isNaN(percentageWithTests)) {
+			  percentageWithTests = 0;
+			}
+			
+			%>
+			<div class="col-md-2">
 				<!-- Coverage % + data -->
 				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-					<div class="card-body text-secondary">
-					  <h5 class="card-title">Test Coverage</h5>
-					  <h3 class="card-text">75%</h3>
-					</div>
+				  <div style="background-color: <%= getColor(100 - percentageWithTests / 100) %>;" class="card-body text-secondary">
+					<h5 class="card-title">Test Coverage</h5>
+					<h3 class="card-text"><%= percentageWithTests %>%</h3>
 				  </div>
-			</div>
-			<div class="col-md-2"col-md-2>
+				</div>
+			  </div>
+			<%
+			// Calculate percentage of requirements without links
+			numRequirements = requirements.length;
+			numRequirementsWithoutLinks = requirements.filter(req => req.linkedprojects.length === 0).length;
+			percentageWithoutLinks = Math.round(numRequirementsWithoutLinks / numRequirements * 100);
+			if (isNaN(percentageWithoutLinks)) {
+			  percentageWithoutLinks = 0;
+			}
+			console.log(percentageWithoutLinks)
+			%>
+			<div class="col-md-2">
 				<!-- Coverage % + data -->
 				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-					<div class="card-body text-secondary">
-					  <h5 class="card-title">Unmet Requirements</h5>
-					  <h3 class="card-text">24</h3>
+					<div style="background-color: <%= getColor(percentageWithoutLinks / 100) %>;" class="card-body text-secondary">
+					  <h5 class="card-title">Requirements without Projects</h5>
+					  <h3 class="card-text"><%= percentageWithoutLinks %>%</h3>
 					</div>
-				  </div>
+				</div>
 			</div>
 			<div class="col-md-2"col-md-2>
 				<!-- Coverage % + data -->
@@ -117,7 +150,6 @@
 											  <button type="submit" class="dropdown-item">Delete</button>
 											</form>
 											<a class="dropdown-item" href="/projects/<%= projects[i].projectname %>/clone-here">Clone Here</a>
-											<a class="dropdown-item" href="/projects/<%= projects[i].projectname %>/clone-to">Clone to</a>
 										  </div>							  
 									</div>							  
 								</td>
@@ -160,7 +192,6 @@
 											  <button type="submit" class="dropdown-item">Delete</button>
 											</form>
 											<a class="dropdown-item" href="/requirements/<%= requirements[i].requirementname %>/clone-here">Clone Here</a>
-											<a class="dropdown-item" href="/requirements/<%= requirements[i].requirementname %>/clone-to">Clone to</a>
 										  </div>							  
 									</div>							  
 								</td>

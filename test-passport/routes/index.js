@@ -177,6 +177,7 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 		}
 
 		res.render('dashboard', {
+			getColor,
 			name: req.user.name,
 			projects: projects,
 			requirements: requirements,
@@ -190,5 +191,12 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 router.get('/', function(req, res) {
 	res.redirect('/users/login');
 });
+
+// Define the getColor function for cards
+function getColor(value) {
+	// value from 0 to 1
+	var hue = ((1 - value) * 120).toString(10);
+	return ["hsl(", hue, ",100%,50%)"].join("");
+  }
 
 module.exports = router;
