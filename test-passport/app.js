@@ -9,13 +9,13 @@ const passport = require('passport');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 7000;
+const localhost = 'localhost'
 const hostname = 'easytest.tomdavisondev.com';
 
 const httpsOptions = {
-	cert: fs.readFileSync('./ssl/example.crt'),
-	ca: fs.readFileSync('./ssl/example.ca-bundle'),
-	key: fs.readFileSync('./ssl/example.key')
+	cert: fs.readFileSync(__dirname + '/ssl/selfsigned.crt'),
+	key: fs.readFileSync(__dirname + '/ssl/selfsigned.key')
 };
 
 const app = express();
@@ -74,4 +74,4 @@ app.use('/users', require('./routes/users'));
 app.use('/projects', require('./routes/projects'));
 app.use('/requirements', require('./routes/requirements'));
 
-https.listen(PORT, hostname);
+httpsServer.listen(PORT, localhost);

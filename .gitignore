@@ -167,3 +167,7 @@ e2e/*.map
 .DS_Store/
 
 # End of https://www.toptal.com/developers/gitignore/api/mean
+
+test-passport/ssl/selfsigned.crt
+
+test-passport/ssl/selfsigned.key
