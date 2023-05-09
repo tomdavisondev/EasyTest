@@ -50,25 +50,36 @@ router.post('/addrequirement', async (req, res) => {
                     requirementid
                 });
             } else {
-                Requirement.findOne({ requirementname: { $regex: new RegExp("^" + requirementname + "$", "i") } })
-                    .then(requirement => {
-                        if (requirement) {
-                            //Requirement exists
-                            req.flash('error_msg', "Requirement already exists under that name")
+              Requirement.findOne({
+                $or: [
+                    { requirementname: { $regex: new RegExp("^" + requirementname + "$", "i") } },
+                    { requirementid: { $regex: new RegExp("^" + requirementid + "$", "i") } }
+                ]
+            })
+            .then(requirement => {
+                if (requirement) {
+                    if (requirement.requirementname.toLowerCase() === requirementname.toLowerCase()) {
+                        //Requirement exists with the same requirementname
+                        req.flash('error_msg', "Requirement already exists under that name");
+                    } else {
+                        //Requirement exists with the same requirementid
+                        req.flash('error_msg', "Requirement already exists with that ID");
+                    }
+                    res.redirect('/dashboard');
+                } else {
+                    const newRequirement = new Requirement({
+                        requirementname,
+                        requirementid,
+                    });
+                    newRequirement.save()
+                        .then(requirement => {
+                            req.flash('success_msg', "New requirement created");
                             res.redirect('/dashboard');
-                        } else {
-                            const newRequirement = new Requirement({
-                                requirementname,
-                                requirementid,
-                            });
-                            newRequirement.save()
-                                .then(requirement => {
-                                    req.flash('success_msg', "New requirement created");
-                                    res.redirect(`/dashboard`);
-                                })
-                                .catch(err => console.log(err));
-                        }
-                    })
+                        })
+                        .catch(err => console.log(err));
+                }
+            })
+            .catch(err => console.log(err));            
             }
         });
     });

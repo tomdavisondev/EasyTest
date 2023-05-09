@@ -488,25 +488,36 @@ router.post('/addproject', (req, res) => {
                 req:req
             });
         } else {
-            Project.findOne({projectname: { $regex: new RegExp("^" + projectname + "$", "i") }})
-                .then(project => {
-                    if (project) {
-                        //Project exists
-                        req.flash('error_msg', "Project already exists under that name")
+          Project.findOne({
+            $or: [
+                { projectname: { $regex: new RegExp("^" + projectname + "$", "i") } },
+                { projectshorthand: { $regex: new RegExp("^" + projectshorthand + "$", "i") } }
+            ]
+          })
+          .then(project => {
+            if (project) {
+                if (project.projectname.toLowerCase() === projectname.toLowerCase()) {
+                    //Project exists with the same projectname
+                    req.flash('error_msg', "Project already exists under that name");
+                } else {
+                    //Project exists with the same projectshorthand
+                    req.flash('error_msg', "Project already exists with that shorthand");
+                }
+                res.redirect('../dashboard');
+            } else {
+                const newProject = new Project({
+                    projectname,
+                    projectshorthand,
+                });
+                newProject.save()
+                    .then(project => {
+                        req.flash('success_msg', "New project created");
                         res.redirect('../dashboard');
-                    } else {
-                        const newProject = new Project({
-                            projectname,
-                            projectshorthand,
-                        });
-                        newProject.save()
-                            .then(project => {
-                                req.flash('success_msg', "New project created");
-                                res.redirect('../dashboard');
-                            })
-                            .catch(err => console.log(err));
-                    }
-                })
+                    })
+                    .catch(err => console.log(err));
+            }
+        })
+        .catch(err => console.log(err));        
         }
     });
 });
