@@ -74,6 +74,36 @@ router.post('/addrequirement', async (req, res) => {
     });
 });
 
+router.get('/:requirementname/clone-requirement', async (req, res) => {
+    const { requirementname } = req.params;
+  
+    try {
+      // Find the original requirement
+      const originalRequirement = await Requirement.findOne({ requirementname });
+  
+      // Make a copy of the requirement
+      const clonedRequirement = originalRequirement.toObject();
+      delete clonedRequirement._id; // remove _id property to avoid duplicate key error
+      let clonedName = `${originalRequirement.requirementname} (copy)`;
+      let i = 2;
+      while (await Requirement.findOne({ requirementname: clonedName })) {
+        clonedName = `${originalRequirement.requirementname} (copy ${i++})`;
+      }
+      clonedRequirement.requirementname = clonedName;
+  
+      // Add the cloned requirement to the database and save it
+      const savedRequirement = await new Requirement(clonedRequirement).save();
+  
+      req.flash('success_msg', "Requirement cloned successfully");
+      res.redirect('/dashboard');
+    } catch (err) {
+      console.log(err);
+      req.flash('error_msg', "Something went wrong, requirement could not be cloned");
+      res.redirect('/dashboard');
+    }
+  });
+  
+
 router.post('/edit', async (req, res) => {
     const { reqId, requirementname, description, documentlink } = req.body;
     let linkedprojectNames = req.body['linkedprojects[]'] || [];

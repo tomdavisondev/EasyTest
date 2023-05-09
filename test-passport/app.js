@@ -5,8 +5,11 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 const methodOverride = require('method-override');
+const bodyParser = require('body-parser');
 
 const app = express();
+
+app.use(bodyParser.json());
 
 // Passport config
 require('./config/passport')(passport);

@@ -202,7 +202,7 @@
 								<tbody>
 									<% testcases.forEach(function (testcases) { %>
 										<tr class="hover-color"
-											onclick="location.href='/projects/<%= project.projectname %>/<%= testcases.name %>'">
+											onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
 											<th scope="row">
 												<%= testcases.description %>
 											</th>
@@ -221,7 +221,7 @@
 				</div>
 
 				<% testcase.teststeps.forEach(function (teststep, i) { %>
-					<div class="row" id="teststep<%=i%>" onclick="editTestStep(<%=i%>)">
+					<div class="row" id="teststep<%=i%>">
 						<div class="col-md-3" col-md-3>
 							<!-- Coverage % + data -->
 							<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
@@ -268,7 +268,8 @@
 									<input type="hidden" name="stepIndex" value="<%= i %>">
 									<button type="submit" class="dropdown-item">Delete</button>
 								  </form>
-								<a class="dropdown-item" href="/projects/<%= project.projectname %>/<%= testcase.name %>/clone-step-here">Clone Here</a>
+								  <a class="dropdown-item" href="/projects/<%= project.projectname %>/<%= testcase.name %>/clone-step-here?stepId=<%= teststep._id %>&stepIndex=<%= i %>">Clone Here</a>
+								  <a class="dropdown-item" onclick="editTestStep(<%=i%>)">Edit</a>
 							  </div>							  
 						</div>	
 					</div>

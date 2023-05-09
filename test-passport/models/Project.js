@@ -43,7 +43,7 @@ const ProjectSchema = new mongoose.Schema({
 			],
 		}
 	],
-});
+},	{ versionKey: false });;
 
 const Project = mongoose.model('Project', ProjectSchema);
 

@@ -172,6 +172,41 @@ router.post('/:projectname/addtestcase', (req, res) => {
 });
 });
 
+router.post('/:projectname/:testcasename/clone-to', async (req, res) => {
+  const { projectname, testcasename } = req.params;
+  const selectedProjects = Object.keys(req.body);
+
+  try {
+    // Find the original test case
+    const project = await Project.findOne({ projectname });
+    const testcase = project.testcases.find(tc => tc.name === testcasename);
+
+    // Clone the test case to selected projects
+    for (let projectName of selectedProjects) {
+      if (projectName !== projectname) {
+        const targetProject = await Project.findOne({ projectname: projectName });
+
+        let clonedName = `${testcase.name} (1)`;
+        let i = 2;
+        while (targetProject.testcases.some(tc => tc.name === clonedName)) {
+          clonedName = `${testcase.name} (${i++})`;
+        }
+        const clonedTestcase = { ...testcase.toObject(), name: clonedName };
+
+        targetProject.testcases.push(clonedTestcase);
+        await targetProject.save();
+      }
+    }
+
+    req.flash('success_msg', "Test case cloned successfully");
+    res.redirect('/project/' + projectname);
+  } catch (err) {
+    console.log(err);
+      req.flash('error_msg', "Something went wrong, step could not be cloned");
+      res.redirect('/project/' + projectname);
+  }
+});
+
 router.get('/:projectname/:testcasename/clone-here', async (req, res) => {
     const { projectname, testcasename } = req.params;
   
@@ -195,6 +230,7 @@ router.get('/:projectname/:testcasename/clone-here', async (req, res) => {
       req.flash('success_msg', "Test case cloned successfully");
       res.redirect('/project/' + projectname);
     } catch (err) {
+      console.log(err);
         req.flash('error_msg', "Something went wrong, step could not be cloned");
         res.redirect('/project/' + projectname);
     }
@@ -329,7 +365,42 @@ router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
     }
 });
 
+router.get('/:projectname/:testcasename/clone-step-here', async (req, res) => {
+  const { projectname, testcasename } = req.params;
+  const { stepIndex, stepId } = req.query;
 
+  console.log(`stepIndex: ${stepIndex}, stepId: ${stepId}`);
+
+  try {
+    // Find the original test case
+    const project = await Project.findOne({ projectname });
+    const testcase = project.testcases.find(tc => tc.name === testcasename);
+    const teststep = testcase.teststeps.find(ts => ts.stepnumber === parseInt(stepIndex) + 1);    
+
+    console.log(teststep);
+
+    // Create cloned step with new stepnumber
+    const clonedStep = {
+      stepnumber: teststep.stepnumber + 1,
+      stepmethod: teststep.stepmethod,
+      stepexpected: teststep.stepexpected,
+      stepactual: teststep.stepactual
+    };
+
+    // Insert the cloned step after the original
+    testcase.teststeps.splice(testcase.teststeps.indexOf(teststep) + 1, 0, clonedStep);
+
+    // Save to database
+    await project.save();
+
+    req.flash('success_msg', "Test case cloned successfully");
+    res.redirect('/project/' + projectname + '/' + testcasename);
+  } catch (err) {
+    console.log(err);
+      req.flash('error_msg', "Something went wrong, step could not be cloned");
+      res.redirect('/project/' + projectname + '/' + testcasename);
+  }
+});
 
 router.post('/:projectname/:testcasename/addteststep', async (req, res) => {
   try {
@@ -439,6 +510,72 @@ router.post('/addproject', (req, res) => {
         }
     });
 });
+
+router.get('/:projectname/clone-project', async (req, res) => {
+  const { projectname } = req.params;
+
+  try {
+    // Find the original project
+    const originalProject = await Project.findOne({ projectname });
+
+    // Make a copy of the project
+    const clonedProject = originalProject.toObject();
+    delete clonedProject._id; // remove _id property to avoid duplicate key error
+    let clonedName = `${originalProject.projectname} (copy)`;
+    let i = 2;
+    while (await Project.findOne({ projectname: clonedName })) {
+      clonedName = `${originalProject.projectname} (copy ${i++})`;
+    }
+    clonedProject.projectname = clonedName;
+
+    // Add the cloned project to the database and save it
+    const savedProject = await new Project(clonedProject).save();
+
+    req.flash('success_msg', "Project cloned successfully");
+    res.redirect('/dashboard');
+  } catch (err) {
+    console.log(err);
+    req.flash('error_msg', "Something went wrong, project could not be cloned");
+    res.redirect('/dashboard');
+  }
+});
+
+router.post('/clone-to', async (req, res) => {
+  const { selectedProjects, selectedTestCase, containingProject } = req.body;
+  console.log('Selected projects:', selectedProjects);
+  console.log('Selected test case:', selectedTestCase);
+  console.log('Containing project case:', containingProject);
+  try {
+    // Find the selected test case
+    const originalProject = await Project.findOne({ projectname: containingProject });
+    const testCase = await originalProject.testcases.find(testCase => testCase.name === selectedTestCase);
+
+    // Loop through each selected project and clone the test case to that project
+    for (const projectId of selectedProjects) {
+      const project = await Project.findById(projectId);
+      // Make a copy of the test case
+      let clonedName = `${testCase.name} (1)`;
+      let i = 2;
+      while (project.testcases.some(tc => tc.name === clonedName)) {
+        clonedName = `${testCase.name} (${i++})`;
+      }
+      const clonedTestCase = { ...testCase.toObject(), name: clonedName };
+      
+      // Add the cloned test case to the project and save it
+      project.testcases.push(clonedTestCase);
+      await project.save();
+
+    }
+    req.flash('success_msg', "Project cloned successfully");
+    res.redirect('/dashboard');
+  } catch (err) {
+    console.log(err);
+    req.flash('error_msg', "Something went wrong, project could not be cloned");
+    res.redirect('/dashboard');
+  }
+});
+
+
 
 async function getAllRequirements() {
     try {

@@ -151,7 +151,7 @@
 									  <button type="submit" class="dropdown-item">Delete</button>
 									</form>
 									<a class="dropdown-item" href="/projects/<%= project.projectname %>/<%=testcase.name%>/clone-here">Clone Here</a>
-									<a class="dropdown-item" href="/project/<%= project.projectname %>/<%=testcase.name%>/clone-to">Clone to</a>
+									<a class="dropdown-item" onclick="cloneToPrompt('<%= JSON.stringify(projects) %>', '<%= testcase.name %>', '<%= project.projectname %>')">Clone to</a>
 								  </div>							  
 							</div>							  
 						</td>
@@ -205,5 +205,42 @@ dropdownItems.forEach(function (item) {
 	event.stopPropagation();
   });
 });
+
+function cloneToPrompt(projects, testcaseName, projectName) {
+  var selectedTestCase = testcaseName;
+  var containingProject = projectName;
+  var projects = JSON.parse(projects);
+  var options = [{
+    text: 'Choose multiple...',
+    value: ''
+  }];
+
+  for (var i = 0; i < projects.length; i++) {
+    options.push({
+      text: projects[i].projectname,
+      value: projects[i]._id
+    });
+  }
+
+  bootbox.prompt({
+    title: 'Clone to one or many projects',
+    inputType: 'select',
+    multiple: true,
+    inputOptions: options,
+    callback: function (result) {
+      if (result) {
+        var selectedProjects = result;
+		fetch('/projects/clone-to', {
+		  method: 'POST',
+		  headers: {
+		    'Content-Type': 'application/json'
+		  },
+		  body: JSON.stringify({ selectedProjects: selectedProjects, selectedTestCase: selectedTestCase, containingProject: containingProject })
+		})
+      }
+    }
+  });
+}
+
 
 </script>
