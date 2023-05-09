@@ -62,17 +62,13 @@
 						<tbody>
 							<% projects.forEach(function(project) { %>
 							  <% project.testcases.forEach(function(testcase) { %>
-								<% console.log("test case " + testcase.linkedrequirements) %>
-								<% testcase.linkedrequirements.some(function(req) { console.log("req " + req + "\n" + "requirement: " + requirement._id) }) %>
 								<% if (testcase.linkedrequirements.some(function(req) { return req.toString() == requirement._id.toString() })) { %>
 								<tr class="hover-color"onclick="location.href='/project/<%= project.projectname %>/<%= testcase.name %>'">
 									<td><%= project.projectname %></td>
 									<td><%= testcase.name %></td>
 									<td><%= testcase.description %></td>
 								  </tr>
-								  <% console.log('Match found for test case', testcase.name, 'in project', project.projectname); %>
 								<% } else { %>
-								  <% console.log('No match found for test case', testcase.name, 'in project', project.projectname); %>
 								<% } %>
 							  <% }) %>
 							<% }) %>
@@ -80,7 +76,6 @@
 							  <tr>
 								<td colspan="4">No test cases found for this requirement.</td>
 							  </tr>
-							  <% console.log('No test cases found for requirement', requirement.requirementname); %>
 							<% } %>
 						  </tbody>
 						  

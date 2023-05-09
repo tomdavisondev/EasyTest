@@ -80,7 +80,6 @@
 			if (isNaN(percentageWithoutLinks)) {
 			  percentageWithoutLinks = 0;
 			}
-			console.log(percentageWithoutLinks)
 			%>
 			<div class="col-md-2">
 				<!-- Coverage % + data -->
@@ -104,7 +103,6 @@
 					  </tr>
 					</thead>
 					<tbody>
-						<% console.log(projects); %>
 						<% for (let i = 0; i < projects.length; i++) { %>
 							<tr class="hover-color" onclick="location.href='/project/<%= projects[i].projectname %>'">
 								<th scope="row"><%= projects[i].projectshorthand %></th>
@@ -144,7 +142,6 @@
 					  </tr>
 					</thead>
 					<tbody>
-						<% console.log(requirements); %>
 						<% for (let i = 0; i < requirements.length; i++) { %>
 							<tr class="hover-color" onclick="location.href='/requirements/<%= requirements[i].requirementname %>'">
 								<th scope="row"><%= requirements[i].requirementid %></th>

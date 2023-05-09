@@ -73,13 +73,14 @@ router.post('/addrequirement', async (req, res) => {
                     });
                     newRequirement.save()
                         .then(requirement => {
+                            console.log("UserLog: Created new requirement" + "\n" + requirement);
                             req.flash('success_msg', "New requirement created");
                             res.redirect('/dashboard');
                         })
-                        .catch(err => console.log(err));
+                        .catch(err => console.log("ERROR: -- Could not create requirement", err));
                 }
             })
-            .catch(err => console.log(err));            
+            .catch(err => console.log("ERROR: -- Could not create requirement", err));            
             }
         });
     });
@@ -105,9 +106,11 @@ router.get('/:requirementname/clone-requirement', async (req, res) => {
       // Add the cloned requirement to the database and save it
       const savedRequirement = await new Requirement(clonedRequirement).save();
   
+      console.log("Cloning requirement: " + requirementname);
       req.flash('success_msg', "Requirement cloned successfully");
       res.redirect('/dashboard');
     } catch (err) {
+      console.log("ERROR: -- Could not clone requirement")
       console.log(err);
       req.flash('error_msg', "Something went wrong, requirement could not be cloned");
       res.redirect('/dashboard');
@@ -141,10 +144,12 @@ router.post('/edit', async (req, res) => {
         // Save the updated requirement
         requirement.save()
           .then((updatedRequirement) => {
+            console.log("Updating requirement " + requirement)
             req.flash('success_msg', 'Requirement updated successfully');
             res.redirect(`/requirements/${requirementname}`);
           })
           .catch((err) => {
+            console.log("ERROR: -- Could not submit edit for requirement")
             console.log(err);
             req.flash('error_msg', 'An error occurred while updating the requirement');
             res.redirect(`/requirements/${requirementname}`);
@@ -152,6 +157,7 @@ router.post('/edit', async (req, res) => {
       }
     })
     .catch((err) => {
+      console.log("ERROR: -- Could not submit edit for requirement")
       console.log(err);
       req.flash('error_msg', 'An error occurred while finding the requirement');
       res.redirect('/dashboard');

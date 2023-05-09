@@ -154,12 +154,14 @@ router.post('/:projectname/addtestcase', (req, res) => {
                                 }
                             })
                         .then(project => {
+                            console.log("UserLog: Created new test case" + "\n" + "name: " + testcasename + "\n" + "description: " + testcasedescription);
                             req.flash('success_msg', "Test case added successfully");
                             res.redirect('/project/' + projectname);
                         })
                     }
                 } else {
                     req.flash('error_msg', "Something went wrong, test case was not added");
+                    console.log("ERROR: -- Test case was not added" + "\n" + errors);
                     res.render('/project/' + projectname, {
                         errors,
                         projects,
@@ -199,9 +201,11 @@ router.post('/:projectname/:testcasename/clone-to', async (req, res) => {
     }
 
     req.flash('success_msg', "Test case cloned successfully");
+    console.log("Cloned test case (" + testcasename + ") to: " + selectedProjects);
     res.redirect('/project/' + projectname);
   } catch (err) {
-    console.log(err);
+      console.log("ERROR: -- test case could not be cloned!");
+      console.log(err);
       req.flash('error_msg', "Something went wrong, step could not be cloned");
       res.redirect('/project/' + projectname);
   }
@@ -228,18 +232,15 @@ router.get('/:projectname/:testcasename/clone-here', async (req, res) => {
       await project.save();
   
       req.flash('success_msg', "Test case cloned successfully");
+      console.log("Cloned test case: " + testcase);
       res.redirect('/project/' + projectname);
     } catch (err) {
-      console.log(err);
+        console.log("ERROR: -- test case could not be cloned-here!");
+        console.log(err);
         req.flash('error_msg', "Something went wrong, step could not be cloned");
         res.redirect('/project/' + projectname);
     }
   });
-  
-
-router.post('/:projectname/:testcasename/clone-to', (req, res) => {
-
-});
 
 router.post('/:projectname/:testcasename/delete', (req, res) => {
     const { projectname, testcasename } = req.params;
@@ -252,9 +253,12 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
     )
       .then(() => {
         req.flash('success_msg', "Test case deleted successfully");
+        console.log("Deleted test case " + testcasename);
         res.redirect('/project/' + projectname);
       })
       .catch((err) => {
+        console.log("ERROR: -- Test case could not be deleted!");
+        console.log(err);
         req.flash('error_msg', "Something went wrong, step could not be deleted");
         res.redirect('/project/' + projectname);
       });
@@ -265,10 +269,13 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
   
     Project.deleteOne({ projectname })
       .then(() => {
+        console.log("Deleted project " + projectname);
         req.flash('success_msg', 'Project deleted successfully');
         res.redirect('/dashboard');
       })
       .catch((err) => {
+        console.log("ERROR: -- Project could not be deleted!");
+        console.log(err);
         req.flash('error_msg', 'Something went wrong, project could not be deleted');
         res.redirect('/dashboard');
       });
@@ -285,10 +292,13 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
       { $pull: { [`testcases.$.teststeps`]: { _id: stepId } } }
     )
       .then(() => {
+        console.log("Test step(" + stepId + ") from testcase " + testcasename);
         req.flash('success_msg', 'Test step deleted successfully');
         res.redirect(`/project/${projectname}/${testcasename}`);
       })
       .catch((err) => {
+        console.log("ERROR: -- Test step could not be deleted!");
+        console.log(err);
         req.flash('error_msg', 'Something went wrong, test step could not be deleted');
         res.redirect(`/project/${projectname}/${testcasename}`);
       });
@@ -347,11 +357,13 @@ router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
             ]
         })
         .then(() => {
+            console.log("Test step updated");
             req.flash('success_msg', "Step updated");
             res.redirect('/project/' + req.params.projectname + '/' + req.params.testcasename);
         })
         .catch(err => {
             req.flash('error_msg', "Something went wrong, step was not updated");
+            console.log("ERROR: -- Test step could not be updated!");
             console.log(err);
             Project.find({}).exec((err, projects) => {
                 res.render('dashboard', {
@@ -394,9 +406,11 @@ router.get('/:projectname/:testcasename/clone-step-here', async (req, res) => {
     await project.save();
 
     req.flash('success_msg', "Test case cloned successfully");
+    console.log
     res.redirect('/project/' + projectname + '/' + testcasename);
   } catch (err) {
-    console.log(err);
+      console.log("ERROR: -- Test step could not be cloned here!");
+      console.log(err);
       req.flash('error_msg', "Something went wrong, step could not be cloned");
       res.redirect('/project/' + projectname + '/' + testcasename);
   }
@@ -416,6 +430,7 @@ router.post('/:projectname/:testcasename/addteststep', async (req, res) => {
 
     // Find the test case within the project
     const testcase = project.testcases.find(tc => tc.name === testcasename);
+    console.log("test: " + testcase.teststeps.length + 1);
     if (!testcase) {
       req.flash('error', 'Test case not found');
       res.redirect('back');
@@ -424,9 +439,9 @@ router.post('/:projectname/:testcasename/addteststep', async (req, res) => {
     // Append the new test step to the test case
     const newStep = {
       stepnumber: testcase.teststeps.length + 1,
-      stepmethod: req.body.stepmethod,
-      stepexpected: req.body.stepexpected,
-      stepactual: req.body.stepactual,
+      stepmethod: req.body.newStepMethodField,
+      stepexpected: req.body.newStepExpectedResultsField,
+      stepactual: req.body.newStepActualResultsField,
     };
     testcase.teststeps.push(newStep);
 
@@ -434,10 +449,12 @@ router.post('/:projectname/:testcasename/addteststep', async (req, res) => {
     await project.save();
 
     // Redirect back to the test case page with success message
+    console.log("Added test step in " + projectname + testcasename);
     req.flash('success_msg', 'Test step added successfully!');
     res.redirect(`/project/${projectname}/${testcasename}`);
   } catch (error) {
-    console.error(error);
+    console.log("ERROR: -- A test step could not be added")
+    console.log(error);
     req.flash('error_msg', 'An error occurred');
     res.redirect('back');
   }
@@ -511,6 +528,7 @@ router.post('/addproject', (req, res) => {
                 });
                 newProject.save()
                     .then(project => {
+                        console.log("UserLog: Created new project" + "\n" + project);
                         req.flash('success_msg', "New project created");
                         res.redirect('../dashboard');
                     })
@@ -542,9 +560,11 @@ router.get('/:projectname/clone-project', async (req, res) => {
     // Add the cloned project to the database and save it
     const savedProject = await new Project(clonedProject).save();
 
+    console.log("Cloning project " + projectname);
     req.flash('success_msg', "Project cloned successfully");
     res.redirect('/dashboard');
   } catch (err) {
+    console.log("ERROR: -- Cannot clone project");
     console.log(err);
     req.flash('error_msg', "Something went wrong, project could not be cloned");
     res.redirect('/dashboard');
@@ -580,6 +600,7 @@ router.post('/clone-to', async (req, res) => {
     req.flash('success_msg', "Project cloned successfully");
     res.redirect('/dashboard');
   } catch (err) {
+    console.log("ERROR: -- Cannot clone to");
     console.log(err);
     req.flash('error_msg', "Something went wrong, project could not be cloned");
     res.redirect('/dashboard');
@@ -634,6 +655,7 @@ async function getAllRequirements() {
       
       // Send back a success response
       const redirectUrl = '/project/' + projectname + '/' + testcasename;
+      console.log("Linking requirements " + requirementIds)
       req.flash('success_msg', 'Requirement Linked');
       res.redirect(redirectUrl);
     } catch (err) {

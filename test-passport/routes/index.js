@@ -39,14 +39,10 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 
 		let project = await cache.get(`projects-${req.params.projectname}`);
 		if (!project) {
-			console.log("no project found");
 			project = await Project.findOne({ projectname: req.params.projectname }).populate('project.testcases').exec();
 			if (project) {
 				await cache.set(`project-${req.params.projectname}`, project);
 			}
-		}
-		else {
-			console.log("Project found! " + project);
 		}
 
 		if (project) {
@@ -100,7 +96,7 @@ router.get('/requirements/:requirementname', ensureAuthenticated, async (req, re
 	} else {
 		//TODO: Proper validation when a requirement is not found
 		// this shouldn't ever happen but worth doing
-		console.log("Error: could not load " + req.params.requirementname);
+		console.log("Error: could not load requirementname" + req.params.requirementname);
 	}
 	} catch (error) {
 		console.log(error);
@@ -119,7 +115,6 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (re
 		}
 
 		if (!projects) {
-			console.log("Projects had to be generated");
 			projects = await Project.find({}).exec();
 			await cache.set("projects", projects);
 		}
