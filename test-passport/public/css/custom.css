@@ -106,7 +106,7 @@ a:focus {
     border: none;
     color: inherit;
     font-size: inherit;
-    padding: 0;
+    padding-left: 15px;
   }
 
 .submenu-items {
@@ -115,6 +115,9 @@ a:focus {
   
   .show {
     display: block;
+  }
+  .show-sidebarmenu {
+    display: contents;
   }
 
 #sidebar .sidebar-header {
@@ -125,6 +128,10 @@ a:focus {
 #sidebar ul.components {
     padding: 20px 0;
     border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul {
+    list-style-type: none;;
 }
 
 #sidebar ul p {

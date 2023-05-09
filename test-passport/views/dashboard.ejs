@@ -37,15 +37,7 @@
 			</div>
 		  </div>
 		  <div class="row align-items-left">
-			<div class="col-md-8"col-md-12><p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have contextual functionality that hasn't been implemented yet...</p><p><%- include('partials/messages') %><p></p></div>
-		  </div>
-		  <div class="row align-items-center">
-			<div class="col-md-4"col-md-4>
-				<!-- //projects tab -->
-			</div>
-			<div class="col-md-4"col-md-4>
-			</div>
-			<div class="col-md-4"col-md-4></div>
+			<div class="col-md-6"col-md-6><p>Welcome to Easy Test! This site is very much still a work in progress, some elements may have contextual functionality that hasn't been implemented yet...</p><p><%- include('partials/messages') %><p></p></div>
 		  </div>
 		  <div class="row align-items-center">
 			<% 
@@ -74,7 +66,7 @@
 			<div class="col-md-2">
 				<!-- Coverage % + data -->
 				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-				  <div style="background-color: <%= getColor(100 - percentageWithTests / 100) %>;" class="card-body text-secondary">
+				  <div style="background-color: <%= getColor(100 - percentageWithTests / 100) %>;" class="card-body">
 					<h5 class="card-title">Test Coverage</h5>
 					<h3 class="card-text"><%= percentageWithTests %>%</h3>
 				  </div>
@@ -93,115 +85,93 @@
 			<div class="col-md-2">
 				<!-- Coverage % + data -->
 				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-					<div style="background-color: <%= getColor(percentageWithoutLinks / 100) %>;" class="card-body text-secondary">
+					<div style="background-color: <%= getColor(percentageWithoutLinks / 100) %>;" class="card-body">
 					  <h5 class="card-title">Requirements without Projects</h5>
 					  <h3 class="card-text"><%= percentageWithoutLinks %>%</h3>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-2"col-md-2>
-				<!-- Coverage % + data -->
-				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-					<div class="card-body text-secondary">
-					  <h5 class="card-title">Test Coverage</h5>
-					  <h3 class="card-text">75%</h3>
-					</div>
-				  </div>
-			</div>
-			<div class="col-md-2"col-md-2>
-				<!-- Coverage % + data -->
-				<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-					<div class="card-body text-secondary">
-					  <h5 class="card-title">Test Coverage</h5>
-					  <h3 class="card-text">75%</h3>
-					</div>
-				  </div>
-			</div>
-			<div class="row align-items-center">
-				<div class="col-md-8"col-md-10>
-					<h3>Projects</h3>
-					<table class="table table-borderless">
-						<thead>
-						  <tr>
-							<th scope="col" class="col-md-2">Shorthand</th>
-							<th scope="col" class="col-md-6">Name</th>
-							<th scope="col" class="col-md-2"></th>
-							<th scope="col" class="col-md-1"></th>
-						  </tr>
-						</thead>
-						<tbody>
-							<% console.log(projects); %>
-							<% for (let i = 0; i < projects.length; i++) { %>
-								<tr class="hover-color" onclick="location.href='/project/<%= projects[i].projectname %>'">
-									<th scope="row"><%= projects[i].projectshorthand %></th>
-									<td><%= projects[i].projectname %></td>
-								  </td>
-								  <td></td>
-								  <td>
-									<div class="dropdown">
-										<button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
-											  <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"></path>
-											</svg>
-										</button>
-										<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-											<form id="delete-form" action="/projects/<%= projects[i].projectname %>/delete" method="POST">
-											  <input type="hidden" name="_method" value="DELETE">
-											  <button type="submit" class="dropdown-item">Delete</button>
-											</form>
-											<a class="dropdown-item" href="/projects/<%= projects[i].projectname %>/clone-project">Clone Here</a>
-										  </div>							  
-									</div>							  
-								</td>
-								</tr>
-							  <% } %>
-						</tbody>
-					  </table>
-				</div>
-			</div>
-			<div class="row align-items-center">
-				<div class="col-md-8"col-md-10>
-					<h3>Requirements</h3>
-					<table class="table table-borderless">
-						<thead>
-						  <tr>
-							<th scope="col" class="col-md-2">ID</th>
-							<th scope="col" class="col-md-6">Name</th>
-							<th scope="col" class="col-md-2"></th>
-							<th scope="col" class="col-md-1"></th>
-						  </tr>
-						</thead>
-						<tbody>
-							<% console.log(requirements); %>
-							<% for (let i = 0; i < requirements.length; i++) { %>
-								<tr class="hover-color" onclick="location.href='/requirements/<%= requirements[i].requirementname %>'">
-									<th scope="row"><%= requirements[i].requirementid %></th>
-									<td><%= requirements[i].requirementname %></td>
-								  </td>
-								  <td></td>
-								  <td>
-									<div class="dropdown">
-										<button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
-											  <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"></path>
-											</svg>
-										</button>
-										<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-											<form id="delete-form" action="/requirements/<%= requirements[i].requirementname%>/delete" method="POST">
-											  <input type="hidden" name="_method" value="DELETE">
-											  <button type="submit" class="dropdown-item">Delete</button>
-											</form>
-											<a class="dropdown-item" href="/requirements/<%= requirements[i].requirementname %>/clone-requirement">Clone Here</a>
-										  </div>							  
-									</div>							  
-								</td>
-								</tr>
-							  <% } %>
-						</tbody>
-					  </table>
-				</div>
-			</div>
 		  </div>
+		  <div class="row align-items-center">
+			<div class="col-md-8"col-md-8>
+				<h3>Projects</h3>
+				<table class="table table-bordered">
+					<thead>
+					  <tr>
+						<th scope="col" class="col-md-2">Shorthand</th>
+						<th scope="col" class="col-md-6">Name</th>
+						<th scope="col" class="col-md-1"></th>
+					  </tr>
+					</thead>
+					<tbody>
+						<% console.log(projects); %>
+						<% for (let i = 0; i < projects.length; i++) { %>
+							<tr class="hover-color" onclick="location.href='/project/<%= projects[i].projectname %>'">
+								<th scope="row"><%= projects[i].projectshorthand %></th>
+								<td><%= projects[i].projectname %></td>
+							  </td>
+							  <td>
+								<div class="dropdown">
+									<button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
+										  <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"></path>
+										</svg>
+									</button>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										<form id="delete-form" action="/projects/<%= projects[i].projectname %>/delete" method="POST">
+										  <input type="hidden" name="_method" value="DELETE">
+										  <button type="submit" class="dropdown-item">Delete</button>
+										</form>
+										<a class="dropdown-item" href="/projects/<%= projects[i].projectname %>/clone-project">Clone Here</a>
+									  </div>							  
+								</div>							  
+							</td>
+							</tr>
+						  <% } %>
+					</tbody>
+				  </table>
+			</div>
+		</div>
+		<div class="row align-items-center">
+			<div class="col-md-8"col-md-8>
+				<h3>Requirements</h3>
+				<table class="table table-bordered">
+					<thead>
+					  <tr>
+						<th scope="col" class="col-md-2">ID</th>
+						<th scope="col" class="col-md-6">Name</th>
+						<th scope="col" class="col-md-1"></th>
+					  </tr>
+					</thead>
+					<tbody>
+						<% console.log(requirements); %>
+						<% for (let i = 0; i < requirements.length; i++) { %>
+							<tr class="hover-color" onclick="location.href='/requirements/<%= requirements[i].requirementname %>'">
+								<th scope="row"><%= requirements[i].requirementid %></th>
+								<td><%= requirements[i].requirementname %></td>
+							  </td>
+							  <td>
+								<div class="dropdown">
+									<button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
+										  <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"></path>
+										</svg>
+									</button>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										<form id="delete-form" action="/requirements/<%= requirements[i].requirementname%>/delete" method="POST">
+										  <input type="hidden" name="_method" value="DELETE">
+										  <button type="submit" class="dropdown-item">Delete</button>
+										</form>
+										<a class="dropdown-item" href="/requirements/<%= requirements[i].requirementname %>/clone-requirement">Clone Here</a>
+									  </div>							  
+								</div>							  
+							</td>
+							</tr>
+						  <% } %>
+					</tbody>
+				  </table>
+			</div>
+		</div>
 		</div>
 	  </section> 
 </body>
