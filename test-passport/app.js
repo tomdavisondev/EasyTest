@@ -1,3 +1,5 @@
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
@@ -7,7 +9,18 @@ const passport = require('passport');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 
+const PORT = process.env.PORT || 80;
+const hostname = 'easytest.tomdavisondev.com';
+
+const httpsOptions = {
+	cert: fs.readFileSync('./ssl/example.crt'),
+	ca: fs.readFileSync('./ssl/example.ca-bundle'),
+	key: fs.readFileSync('./ssl/example.key')
+};
+
 const app = express();
+
+const httpsServer = https.createServer(httpsOptions, app);
 
 app.use(bodyParser.json());
 
@@ -61,6 +74,4 @@ app.use('/users', require('./routes/users'));
 app.use('/projects', require('./routes/projects'));
 app.use('/requirements', require('./routes/requirements'));
 
-const PORT = process.env.PORT || 7000;
-
-app.listen(PORT, console.log(`Server started on port ${PORT}`));
+https.listen(PORT, hostname);
