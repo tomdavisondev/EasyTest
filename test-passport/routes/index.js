@@ -158,6 +158,7 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (re
 
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 	try {
+		const selectedTarget = req.query.selectedTarget || 'projects';
 		let requirements = await cache.get("requirements");
 		let projects = await cache.get("projects");
 
@@ -170,12 +171,15 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 			projects = await Project.find({}).exec();
 			await cache.set("projects", projects);
 		}
+		
+		console.log(selectedTarget);
 
 		res.render('dashboard', {
 			getColor,
 			name: req.user.name,
 			projects: projects,
 			requirements: requirements,
+			selectedTarget,
 			req: req
 		});
 	} catch (error) {

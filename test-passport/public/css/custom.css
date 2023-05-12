@@ -52,6 +52,11 @@ a:focus {
     margin: 40px 0;
 }
 
+.bg-requirement {
+    --x-bg-opacity: 1;
+    background-color: orangered;
+}
+
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
@@ -86,6 +91,10 @@ a:focus {
 
 .navbar-vertical .navbar-nav .nav-link i, .navbar-vertical .navbar-nav .nav-link svg {
     min-width: 1.875rem;
+}
+
+.nav-link {
+    color: #999;
 }
 
 .navbar-vertical .navbar-nav .nav-link {
@@ -159,7 +168,6 @@ ul.CTAs a {
 
 .row {
     padding: 5px 0;
-    width: 100%;
 }
 
 .rounded-circle {
@@ -233,6 +241,37 @@ ul.CTAs a {
         position: relative;
     }
 
+    .reactiveCard {
+        --x-card-spacer-y: 1.5rem;
+        --x-card-spacer-x: 1.5rem;
+        --x-card-title-spacer-y: 1.5rem;
+        --x-card-border-width: 1px;
+        --x-card-border-color: #e7eaf0;
+        --x-card-border-radius: .75rem;
+        --x-card-box-shadow: ;
+        --x-card-inner-border-radius: calc(.75rem - 1px);
+        --x-card-cap-padding-y: 1.25rem;
+        --x-card-cap-padding-x: 1.5rem;
+        --x-card-cap-bg: transparent;
+        --x-card-cap-color: #16192c;
+        --x-card-height: ;
+        --x-card-color: #525f7f;
+        --x-card-bg: #fff;
+        --x-card-img-overlay-padding: 1rem;
+        --x-card-group-margin: .75rem;
+        min-width: 0;
+        height: 150px;
+        word-wrap: break-word;
+        background-color: var(--x-card-bg);
+        border: var(--x-card-border-width)solid var(--x-card-border-color);
+        border-radius: var(--x-card-border-radius);
+        box-shadow: var(--x-card-box-shadow);
+        background-clip: border-box;
+        flex-direction: column;
+        display: flex;
+        position: relative;
+    }
+
 .card-header {
     padding: var(--x-card-cap-padding-y)var(--x-card-cap-padding-x);
     color: var(--x-card-cap-color);
@@ -249,6 +288,11 @@ ul.CTAs a {
 .bg-soft-success {
     background-color: #ccf5e7!important;
 }
+
+.bg-soft-danger {
+    background-color: #f5cccc!important;
+}
+
 .bg-warning {
     --x-bg-opacity: 1;
     background-color: orange;
@@ -315,7 +359,7 @@ element.style {
 
   a.nav-link.active {
     color: #999;
-    border-color: transparent transparent #999;
+    border-bottom: 2px solid #999;
     }
 
     .badge-dot {
