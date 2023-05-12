@@ -50,6 +50,68 @@
 			</ul>
 		  </div>
 		<div id="projects" class="page-content">
+			<div class="offcanvas offcanvas-end w-full w-lg-1/3" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1"
+				id="offcanvasCreate" aria-labelledby="offcanvasCreateLabel" aria-modal="true" role="dialog">
+				<div class="offcanvas-header border-bottom py-5 bg-surface-secondary">
+					<h5 class="offcanvas-title" id="offcanvasCreateLabel">Create a new project</h5><button type="button"
+						class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				</div>
+				<form action="/projects/addproject" method="POST">
+				<div class="offcanvas-body vstack gap-2">
+					<div class="form-group">
+						<label class="form-label" for="projectname" name="projectname">Name</label> <input type="text" id="projectname" name="projectname" class="form-control" placeholder="Project name">
+						<span class="d-block mt-2 text-sm text-muted">Make it unique.</span>
+						<label class="form-label" for="projectshorthand" name="projectshorthand">Shorthand</label> <input type="text" id="projectshorthand" name="projectshorthand" class="form-control" placeholder="PR-001">
+						<span class="d-block mt-2 text-sm text-muted">Make it unique.</span>
+					</div>
+					<hr class="my-0">
+					<div><label class="form-label">Project Image</label>
+						<div class="hstack gap-3">
+							<div class="form-item-checkable"><input class="form-item-check" type="radio" name="project-view"
+									id="project-view-kanban" checked="checked"> <label class="form-item"
+									for="project-view-kanban"><span
+										class="form-item-click d-inline-flex align-items-center justify-content-center form-control w-24 h-24 text-center text-muted"><i
+											class="bi bi-kanban" style="font-size:2rem"></i></span></label></div>
+							<div class="form-item-checkable"><input class="form-item-check" type="radio" name="project-view"
+									id="project-view-list"> <label class="form-item" for="project-view-list"><span
+										class="form-item-click d-inline-flex align-items-center justify-content-center form-control w-24 h-24 text-center text-muted"><i
+											class="bi bi-view-list" style="font-size:2rem"></i></span></label></div>
+							<div class="form-item-checkable"><input class="form-item-check" type="radio" name="project-view"
+									id="project-view-table"> <label class="form-item" for="project-view-table"><span
+										class="form-item-click d-inline-flex align-items-center justify-content-center form-control w-24 h-24 text-center text-muted"><i
+											class="bi bi-table" style="font-size:2rem"></i></span></label></div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer py-2 bg-surface-secondary">
+					<button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="offcanvas">Close</button> 
+					<button type="submit" class="btn btn-sm btn-primary">Save</button>
+				</div>
+				</form>
+			</div>
+			
+			<div class="offcanvas offcanvas-end w-full w-lg-1/3" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1"
+    		id="offcanvasEdit" aria-labelledby="offcanvasEditLabel" aria-modal="true" role="dialog">
+			<div class="offcanvas-header border-bottom py-5 bg-surface-secondary">
+				<h5 class="offcanvas-title" id="offcanvasCreateLabel">Create a new Requirement</h5><button type="button"
+					class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			</div>
+			<form action="/requirements/addrequirement" method="POST">
+				<div class="offcanvas-body vstack gap-2">
+					<div class="form-group">
+						<label class="form-label" for="requirementname" name="requirementname">Name</label> <input type="text" id="requirementname" name="requirementname" class="form-control" placeholder="Project name">
+						<span class="d-block mt-2 text-sm text-muted">Make it unique.</span>
+						<label class="form-label" for="requirementid" name="requirementid">Shorthand</label> <input type="text" id="requirementid" name="requirementid" class="form-control" placeholder="PR-001">
+						<span class="d-block mt-2 text-sm text-muted">Make it unique.</span>
+					</div>
+					<hr class="my-0">
+				</div>
+				<div class="modal-footer py-2 bg-surface-secondary">
+					<button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="offcanvas">Close</button> 
+					<button type="submit" class="btn btn-sm btn-primary">Save</button>
+				</div>
+			</form>
+		</div>
 		<% 
 		// Calculate percentage of requirements included in test cases across all projects
 		numRequirements = requirements.length;
@@ -155,6 +217,84 @@
 					</div>
 				</div>
 				<% } else if (selectedTarget === 'requirements') { %>
+				<div class="col-xl-3 col-sm-6 col-12">
+					<div class="card reactiveCard">
+						<div class="card-body">
+							<div class="row">
+								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Requirement Passrate</span>
+									<span class="h3 font-bold mb-0"><%= percentageWithTests %>%</span></div>
+								<div class="col-auto">
+									<div class="icon icon-shape bg-success text-white text-lg rounded-circle"><i
+											class="bi bi-check-all"></i>
+									</div>
+								</div>
+							</div>
+							<div class="mt-2 mb-0 text-sm">
+								<span class="badge badge-pill bg-soft-success text-success me-2">
+									<i class="bi bi-arrow-up me-1"></i>3% 
+								</span>
+								<span class="text-nowrap text-xs text-muted">Since last month</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-sm-6 col-12">
+					<div class="card reactiveCard">
+						<div class="card-body">
+							<div class="row">
+								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Requirements without Link</span>
+									<span class="h6 font-bold mb-0"></span>
+										<a class="text-heading font-semibold" href="/requirement/<%= requirements[0].requirementname %>"><%= requirements[0].requirementname %></a>
+									</div>
+								<div class="col-auto">
+									<div class="icon icon-shape bg-primary text-white text-lg rounded-circle"><i
+											class="bi bi-briefcase"></i></div>
+								</div>
+							</div>
+							<div class="mt-2 mb-0 text-sm">
+								<span class="text-nowrap text-xs text-muted">Next Deadline</span>
+								<span class="badge badge-pill bg-soft-success text-success me-2">Wed </span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-sm-6 col-12">
+					<div class="card reactiveCard">
+						<div class="card-body">
+							<div class="row">
+								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Impacted Requirements</span>
+									<span class="h3 font-bold mb-0">5</span></div>
+								<div class="col-auto">
+									<div class="icon icon-shape bg-requirement text-white text-lg rounded-circle"><i class="bi bi-shield-lock"></i></div>
+								</div>
+							</div>
+							<div class="mt-2 mb-0 text-sm">
+								<span class="text-nowrap text-xs text-muted">Since last test run</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-sm-6 col-12">
+					<div class="card reactiveCard">
+						<div class="card-body">
+							<div class="row">
+								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">DeadLines</span>
+									<div class="mt-2 mb-0 text-sm"><span class="badge badge-pill bg-soft-danger text-success me-2">
+										<span class="text-nowrap text-xs text-muted">Project1 Test Prep - Wed</span>
+									</div>
+									<div class="mt-2 mb-0 text-sm"><span class="badge badge-pill bg-soft-success text-success me-2">
+										<span class="text-nowrap text-xs text-muted">Project1 Test Execution - Fri</span>
+									</div>
+								</div>
+								<div class="col-auto">
+									<div class="icon icon-shape bg-warning text-white text-lg rounded-circle">
+										<i class="bi bi-minecart-loaded"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<% } %>
 			</div>
 			<div class="card">
@@ -248,7 +388,7 @@
 											</div>
 										</td>
 										<td class="text-end">
-											<a href="/requirements/<%= requirements[i].requirementname %>" class="btn btn-sm btn-neutral">View</a> 
+											<a href="/requirements/<%= requirements[i].requirementname %>/clone-requirement" class="btn btn-sm btn-neutral">Clone</a> 
 											<form id="delete-form" action="/requirements/<%= requirements[i].requirementname %>/delete" method="POST">
 												<input type="hidden" name="_method" value="DELETE">
 												<button type="submit" class="btn btn-sm btn-square btn-neutral text-danger-hover">

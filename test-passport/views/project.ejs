@@ -207,6 +207,11 @@ dropdownItems.forEach(function (item) {
   });
 });
 
+function showOffcanvas() {
+  var offcanvas = document.getElementById("offcanvasCreate");
+  offcanvas.classList.add("show");
+}
+
 function cloneToPrompt(projects, testcaseName, projectName) {
   var selectedTestCase = testcaseName;
   var containingProject = projectName;

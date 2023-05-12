@@ -472,6 +472,9 @@ router.post('/addproject', (req, res) => {
     let user = req.user;
     let name = user.name;
 
+
+    console.log("test: " + projectname + projectshorthand)
+
     let errors = [];
 
     if (requirements == undefined) {
@@ -502,6 +505,7 @@ router.post('/addproject', (req, res) => {
                 projectshorthand,
                 projects,
                 requirements: requirements,
+                selectedTarget: "projects",
                 req:req
             });
         } else {

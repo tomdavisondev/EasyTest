@@ -45,6 +45,7 @@ router.post('/addrequirement', async (req, res) => {
                     user,
                     projects: projectlist,
                     requirements: requirementlist,
+                    selectedTarget: 'requirements',
                     requirements,
                     requirementname,
                     requirementid
@@ -65,7 +66,7 @@ router.post('/addrequirement', async (req, res) => {
                         //Requirement exists with the same requirementid
                         req.flash('error_msg', "Requirement already exists with that ID");
                     }
-                    res.redirect('/dashboard');
+                    res.redirect('/dashboard?selectedTarget=requirements');
                 } else {
                     const newRequirement = new Requirement({
                         requirementname,
@@ -75,7 +76,7 @@ router.post('/addrequirement', async (req, res) => {
                         .then(requirement => {
                             console.log("UserLog: Created new requirement" + "\n" + requirement);
                             req.flash('success_msg', "New requirement created");
-                            res.redirect('/dashboard');
+                            res.redirect('/dashboard?selectedTarget=requirements');
                         })
                         .catch(err => console.log("ERROR: -- Could not create requirement", err));
                 }
@@ -108,12 +109,12 @@ router.get('/:requirementname/clone-requirement', async (req, res) => {
   
       console.log("Cloning requirement: " + requirementname);
       req.flash('success_msg', "Requirement cloned successfully");
-      res.redirect('/dashboard');
+      res.redirect('/dashboard?selectedTarget=requirements');
     } catch (err) {
       console.log("ERROR: -- Could not clone requirement")
       console.log(err);
       req.flash('error_msg', "Something went wrong, requirement could not be cloned");
-      res.redirect('/dashboard');
+      res.redirect('/dashboard?selectedTarget=requirements');
     }
   });
   
@@ -133,7 +134,7 @@ router.post('/edit', async (req, res) => {
       if (!requirement) {
         // Requirement not found
         req.flash('error_msg', 'Requirement not found');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard?selectedTarget=requirements');
       } else {
         // Update the requirement fields
         requirement.requirementname = requirementname;
@@ -160,7 +161,7 @@ router.post('/edit', async (req, res) => {
       console.log("ERROR: -- Could not submit edit for requirement")
       console.log(err);
       req.flash('error_msg', 'An error occurred while finding the requirement');
-      res.redirect('/dashboard');
+      res.redirect('/dashboard?selectedTarget=requirements');
     });
 });
 
@@ -173,11 +174,11 @@ router.post('/:requirementname/delete', (req, res) => {
     Requirement.deleteOne({ requirementname })
       .then(() => {
         req.flash('success_msg', 'Requirement deleted successfully');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard?selectedTarget=requirements');
       })
       .catch((err) => {
         req.flash('error_msg', 'Something went wrong, requirement could not be deleted');
-        res.redirect('/dashboard');
+        res.redirect('/dashboard?selectedTarget=requirements');
       });
   });
   
