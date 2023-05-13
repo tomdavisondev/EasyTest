@@ -472,9 +472,6 @@ router.post('/addproject', (req, res) => {
     let user = req.user;
     let name = user.name;
 
-
-    console.log("test: " + projectname + projectshorthand)
-
     let errors = [];
 
     if (requirements == undefined) {
@@ -611,64 +608,52 @@ router.post('/clone-to', async (req, res) => {
   }
 });
 
-
-
-async function getAllRequirements() {
-    try {
-      const requirements = await Requirement.find({});
-      return requirements;
-    } catch (error) {
-      console.error(error);
-      throw new Error('Failed to get requirements');
-    }
+router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
+  const { projectname, testcasename } = req.params;
+  let linkedRequirements = req.body['selected-requirements[]'];
+  if (!linkedRequirements) {
+    linkedRequirements = [];
   }
+  if (!Array.isArray(linkedRequirements)) {
+    linkedRequirements = [linkedRequirements];
+  }
+  let requirementIds = [];
+  
+  try {
+    const promises = linkedRequirements.map(async (requirementName) => {
+      const requirement = await Requirement.findOne({ requirementid: requirementName });
+      if (requirement) {
+        console.log("Found requirement:", requirement);
+        requirementIds.push(requirement._id);
+      } else {
+        console.log("No requirement found");
+      }
+    });
+    await Promise.all(promises);
 
-  router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
-    const { projectname, testcasename } = req.params;
-    let linkedRequirements = req.body['selected-requirements[]'];
-    if (!linkedRequirements) {
-      linkedRequirements = [];
-    }
-    if (!Array.isArray(linkedRequirements)) {
-      linkedRequirements = [linkedRequirements];
-    }
-    let requirementIds = [];
+    console.log(requirementIds);
     
-    try {
-      const promises = linkedRequirements.map(async (requirementName) => {
-        const requirement = await Requirement.findOne({ requirementid: requirementName });
-        if (requirement) {
-          console.log("Found requirement:", requirement);
-          requirementIds.push(requirement._id);
-        } else {
-          console.log("No requirement found");
-        }
-      });
-      await Promise.all(promises);
-  
-      console.log(requirementIds);
-      
-      const updatedTestCase = await Project.findOneAndUpdate(
-        { projectname, 'testcases.name': testcasename },
-        { $set: { 'testcases.$.linkedrequirements': requirementIds } },
-        { new: true }
-      );
-      
-      // Save the updated test case
-      await updatedTestCase.save();
-      
-      // Send back a success response
-      const redirectUrl = '/project/' + projectname + '/' + testcasename;
-      console.log("Linking requirements " + requirementIds)
-      req.flash('success_msg', 'Requirement Linked');
-      res.redirect(redirectUrl);
-    } catch (err) {
-      console.error("Could not link requirement:", err);
-      req.flash('error_msg', 'Could not link requirement');
-      const redirectUrl = '/project/' + projectname + '/' + testcasename;
-      res.redirect(redirectUrl);
-    }
-  });
-  
+    const updatedTestCase = await Project.findOneAndUpdate(
+      { projectname, 'testcases.name': testcasename },
+      { $set: { 'testcases.$.linkedrequirements': requirementIds } },
+      { new: true }
+    );
+    
+    // Save the updated test case
+    await updatedTestCase.save();
+    
+    // Send back a success response
+    const redirectUrl = '/project/' + projectname + '/' + testcasename;
+    console.log("Linking requirements " + requirementIds)
+    req.flash('success_msg', 'Requirement Linked');
+    res.redirect(redirectUrl);
+  } catch (err) {
+    console.error("Could not link requirement:", err);
+    req.flash('error_msg', 'Could not link requirement');
+    const redirectUrl = '/project/' + projectname + '/' + testcasename;
+    res.redirect(redirectUrl);
+  }
+});
+
   
 module.exports = router;

@@ -45,6 +45,10 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 			}
 		}
 
+		console.log(project);
+
+		stat = getStatNumber(project);
+
 		if (project) {
 			res.render('project', {
 				req: req,
@@ -53,6 +57,7 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 				testcases: project.testcases,
 				teststeps: project.testcases.teststeps,
 				projects: projects,
+				stat,
 				requirements: requirements
 			})
 		} else {
@@ -155,7 +160,6 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (re
 	}
 });
 
-
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 	try {
 		const selectedTarget = req.query.selectedTarget || 'projects';
@@ -194,6 +198,25 @@ function getColor(value) {
 	// value from 0 to 1
 	var hue = ((1 - value) * 120).toString(10);
 	return ["hsl(", hue, ",50%,50%)"].join("");
+  }
+
+function getStatNumber(project) {
+	
+	const uniqueLinkedRequirements = new Set();
+	let totalLinkedRequirements = 0;
+	
+	project.testcases.forEach(testcase => {
+	  testcase.linkedrequirements.forEach(requirement => {
+		uniqueLinkedRequirements.add(requirement.id);
+		totalLinkedRequirements++;
+	  });
+	});
+	
+	const numUniqueLinkedRequirements = uniqueLinkedRequirements.size;
+
+	console.log("Test: " + totalLinkedRequirements + numUniqueLinkedRequirements);
+	
+	return totalLinkedRequirements / numUniqueLinkedRequirements;
   }
 
 module.exports = router;

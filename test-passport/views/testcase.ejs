@@ -1,359 +1,167 @@
-
 <body>
 	<div class="flex-lg-1 h-screen overflow-y-lg-auto mainbody">
 		<div class="container-fluid">
-			<div class="row align-items-center">
-				<div class="col-md-6">
-					<% let testcase = project.testcases.find(({ name }) => name === testcasename) %>
-					<h1 class="mt-6" id="title-text" onclick="editTitle()">
-						<%= testcasename %>
-					</h1>
-					<form id="title-form" class="d-none" action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/updatetestcasetitle" method="POST">
-						<textarea id="title-input" name="title"></textarea>
-						<button type="submit" class="btn btn-primary" id="title-save-button">Save</button>
-						<button type="button" value="Cancel" id="title-cancel-button" onclick="cancelTitleEdit()" class="btn btn-secondary">Cancel</button>
-					</form>
+		  <div class="row align-items-left">
+			<div class="col-sm col-10">
+			  <h1 class="mt-6"><%= testcasename %></h1>
+			</div>
+			<div class="col-sm-auto col-12 mt-4 mt-sm-0">
+			  <div class="nav-item dropdown no-arrow show">
+				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+					<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
+				  </span>
+				  <img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
+				</a>
+				<!-- Dropdown - User Information -->
+				<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+				  <a class="dropdown-item" href="#">
+					<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+					Profile
+				  </a>
+				  <a class="dropdown-item" href="#">
+					<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+					Settings
+				  </a>
+				  <a class="dropdown-item" href="#">
+					<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+					Activity Log
+				  </a>
+				  <div class="dropdown-divider"></div>
+				  <a class="dropdown-item" href="/users/logout">
+					<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+					Logout
+				  </a>
 				</div>
-				<div class="col-md-6 d-flex justify-content-end">
-			
-					<div class="nav-item dropdown no-arrow show">
-					  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<span class="mr-2 d-none d-lg-inline text-gray-600 small">
-						  <%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
-						</span>
-						<img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
-					  </a>
-					  <!-- Dropdown - User Information -->
-					  <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-						<a class="dropdown-item" href="#">
-						  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-						  Profile
-						</a>
-						<a class="dropdown-item" href="#">
-						  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-						  Settings
-						</a>
-						<a class="dropdown-item" href="#">
-						  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-						  Activity Log
-						</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="/users/logout">
-						  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-						  Logout
-						</a>
-					  </div>
+			  </div>
+			</div>
+		  </div>
+		  <div class="row">
+			<div class="col-md-10"col-md-10>
+				<%= testcase.description %>
+			</div>
+		  </div>
+		<div class="row g-6 mb-6">
+		<div class="col-xl-6 col-sm-6 col-12">
+		  <div class="row align-items-left border-bottom pt-6">
+			<div class="card reactiveCard">
+				<div class="card-body">
+					<div class="row">
+						<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Preconditions</span>
+							<span class="p font-bold mb-0">Complete preconditions before beginning test</span></div>
 					</div>
-				  </div>
 				</div>
-
-				<div class="row">
-					<div class="col-md-8">
-						<p id="description-text" onclick="editDescription()">
-							<%= testcase.description %>
-						</p>
-						<form id="description-form" class="d-none"
-							action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/updatedescription"
-							method="POST">
-							<textarea id="description-input" name="description"></textarea>
-							<button type="submit" class="btn btn-primary" id="description-save-button">Save</button>
-							<button type="button" value="Cancel" id="description-cancel-button"
-								onclick="canceldescriptionEdit()" class="btn btn-secondary">Cancel</button>
-						</form>
+			</div>
+		  </div>
+		  </div>
+		<div class="row align-items-center">
+			<div class="col-sm-auto col-12 mt-4 mt-sm-0">
+				<div class="hstack gap-2">
+					<a href="#offcanvasCreate" class="btn btn-sm btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><span class="pe-2"><i class="bi bi-link-45deg"></i> </span><span>Linked Requirements</span></a></div>
+			</div>
+		</div>
+		  <div class="row g-6 mb-6 offcanvas" id="offcanvasCreate" aria-labelledby="offcanvasCreateLabel">
+		  	<div class="col-xl-6 col-sm-6 col-12">
+				<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+					<div class="offcanvas-header">
+					  <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Colored with scrolling</h5>
+					  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 					</div>
-					<div class="col-md-2"></div>
-				</div>
-
-				<div class="row">
-					<div class="col-md-8"><%- include('partials/messages') %></div>
-					<div class="col-md-2"></div>
-				</div>
-
-				<div class="row">
-					<div class="col-md-2" col-md-2>
-						<!-- Coverage % + data -->
-						<div class="card border-secondary text-center mb-2" style="max-width: 18rem; height: 125px">
-							<div class="card-body text-secondary">
-								<h5 class="card-title">Linked Requirements</h5>
-								<h3 class="card-text">4</h3>
+					<div class="offcanvas-body">
+						<div class="card">
+							<div class="card-header border-bottom">
+								<h5 class="mb-0">Link Requirements</h5>
 							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="col-md-8">
-						<button class="btn btn-primary" data-toggle="collapse" data-target="#requirements-table">Requirements</button>
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New Requirement</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<form class="px-4 py-3" action="/requirements/addrequirement" method="POST">
-								<div class="form-group">
-									<label for="requirementname">Name</label>
-									<input
-											type="requirementname"
-											id="requirementname"
-											name="requirementname"
-											class="form-control"
-											value="<%= typeof requirementname != 'undefined' ? requirementname : '' %>"
-									/>
-									<label for="requirementid">ID</label>
-									<input
-											type="requirementid"
-											id="requirementid"
-											name="requirementid"
-											class="form-control"
-											placeholder="Enter shorthand"
-											value="<%= typeof requirementid != 'undefined' ? requirementid : '' %>"
-									/>
-								</div>
-								<label for="projects">
-									<input type="hidden" name="projects" value="<%= projects %>">
-								</label>
-								<label for="requirementlink">Links</label>
-								<table id="projects-table" class="table table-bordered">
+							<div class="table-responsive">
+								<form action="/projects/<%= project.projectname %>/<%= testcasename %>/addrequirements" method="POST" name="requirement-form">
+								<table class="table table-hover table-nowrap">
+									<thead class="table-light">
+										<tr>
+											<th scope="col">Requirement</th>
+											<th scope="col">Description</th>
+											<th scope="col">Document Link</th>
+											<th></th>
+										</tr>
+									</thead>
 									<tbody>
-									</tbody>
-								  </table>
-								<button type="submit" class="btn btn-primary btn-block">
-									Register
-								</button>
-							</form>
-							<div class="dropdown-divider"></div>
-						</div>
-						<div id="requirements-table" class="collapse">
-							<form action="/projects/<%= project.projectname %>/<%= testcasename %>/addrequirements" method="POST" name="requirement-form">
-								<table class="table table-bordered">
-								  <thead>
-									<tr>
-									  <th scope="col" class="col-md-2">ID</th>
-									  <th scope="col" class="col-md-6">Requirement Name</th>
-									  <th scope="col" class="col-md-1">Linked</th>
-									</tr>
-								  </thead>
-								  <tbody>
-									<% requirements.forEach((requirement) => {
-										let requirementLinked = false;
-										  if (testcase.linkedrequirements.includes(requirement._id.toString())) {
-											requirementLinked = true;
-										  }
-	
-									  %>
-									  
-									  <tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
-										<th scope="row"><%= requirement.requirementid %></th>
-										<td><%= requirement.requirementname %></td>
-										<td>
-										  <label>
-											<input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
-										  </label>
-										</td>
-									  </tr>
-									<% }) %>
-								  </tbody>
+										<% requirements.forEach((requirement) => {
+											let requirementLinked = false;
+											  if (testcase.linkedrequirements.includes(requirement._id.toString())) {
+												requirementLinked = true;
+											  }
+		
+										  %>
+										  
+										  <tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
+											<th scope="row"><%= requirement.requirementid %></th>
+											<td><%= requirement.requirementname %></td>
+											<td>
+											  <label>
+												<input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
+											  </label>
+											</td>
+										  </tr>
+										<% }) %>
+									  </tbody>
 								</table>
 								<input type="hidden" name="selected-requirements" value="">
 								<button type="button" class="btn btn-primary btn-block" onclick="submitSelectedRequirements()">Submit Selected Requirements</button>
-							  </form>
-						</div>
-					</div>
-				</div>
-				
-
-				<div class="row">
-					<div class="col-md-8" col-md-8>
-						<button class="btn btn-primary" data-toggle="collapse" data-target="#testcases-table">Test
-							Cases</button>
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New Test Case</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<form class="px-4 py-3" action="/projects/<%= project.projectname %>/addtestcase"
-								method="POST">
-								<div class="form-group">
-									<label for="testcasename">Name</label>
-									<input type="testcasename" id="testcasename" name="testcasename"
-										class="form-control" placeholder="Test Case Name"
-										value="<%= typeof testcasename != 'undefined' ? testcasename : '' %>" />
-									<label for="testcasedescription">Description</label>
-									<input type="testcasedescription" id="testcasedescription"
-										name="testcasedescription" class="form-control"
-										placeholder="This test aims to..."
-										value="<%= typeof testcasedescription != 'undefined' ? testcasedescription : '' %>" />
-								</div>
-								<button type="submit" class="btn btn-primary btn-block">
-									Add Test Case
-								</button>
-							</form>
-							<div class="dropdown-divider"></div>
-						</div>
-						<div id="testcases-table" class="collapse">
-							<table class="table table-bordered">
-								<thead>
-									<tr>
-										<th scope="col" class="col-md-2">Name</th>
-										<th scope="col" class="col-md-6">Description</th>
-										<th scope="col" class="col-md-1">Edited Last</th>
-									</tr>
-								</thead>
-								<tbody>
-									<% testcases.forEach(function (testcases) { %>
-										<tr class="hover-color"
-											onclick="location.href='/project/<%= project.projectname %>/<%= testcases.name %>'">
-											<th scope="row">
-												<%= testcases.name %>
-											</th>
-											<td>
-												<%= testcases.description %>
-											</td>
-											</td>
-											<td></td>
-										</tr>
-										<% }) %>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-
-				<div class="drag-container">
-				<% testcase.teststeps.forEach(function (teststep, i) { %>
-					<div class="row" draggable="true" id="teststep<%=i%>">
-						<div class="col-md-3" col-md-3>
-							<!-- Coverage % + data -->
-							<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
-								<div class="card-body text-secondary">
-									<h6 class="card-title">User Action</h6>
-									<p class="card-text">
-										<%= teststep.stepmethod %>
-									</p>
-								</div>
+								</form>
 							</div>
 						</div>
-						<div class="col-md-3" col-md-3>
-							<!-- Coverage % + data -->
-							<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
-								<div class="card-body text-secondary">
-									<h6 class="card-title">Expected Result</h6>
-									<p class="card-text">
-										<%=teststep.stepexpected%>
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3" col-md-3>
-							<!-- Coverage % + data -->
-							<div class="card border-secondary mb-2" style="max-width: 18rem; height: 125px">
-								<div class="card-body text-secondary">
-									<h6 class="card-title">Actual Result</h6>
-									<p class="card-text">
-										<%=teststep.stepactual%>
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="dropdown">
-							<button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
-								  <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"></path>
-								</svg>
-							</button>
-							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-								<form id="delete-form" action="/projects/<%= project.projectname %>/<%= testcase.name %>/deleteteststep" method="POST">
-									<input type="hidden" name="_method" value="DELETE">
-									<input type="hidden" name="stepId" value="<%= teststep._id %>">
-									<input type="hidden" name="stepIndex" value="<%= i %>">
-									<button type="submit" class="dropdown-item">Delete</button>
-								  </form>
-								  <a class="dropdown-item" href="/projects/<%= project.projectname %>/<%= testcase.name %>/clone-step-here?stepId=<%= teststep._id %>&stepIndex=<%= i %>">Clone Here</a>
-								  <a class="dropdown-item" onclick="editTestStep(<%=i%>)">Edit</a>
-							  </div>							  
-						</div>	
-
-					<div class="row" id="teststepfield<%=i%>" style="display:none">
-						<div class="col-md-10" col-md-10>
-							<form
-								action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/updateteststep"
-								method="POST">
-								<input type="hidden" name="project" value="<%= project %>">
-								<input type="hidden" name="projectId" value="<%= project._id %>">
-								<input type="hidden" name="testcaseId" value="<%= testcase._id %>">
-								<input type="hidden" name="stepId" value="<%= teststep._id %>">
-
-								<div class="row">
-									<div class="col-sm-4">
-										<div class="form-group">
-											<label for="updatedStepMethodField">Method</label>
-											<textarea type="textarea" id="updatedStepMethodField"
-												name="updatedStepMethodField" rows="4"
-												class="form-control text-area-large"><%= teststep.stepmethod %></textarea>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="form-group">
-											<label for="updatedStepExpectedResultsField">Expected Results</label>
-											<textarea type="textarea" id="updatedStepExpectedResultsField"
-												name="updatedStepExpectedResultsField" rows="4"
-												class="form-control text-area-large"><%= teststep.stepexpected %></textarea>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="form-group">
-											<label for="updatedStepActualResultsField">Actual Results</label>
-											<textarea type="textarea" id="updatedStepActualResultsField"
-												name="updatedStepActualResultsField" rows="4"
-												class="form-control text-area-large"><%= teststep.stepactual%></textarea>
-										</div>
-									</div>
-								</div>
-								<button type="submit" class="btn btn-primary">Save</button>
-								<button type="button" value="Cancel" id="teststepcancel"
-									onclick="cancelTestStepEdit(<%=i%>)" class="btn btn-secondary">Cancel</button>
-							</form>
-						</div>
 					</div>
-				</div>
-					<% }) %>
-				</div>
-				<div class="row">
-					<div class="col-md-10" col-md-10>
-						<form
-							action="/projects/<%= project.projectname %>/<%= typeof testcasename != 'undefined' ? testcasename : '' %>/addteststep"
-							method="POST">
+				  </div>
+			</div>
+		  </div>
+		  </div>
+		</div>
+		<div class="container-fluid">
+			<% testcase.teststeps.forEach(function (teststep, i) { %>
+			<div class="row g-6 mb-6">
+				<div class="col-xl-3 col-sm-6 col-12">
+					<div class="card reactiveCard">
+						<div class="card-body">
 							<div class="row">
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label for="newStep">Method</label>
-										<textarea type="textarea" id="newStepMethodField"
-											name="newStepMethodField" rows="4"
-											class="form-control text-area-large"></textarea>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label for="newStepExpectedResultsField">Expected Results</label>
-										<textarea type="textarea" id="newStepExpectedResultsField"
-											name="newStepExpectedResultsField" rows="4"
-											class="form-control text-area-large"></textarea>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label for="newStepActualResultsField">Actual Results</label>
-										<textarea type="textarea" id="newStepActualResultsField"
-											name="newStepActualResultsField" rows="4"
-											class="form-control text-area-large"></textarea>
-									</div>
-								</div>
+								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">User Action</span>
+									<span class="p font-bold mb-0"><%= teststep.stepmethod %></span></div>
 							</div>
-							<button type="submit" class="btn btn-primary">Save</button>
-						</form>
+						</div>
 					</div>
+				</div>
+				<div class="col-xl-3 col-sm-6 col-12">
+					<div class="card reactiveCard">
+						<div class="card-body">
+							<div class="row">
+								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Expected Result</span>
+									<span class="p font-bold mb-0"><%= teststep.stepexpected %></span></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-sm-6 col-12">
+					<div class="card reactiveCard">
+						<div class="card-body">
+							<div class="row">
+								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Actual Result</span>
+									<span class="p font-bold mb-0"><%= teststep.actual %></span></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<% }) %>
+		</div>
+		<div class="container-fluid">
+			<div class="row align-items-center">
+				<div class="col-sm-auto col-12 mt-4 mt-sm-0">
+					<div class="hstack gap-2">
+						<a href="#offcanvasCreate" class="btn btn-sm btn-primary"><span class="pe-2"><i class="bi bi-link-45deg"></i> </span><span>Add Step</span></a></div>
 				</div>
 			</div>
 		</div>
 	</div>
-	</section>
-	</main>
 </body>
+
 
 <script>
 	function editTitle() {
@@ -493,6 +301,20 @@
 	    row.dataset.index = index;
 	  });
 	}
+
+	function submitSelectedRequirements() {
+	console.log("Submitting selected requirements");
+    const form = document.forms['requirement-form'];
+    const checkboxes = form.elements['selected-requirements'];
+    let selectedRequirements = [];
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) {
+        selectedRequirements.push(checkboxes[i].value);
+      }
+    }
+    form.elements['selected-requirements'].value = JSON.stringify(selectedRequirements);
+    form.submit();
+  }
 		
 
 
