@@ -24,13 +24,7 @@ body {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
-p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1em;
-    font-weight: 300;
-    line-height: 1.7em;
-    color: #999;
-}
+
 
 a,
 a:hover,
@@ -183,6 +177,11 @@ ul.CTAs a {
     font-weight: 600;
     display: inline-flex;
     position: relative;
+}
+
+.img-profile {
+    width: 5rem;
+    height: 5rem;
 }
 
 .avatar img {
@@ -413,6 +412,14 @@ a.article,
 a.article:hover {
     background: #6d7fcc !important;
     color: #fff !important;
+}
+
+/* ---------------------------------------------------
+    Edit mode cards
+----------------------------------------------------- */
+
+.editcard {
+    min-height: 275px;
 }
 
 /* ---------------------------------------------------

@@ -9,6 +9,45 @@ const Project = require('../models/Project')
 const Requirement = require('../models/Requirements')
 const User = require('../models/User');
 
+router.post('/:projectname/:testcasename/updatetest', (req, res) => {
+  const projectname = req.params.projectname;
+  const testcasename = req.params.testcasename;
+
+  // find the project by name
+  Project.findOne({ projectname: projectname }, (err, project) => {
+    if (err) {
+      console.error(err);
+      req.flash('error_msg', "Project not found");
+    } else {
+      // find the test case by name
+      const testcase = project.testcases.find((tc) => tc.name === testcasename);
+      if (!testcase) {
+        req.flash('error_msg', "Test case not found");
+      } else {
+        // update the test case with the provided data
+        testcase.name = req.body.title;
+        testcase.description = req.body.description;
+        testcase.teststeps = req.body.updatedsteps;
+
+        // save the updated project
+        project.save((err, updatedProject) => {
+          if (err) {
+            console.error(err);
+            req.flash('error_msg', "Error updating test case");
+            res.redirect('/project/' + projectname + '/' + testcasename);
+          } else {
+            console.log(`Test case ${testcasename} updated successfully`);
+            req.flash('success_msg', "Project updated successfully");
+            res.redirect('/project/' + projectname + '/' + testcasename);
+          }
+        });
+      }
+    }
+  });
+});
+
+
+
 router.post('/:projectname/:testcasename/updatetestcasetitle', (req, res) => {
     let projectname = req.params.projectname;
     let testcasename = req.params.testcasename;
@@ -416,10 +455,10 @@ router.get('/:projectname/:testcasename/clone-step-here', async (req, res) => {
   }
 });
 
-router.post('/:projectname/:testcasename/addteststep', async (req, res) => {
+router.get('/:projectname/:testcasename/addteststep', async (req, res) => {
   try {
-    const projectname = req.params.projectname;
-    const testcasename = req.params.testcasename;
+    const projectname = req.query.projectname;
+    const testcasename = req.query.testcasename;
 
     // Find the project that contains the test case
     const project = await Project.findOne({ projectname }).exec();
@@ -439,9 +478,9 @@ router.post('/:projectname/:testcasename/addteststep', async (req, res) => {
     // Append the new test step to the test case
     const newStep = {
       stepnumber: testcase.teststeps.length + 1,
-      stepmethod: req.body.newStepMethodField,
-      stepexpected: req.body.newStepExpectedResultsField,
-      stepactual: req.body.newStepActualResultsField,
+      stepmethod: "",
+      stepexpected: "",
+      stepactual: ""
     };
     testcase.teststeps.push(newStep);
 
@@ -451,7 +490,7 @@ router.post('/:projectname/:testcasename/addteststep', async (req, res) => {
     // Redirect back to the test case page with success message
     console.log("Added test step in " + projectname + testcasename);
     req.flash('success_msg', 'Test step added successfully!');
-    res.redirect(`/project/${projectname}/${testcasename}`);
+    res.redirect(`/project/${projectname}/${testcasename}/edit`);
   } catch (error) {
     console.log("ERROR: -- A test step could not be added")
     console.log(error);

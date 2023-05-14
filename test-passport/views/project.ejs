@@ -11,7 +11,7 @@
 				  <span class="mr-2 d-none d-lg-inline text-gray-600 small">
 					<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
 				  </span>
-				  <img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
+				  <img class="img-profile rounded-circle" src="/img/people/img-2.png">
 				</a>
 				<!-- Dropdown - User Information -->
 				<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -201,7 +201,7 @@
 							<% for (let i = 0; i < testcases.length; i++) { %>
 							<tr>
 								<td>
-									<% const images = ['/img/social/airbnb.svg', '/img/social/amazon.svg', '/img/social/bootstrap.svg', '/img/social/dribbble.svg', '/img/social/spotify.svg']; %>
+									<% const images = ['/img/social/bootstrap.svg', '/img/social/mongodb.svg', '/img/social/angular.svg', '/img/social/javascript.svg']; %>
 									<% const randomImage = images[Math.floor(Math.random() * images.length)]; %>
 									<img alt="..." src="<%= randomImage %>?v=<%= Math.random().toString(36).substring(2) %>" class="avatar avatar-sm rounded-circle me-2">
 									<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcases[i].name %>"><%= testcases[i].name %></a>
@@ -210,11 +210,11 @@
 								<td>
 									<div class="avatar-group"><a href="#"
 											class="avatar avatar-xs rounded-circle text-white border border-1 border-solid border-card"><img
-												alt="..." src="/img/people/img-1.jpg"> </a><a href="#"
+												alt="..." src="/img/people/img-1.png"> </a><a href="#"
 											class="avatar avatar-xs rounded-circle text-white border border-1 border-solid border-card"><img
-												alt="..." src="/img/people/img-3.jpg"> </a><a href="#"
+												alt="..." src="/img/people/img-3.png"> </a><a href="#"
 											class="avatar avatar-xs rounded-circle text-white border border-1 border-solid border-card"><img
-												alt="..." src="/img/people/img-4.jpg"></a></div>
+												alt="..." src="/img/people/img-4.png"></a></div>
 								</td>
 								<td>
 									<div class="d-flex align-items-center"><span class="me-2">38%</span>

@@ -1,0 +1,248 @@
+<body>
+	<div class="flex-lg-1 h-screen overflow-y-lg-auto mainbody">
+		<div class="container-fluid">
+			<div class="row align-items-left">
+			<div class="col-sm col-5">
+				<div class="editor" id="testcasename"></div>
+			</div>
+			<div class="col-sm-auto col-12 mt-4 mt-sm-0">
+			  <div class="nav-item dropdown no-arrow show">
+				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+					<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
+				  </span>
+				  <img class="img-profile rounded-circle" src="/img/people/img-2.png">
+				</a>
+				<!-- Dropdown - User Information -->
+				<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+				  <a class="dropdown-item" href="#">
+					<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+					Profile
+				  </a>
+				  <a class="dropdown-item" href="#">
+					<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+					Settings
+				  </a>
+				  <a class="dropdown-item" href="#">
+					<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+					Activity Log
+				  </a>
+				  <div class="dropdown-divider"></div>
+				  <a class="dropdown-item" href="/users/logout">
+					<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+					Logout
+				  </a>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		  <div class="row g-6 mb-6">
+			<div class="col-xl-9 col-sm-6 col-12">
+			<div class="editor" id="testcasedescription"><%= testcase.description %></div>
+			</div>
+		  </div>
+		<div class="row g-6 mb-6">
+		<div class="col-xl-9 col-sm-6 col-12">
+		  <div class="row align-items-left border-bottom pt-6">
+			<div class="card reactiveCard">
+				<div class="card-body">
+					<div class="row">
+						<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Preconditions</span>
+							<span class="p font-bold mb-0">Complete preconditions before beginning test</span></div>
+					</div>
+				</div>
+			</div>
+		  </div>
+		  </div>
+		<div class="row align-items-center">
+			<div class="col-sm-auto col-12 mt-4 mt-sm-0">
+				<div class="hstack gap-2">
+					<a href="#offcanvasCreate" class="btn btn-sm btn-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><span class="pe-2"><i class="bi bi-link-45deg"></i> </span><span>Linked Requirements</span></a>
+					<a href="/projects/<%= project.projectname %>/<%= testcase.name %>/addteststep?projectname=<%= project.projectname %>&testcasename=<%= testcase.name %>" class="btn btn-sm btn-primary"><span class="pe-2"><i class="bi bi-plus-circle"></i> </span><span>Add Step</span></a>
+					<a class="btn btn-sm btn-success" id="save-button">
+						<span class="pe-2"><i class="bi bi-save2"></i> </span>
+						<span>Save</span>
+					  </a>
+					<a href="/project/<%= project.projectname %>/<%= testcasename %>" class="btn btn-sm btn-danger"><span class="pe-2"><i class="bi bi-x-circle"></i> </span><span>Cancel</span></a>
+				</div>
+			</div>
+		</div>
+		  <div class="row g-6 mb-6 offcanvas" id="offcanvasCreate" aria-labelledby="offcanvasCreateLabel">
+		  	<div class="col-xl-6 col-sm-6 col-12">
+				<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+					<div class="offcanvas-header">
+					  <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Colored with scrolling</h5>
+					  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div class="offcanvas-body">
+						<div class="card">
+							<div class="card-header border-bottom">
+								<h5 class="mb-0">Link Requirements</h5>
+							</div>
+							<div class="table-responsive">
+								<form action="/projects/<%= project.projectname %>/<%= testcasename %>/addrequirements" method="POST" name="requirement-form">
+								<table class="table table-hover table-nowrap">
+									<thead class="table-light">
+										<tr>
+											<th scope="col">Requirement</th>
+											<th scope="col">Description</th>
+											<th scope="col">Document Link</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										<% requirements.forEach((requirement) => {
+											let requirementLinked = false;
+											  if (testcase.linkedrequirements.includes(requirement._id.toString())) {
+												requirementLinked = true;
+											  }
+		
+										  %>
+										  
+										  <tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
+											<th scope="row"><%= requirement.requirementid %></th>
+											<td><%= requirement.requirementname %></td>
+											<td>
+											  <label>
+												<input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
+											  </label>
+											</td>
+										  </tr>
+										<% }) %>
+									  </tbody>
+								</table>
+								<input type="hidden" name="selected-requirements" value="">
+								<button type="button" class="btn btn-primary btn-block" onclick="submitSelectedRequirements()">Submit Selected Requirements</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				  </div>
+			</div>
+		  </div>
+		  </div>
+		</div>
+		<div class="container-fluid">
+			<% testcase.teststeps.forEach(function (teststep, i) { %>
+			   <div class="row g-6 mb-6 teststeprow" draggable="true">
+				  <div class="col-xl-3 col-sm-6 col-12">
+					 <div class="card reactiveCard editcard">
+						<div class="card-body">
+						   <div class="row">
+							  <div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">User Action</span>
+								 <div class="editor" id="stepmethod_<%= i %>"><%= teststep.stepmethod %></div>
+							  </div>
+						   </div>
+						</div>
+					 </div>
+				  </div>
+				  <div class="col-xl-3 col-sm-6 col-12">
+					 <div class="card reactiveCard editcard">
+						<div class="card-body">
+						   <div class="row">
+							  <div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Expected Result</span>
+								 <div class="editor" id="stepexpected_<%= i %>"><%= teststep.stepexpected %></div>
+							  </div>
+						   </div>
+						</div>
+					 </div>
+				  </div>
+				  <div class="col-xl-3 col-sm-6 col-12">
+					 <div class="card reactiveCard editcard">
+						<div class="card-body">
+						   <div class="row">
+							  <div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Actual Result</span>
+								<div class="editor" id="stepactual_<%= i %>"><%= teststep.stepactual%></div>
+							  </div>
+						   </div>
+						</div>
+					 </div>
+				  </div>
+			   </div>
+			<% }) %>
+		 </div>
+</body>
+
+<script>
+	var testcasename = new Quill('#testcasename', {
+	      modules: {
+    	  toolbar: false
+	    },
+	    theme: 'snow'
+  	  });
+  	testcasename.setContents(testcasename.clipboard.convert('<%= testcasename %>'));
+
+	  var testcasedescription = new Quill('#testcasedescription', {
+	      modules: {
+    	  toolbar: false
+	    },
+	    theme: 'snow'
+  	  });
+		testcasedescription.setContents(testcasedescription.clipboard.convert('<%= testcase.description %>'));
+</script>
+<script>
+	let teststeps = [];
+<% testcase.teststeps.forEach(function (teststep, i) { %>
+	  var stepmethod = new Quill('#stepmethod_<%= i %>', {
+		theme: 'snow'
+	  });
+  
+	  var stepexpected = new Quill('#stepexpected_<%= i %>', {
+		theme: 'snow'
+	  });
+  
+	  var stepactual = new Quill('#stepactual_<%= i %>', {
+		theme: 'snow'
+	  });
+	  let teststep<%= i %> = {};
+	  teststep = {stepmethod, stepexpected, stepactual};
+	  teststeps.push(teststep);
+<% }) %>
+</script>
+
+<script>
+function onSaveClicked() {
+	const editorElements = document.getElementsByClassName("editor");
+	updatedsteps = [];
+
+	for (let i = 0; i < teststeps.length; i++) {
+    	let stepObj = {
+    	    stepnumber: i + 1,
+    	    stepmethod: teststeps[i].stepmethod.root.innerText,
+    	    stepexpected: teststeps[i].stepexpected.root.innerText,
+    	    stepactual: teststeps[i].stepactual.root.innerText
+    	};
+    	updatedsteps.push(stepObj);
+	}
+	const rows = updatedsteps.length / 3;
+
+  const data = {
+    title: testcasename.root.innerText,
+	description: testcasedescription.root.innerText,
+	updatedsteps
+  };
+
+  fetch('/projects/<%= project.projectname %>/<%= testcase.name %>/updatetest', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Save successful');
+	  window.location.href = "/project/<%= project.projectname %>/<%= testcasename %>";
+    } else {
+      throw new Error('Save failed');
+    }
+  })
+  .catch(error => {
+    console.error(error);
+  });
+}
+
+
+const saveButton = document.getElementById('save-button');
+saveButton.addEventListener('click', onSaveClicked);
+</script>

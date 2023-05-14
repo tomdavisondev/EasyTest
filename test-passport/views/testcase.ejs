@@ -11,7 +11,7 @@
 				  <span class="mr-2 d-none d-lg-inline text-gray-600 small">
 					<%= name.substring(0,1).toLocaleUpperCase() + name.substring(1); %>
 				  </span>
-				  <img class="img-profile rounded-circle" src="https://source.unsplash.com/WLUHO9A_xik/60x60">
+				  <img class="img-profile rounded-circle" src="/img/people/img-2.png">
 				</a>
 				<!-- Dropdown - User Information -->
 				<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -55,9 +55,15 @@
 		  </div>
 		  </div>
 		<div class="row align-items-center">
+			<div class="col-md-8"><%- include('partials/messages') %></div>
+		</div>
+		<div class="row align-items-center">
 			<div class="col-sm-auto col-12 mt-4 mt-sm-0">
 				<div class="hstack gap-2">
-					<a href="#offcanvasCreate" class="btn btn-sm btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><span class="pe-2"><i class="bi bi-link-45deg"></i> </span><span>Linked Requirements</span></a></div>
+					<a href="#offcanvasCreate" class="btn btn-sm btn-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><span class="pe-2"><i class="bi bi-link-45deg"></i> </span><span>Linked Requirements</span></a>
+					<a href="/project/<%= project.projectname %>/<%= testcasename %>/edit" class="btn btn-sm btn-primary" id="toggle-edit-mode"><span class="pe-2"><i class="bi bi-pencil-square"></i> </span><span>Edit Mode</span></a>
+					<a href="#editmode" class="btn btn-sm btn-primary"><span class="pe-2"><i class="bi bi-check-circle"></i> </span><span>Execution Mode</span></a>
+				</div>
 			</div>
 		</div>
 		  <div class="row g-6 mb-6 offcanvas" id="offcanvasCreate" aria-labelledby="offcanvasCreateLabel">
@@ -119,7 +125,7 @@
 			<% testcase.teststeps.forEach(function (teststep, i) { %>
 			<div class="row g-6 mb-6">
 				<div class="col-xl-3 col-sm-6 col-12">
-					<div class="card reactiveCard">
+					<div class="card reactiveCard editcard">
 						<div class="card-body">
 							<div class="row">
 								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">User Action</span>
@@ -129,7 +135,7 @@
 					</div>
 				</div>
 				<div class="col-xl-3 col-sm-6 col-12">
-					<div class="card reactiveCard">
+					<div class="card reactiveCard editcard">
 						<div class="card-body">
 							<div class="row">
 								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Expected Result</span>
@@ -139,7 +145,7 @@
 					</div>
 				</div>
 				<div class="col-xl-3 col-sm-6 col-12">
-					<div class="card reactiveCard">
+					<div class="card reactiveCard editcard">
 						<div class="card-body">
 							<div class="row">
 								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Actual Result</span>
@@ -151,157 +157,11 @@
 			</div>
 			<% }) %>
 		</div>
-		<div class="container-fluid">
-			<div class="row align-items-center">
-				<div class="col-sm-auto col-12 mt-4 mt-sm-0">
-					<div class="hstack gap-2">
-						<a href="#offcanvasCreate" class="btn btn-sm btn-primary"><span class="pe-2"><i class="bi bi-link-45deg"></i> </span><span>Add Step</span></a></div>
-				</div>
-			</div>
-		</div>
 	</div>
 </body>
 
 
 <script>
-	function editTitle() {
-		document.getElementById("title-text").style.display = "none";
-		document.getElementById("title-form").style.display = "block";
-		document.getElementById("title-save-button").style.display = "block";
-		document.getElementById("title-cancel-button").style.display = "block";
-		document.getElementById("title-form").classList.remove("d-none");
-		document.getElementById("title-save-button").classList.remove("d-none");
-		document.getElementById("title-cancel-button").classList.remove("d-none");
-		document.getElementById("title-input").value = "<%=testcasename%>";
-	}
-
-	function cancelTitleEdit() {
-		document.getElementById("title-text").style.display = "block";
-		document.getElementById("title-form").style.display = "none";
-		document.getElementById("title-save-button").style.display = "none";
-	}
-
-	function editDescription() {
-		document.getElementById("description-text").style.display = "none";
-		document.getElementById("description-form").style.display = "block";
-		document.getElementById("description-save-button").style.display = "block";
-		document.getElementById("description-cancel-button").style.display = "block";
-		document.getElementById("description-form").classList.remove("d-none");
-		document.getElementById("description-save-button").classList.remove("d-none");
-		document.getElementById("description-cancel-button").classList.remove("d-none");
-		document.getElementById("description-input").value = "<%=testcase.description%>";
-	}
-
-	function canceldescriptionEdit() {
-		document.getElementById("description-text").style.display = "block";
-		document.getElementById("description-form").style.display = "none";
-		document.getElementById("description-save-button").style.display = "none";
-	}
-
-	function editTestStep(stepNumber) {
-		document.getElementById("teststepfield" + stepNumber).style.display = "flex";
-	}
-	function cancelTestStepEdit(stepNumber) {
-		document.getElementById("teststepfield" + stepNumber).style.display = "none";
-	}
-
-	// get all the rows in the table
-	const rows = document.querySelectorAll("div.row[draggable=true][id^='teststep']");
-
-	// loop through the rows and add event listeners
-	rows.forEach((row, index) => {
-	  // add a dragstart event listener to the row
-	  row.addEventListener("dragstart", dragStart);
-	
-	  // add a dragover event listener to the row
-	  row.addEventListener("dragover", dragOver);
-	
-	  // add a dragend event listener to the row
-	  row.addEventListener("dragend", dragEnd);
-
-	  row.dataset.index = index;
-	});
-
-	let dragSrcEl = null;
-
-	function dragStart(e) {
-	  // store a reference to the row being dragged
-	  dragSrcEl = this;
-	
-	  // set the data for the drag event (in this case, just the row index)
-	  e.dataTransfer.setData("text/plain", this.rowIndex);
-	
-	  // add a class to the row being dragged to style it
-	  this.classList.add("dragging");
-	}
-	
-	function dragOver(e) {
-	  // prevent the default action of the dragover event
-	  e.preventDefault();
-	
-	  // get the row being dragged over
-	  const dragOverEl = this;
-	
-	  // if the row being dragged over is not the same as the row being dragged
-	  if (dragOverEl !== dragSrcEl) {
-	    // get the parent element of the rows (the table body)
-	    const tbody = dragSrcEl.parentNode;
-	
-	    // get the index of the row being dragged
-	    const sourceIndex = dragSrcEl.rowIndex;
-	
-	    // get the index of the row being dragged over
-	    const targetIndex = dragOverEl.rowIndex;
-	
-	    // insert the row being dragged before the row being dragged over
-	    if (sourceIndex < targetIndex) {
-	      tbody.insertBefore(dragSrcEl, dragOverEl.nextSibling);
-	    }
-	    // insert the row being dragged after the row being dragged over
-	    else {
-	      tbody.insertBefore(dragSrcEl, dragOverEl);
-	    }
-	  }
-	}
-	
-	function dragEnd(e) {
-	  // remove the dragging class from the row being dragged
-	  this.classList.remove("dragging");
-		
-	  // get the index of the row being dropped
-	  const fromIndex = Number(this.dataset.index);
-		
-	  // get the index of the row where the dropped row should be inserted
-	  let toIndex;
-	  const rows = document.querySelectorAll("div.row[draggable=true][id^='teststep']");
-	  rows.forEach((row, index) => {
-	    const rect = row.getBoundingClientRect();
-	    if (e.clientY > rect.top && e.clientY < rect.bottom) {
-	      toIndex = index;
-	    }
-	    // set the dataset.index property for all rows
-	    row.dataset.index = index;
-	  });
-  
-	  // if the row was dropped below all other rows, set the toIndex to the last index
-	  if (toIndex === undefined) {
-	    toIndex = rows.length - 1;
-	  }
-  
-	  console.log("toIndex: " + toIndex + " From Index " + fromIndex);
-	  //TODO: Think about test case update workflow. Does not persist to server yet, but could with to and from index
-  
-	  // move the row to its new position in the list
-	  const parent = this.parentNode;
-	  const nextSibling = parent.children[toIndex + 1];
-	  parent.insertBefore(this, nextSibling);
-  
-	  // update the index of each row
-	  rows.forEach((row, index) => {
-	    row.dataset.index = index;
-	  });
-	}
-
 	function submitSelectedRequirements() {
 	console.log("Submitting selected requirements");
     const form = document.forms['requirement-form'];
@@ -319,3 +179,4 @@
 
 
 </script>
+<script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
