@@ -168,6 +168,7 @@ ul.CTAs a {
     border-radius: 50%!important;
 }
 
+
 .avatar {
     vertical-align: middle;
     height: 2.875rem;
@@ -381,14 +382,6 @@ element.style {
         border-radius: 0.25rem;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
-
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding-left: 0;
-  }
 .container-fluid {
     padding-left: 15;
     padding-right: 15;
@@ -420,6 +413,51 @@ a.article:hover {
 
 .editcard {
     min-height: 275px;
+}
+
+/* ---------------------------------------------------
+    Login Styles
+----------------------------------------------------- */
+
+body{
+    margin-top:20px;
+    background: #f6f9fc;
+}
+.account-block {
+    padding: 0;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    position: relative;
+}
+.account-block .overlay {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.account-block .account-testimonial {
+    color: black;
+    position: absolute;
+    margin: 0 auto;
+    padding: 0 1.75rem;
+    bottom: 10rem;
+    left: 0;
+    right: 0;
+}
+
+.text-theme {
+    color: #5369f8 !important;
+}
+
+.btn-theme {
+    background-color: #5369f8;
+    border-color: #5369f8;
+    color: #fff;
 }
 
 /* ---------------------------------------------------

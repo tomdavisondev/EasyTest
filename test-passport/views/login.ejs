@@ -2,49 +2,79 @@
 <div class="row mt-5">
   <div class="col-md-5 m-auto">
     <div class="col-md-8 m-auto text-center">
-      <h1>
-        <span style="color:green">Easy</span>
-        <span style="color:red">Test</span>
-      </h1>
-      <h2>Modern test management software</h2>
+      <a
+			class="navbar-brand d-inline-block py-lg-2 mb-lg-2 px-lg-6 me-0" href="/dashboard">
+			<img src="/img/logos/EasyTest.png" alt="..."></a>
     </div>
   </div>
 </div>
 
-<div class="row mt-5">
-  <div class="col-md-5 m-auto">
-    <div class="col-md-8 m-auto">
-    <div class="card card-body">
-      <h1 class="text-center mb-3"><i class="fas fa-sign-in-alt"></i>  Login</h1>
-      <%- include('partials/messages') %>
-      <%- include('partials/guestLogin') %>
-      <form action="/users/login" method="POST">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            class="form-control"
-            placeholder="Enter Email"
-          />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            class="form-control"
-            placeholder="Enter Password"
-          />
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
-      </form>
-      <p class="lead mt-4">
-        No Account? <a href="/users/register">Register</a>
-      </p>
-    </div>
-    </div>
+<div id="main-wrapper" class="container">
+  <div class="row justify-content-center">
+      <div class="col-xl-10">
+          <div class="card border-0">
+              <div class="card card-body p-0">
+                  <div class="row no-gutters">
+                      <div class="col-lg-6">
+                          <div class="p-5">
+                              <div class="mb-5">
+                                  <h3 class="h4 font-weight-bold">Login</h3>
+                              </div>
+
+                              <%- include('partials/messages') %>
+
+                              <h6 class="h5 mb-0">Welcome to Easy Test</h6>
+                              <p class="text-muted mt-2 mb-4">Enter your email address and password to access admin panel.</p>
+
+                              <form class="mb-2" action="/users/login" method="POST">
+                                  <div class="form-group" mb-5>
+                                    <label for="email">Email</label>
+                                    <input
+                                      type="email"
+                                      id="email"
+                                      name="email"
+                                      class="form-control"
+                                      placeholder="Enter Email"
+                                    />
+                                  </div>
+                                  <div class="form-group mb-5">
+                                    <label for="password">Password</label>
+                                    <input
+                                      type="password"
+                                      id="password"
+                                      name="password"
+                                      class="form-control"
+                                      placeholder="Enter Password"
+                                    />
+                                  </div>
+                                  <button type="submit" class="btn btn-theme">Login</button>
+                              </form>
+                              <%- include('partials/guestLogin') %>
+                          </div>
+                      </div>
+
+                      <div class="col-lg-6 d-none d-lg-inline-block">
+                          <div class="account-block rounded-right">
+                              <div class="overlay rounded-right"></div>
+                              <div class="account-testimonial">
+                                  <h4 class="mb-4">Simple  Test Management</h4>
+                                  <p class="lead">Web solution for mapping customer requirements to testing documentation.</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+              </div>
+              <!-- end card-body -->
+          </div>
+          <!-- end card -->
+
+          <p class="text-muted text-center mt-3 mb-0">Don't have an account? <a href="/users/register" class="text-primary ml-1">register</a></p>
+
+          <!-- end row -->
+
+      </div>
+      <!-- end col -->
   </div>
+  <!-- Row -->
 </div>
