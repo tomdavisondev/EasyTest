@@ -67,59 +67,56 @@
 				</div>
 			</div>
 		</div>
-		  <div class="row g-6 mb-6 offcanvas" id="offcanvasCreate" aria-labelledby="offcanvasCreateLabel">
-		  	<div class="col-xl-6 col-sm-6 col-12">
-				<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-					<div class="offcanvas-header">
-					  <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Colored with scrolling</h5>
-					  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-					</div>
-					<div class="offcanvas-body">
-						<div class="card">
-							<div class="card-header border-bottom">
-								<h5 class="mb-0">Link Requirements</h5>
-							</div>
-							<div class="table-responsive">
-								<form action="/projects/<%= project.projectname %>/<%= testcasename %>/addrequirements" method="POST" name="requirement-form">
-								<table class="table table-hover table-nowrap">
-									<thead class="table-light">
-										<tr>
-											<th scope="col">Requirement</th>
-											<th scope="col">Description</th>
-											<th scope="col">Document Link</th>
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
-										<% requirements.forEach((requirement) => {
-											let requirementLinked = false;
-											  if (testcase.linkedrequirements.includes(requirement._id.toString())) {
-												requirementLinked = true;
-											  }
-		
-										  %>
-										  
-										  <tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
-											<th scope="row"><%= requirement.requirementid %></th>
-											<td><%= requirement.requirementname %></td>
-											<td>
-											  <label>
-												<input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
-											  </label>
-											</td>
-										  </tr>
-										<% }) %>
-									  </tbody>
-								</table>
-								<input type="hidden" name="selected-requirements" value="">
-								<button type="button" class="btn btn-primary btn-block" onclick="submitSelectedRequirements()">Submit Selected Requirements</button>
-								</form>
-							</div>
-						</div>
-					</div>
+		<div class="row g-6 mb-6 offcanvas" id="offcanvasCreate" aria-labelledby="offcanvasCreateLabel">
+			<div class="col-xl-6 col-sm-6 col-12">
+			  <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+				  <div class="offcanvas-header">
+					<h5 class="offcanvas-title" id="offcanvasScrollingLabel">Link Requirements</h5>
+					<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 				  </div>
-			</div>
+				  <div class="offcanvas-body">
+					  <div class="card">
+						  <div class="table-responsive">
+							  <form action="/projects/<%= project.projectname %>/<%= testcasename %>/addrequirements" method="POST" name="requirement-form">
+							  <table class="table table-hover table-nowrap">
+								  <thead class="table-light">
+									  <tr>
+										  <th scope="col">Requirement</th>
+										  <th scope="col">Description</th>
+										  <th scope="col">Linked</th>
+										  <th></th>
+									  </tr>
+								  </thead>
+								  <tbody>
+									  <% requirements.forEach((requirement) => {
+										  let requirementLinked = false;
+											if (testcase.linkedrequirements.includes(requirement._id.toString())) {
+											  requirementLinked = true;
+											}
+	  
+										%>
+										
+										<tr class="<%= requirementLinked ? 'text-muted' : 'hover-color' %>">
+										  <th scope="row"><%= requirement.requirementid %></th>
+										  <td><%= requirement.requirementname %></td>
+										  <td>
+											<label>
+											  <input type="checkbox" name="selected-requirements[]" value="<%= requirement.requirementid %>" <%= requirementLinked ? 'checked' : '' %>>
+											</label>
+										  </td>
+										</tr>
+									  <% }) %>
+									</tbody>
+							  </table>
+							  <input type="hidden" name="selected-requirements" value="">
+							  <button type="button" class="btn btn-primary btn-block" onclick="submitSelectedRequirements()">Submit Selected Requirements</button>
+							  </form>
+						  </div>
+					  </div>
+				  </div>
+				</div>
 		  </div>
+		</div>
 		  </div>
 		</div>
 		<div class="container-fluid">
