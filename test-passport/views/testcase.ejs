@@ -68,16 +68,13 @@
 		</div>
 		  <div class="row g-6 mb-6 offcanvas" id="offcanvasCreate" aria-labelledby="offcanvasCreateLabel">
 		  	<div class="col-xl-6 col-sm-6 col-12">
-				<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+				<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
 					<div class="offcanvas-header">
-					  <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Colored with scrolling</h5>
+					  <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Link Requirements</h5>
 					  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 					</div>
 					<div class="offcanvas-body">
 						<div class="card">
-							<div class="card-header border-bottom">
-								<h5 class="mb-0">Link Requirements</h5>
-							</div>
 							<div class="table-responsive">
 								<form action="/projects/<%= project.projectname %>/<%= testcasename %>/addrequirements" method="POST" name="requirement-form">
 								<table class="table table-hover table-nowrap">
@@ -85,7 +82,7 @@
 										<tr>
 											<th scope="col">Requirement</th>
 											<th scope="col">Description</th>
-											<th scope="col">Document Link</th>
+											<th scope="col">Linked</th>
 											<th></th>
 										</tr>
 									</thead>
