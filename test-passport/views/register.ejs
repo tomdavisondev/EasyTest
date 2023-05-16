@@ -1,60 +1,94 @@
 <div class="row mt-5">
-  <div class="col-md-6 m-auto">
-    <div class="card card-body">
-      <h1 class="text-center mb-3">
-        <i class="fas fa-user-plus"></i> Register
-      </h1>
-      <%- include('partials/messages') %>
-      <form action="/users/register" method="POST">
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input
-            type="name"
-            id="name"
-            name="name"
-            class="form-control"
-            placeholder="Enter Name"
-            value="<%= typeof name != 'undefined' ? name : '' %>"
-          />
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            class="form-control"
-            placeholder="Enter Email"
-            value="<%= typeof email != 'undefined' ? email : '' %>"
-          />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            class="form-control"
-            placeholder="Create Password"
-            value="<%= typeof password != 'undefined' ? password : '' %>"
-          />
-        </div>
-        <div class="form-group">
-          <label for="password2">Confirm Password</label>
-          <input
-            type="password"
-            id="password2"
-            name="password2"
-            class="form-control"
-            placeholder="Confirm Password"
-            value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
-          />
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">
-          Register
-        </button>
-      </form>
-      <p class="lead mt-4">Have An Account? <a href="/users/login">Login</a></p>
+  <div class="col-md-5 m-auto">
+    <div class="col-md-8 m-auto text-center">
+      <a
+			class="navbar-brand d-inline-block py-lg-2 mb-lg-2 px-lg-6 me-0">
+			<img src="/img/logos/EasyTest.png" alt="..."></a>
     </div>
   </div>
+</div>
+
+<div id="main-wrapper" class="container">
+  <div class="row justify-content-center">
+      <div class="col-xl-5">
+          <div class="card border-0">
+              <div class="card card-body p-0">
+                  <div class="row no-gutters">
+                      <div class="col-lg-12">
+                          <div class="p-5">
+                              <div class="mb-5">
+                                  <h3 class="h4 font-weight-bold">Register</h3>
+                              </div>
+
+                              <%- include('partials/messages') %>
+
+                              <h6 class="h5 mb-0">Register new user</h6>
+                              <p class="text-muted mt-2 mb-4"></p>
+
+                              <form class="mb-2" action="/users/register" method="POST">
+                                <div class="form-group mb-2">
+                                  <label for="name">Name</label>
+                                  <input
+                                    type="name"
+                                    id="name"
+                                    name="name"
+                                    class="form-control"
+                                    placeholder="Enter Name"
+                                    value="<%= typeof name != 'undefined' ? name : '' %>"
+                                  />
+                                </div>
+                                <div class="form-group mb-2">
+                                  <label for="email">Email</label>
+                                  <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    class="form-control"
+                                    placeholder="Enter Email"
+                                    value="<%= typeof email != 'undefined' ? email : '' %>"
+                                  />
+                                </div>
+                                <div class="form-group mb-2">
+                                  <label for="password">Password</label>
+                                  <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="form-control"
+                                    placeholder="Create Password"
+                                    value="<%= typeof password != 'undefined' ? password : '' %>"
+                                  />
+                                </div>
+                                <div class="form-group mb-5">
+                                  <label for="password2">Confirm Password</label>
+                                  <input
+                                    type="password"
+                                    id="password2"
+                                    name="password2"
+                                    class="form-control"
+                                    placeholder="Confirm Password"
+                                    value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
+                                  />
+                                </div>
+                                <button type="submit" class="btn btn-theme btn-block">
+                                  Register
+                                </button>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+
+              </div>
+              <!-- end card-body -->
+          </div>
+          <!-- end card -->
+
+          <p class="text-muted text-center mt-3 mb-0">Have an account? <a href="/users/login" class="text-primary ml-1">Login</a></p>
+
+          <!-- end row -->
+
+      </div>
+      <!-- end col -->
+  </div>
+  <!-- Row -->
 </div>
