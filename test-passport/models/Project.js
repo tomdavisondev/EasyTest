@@ -9,6 +9,10 @@ const ProjectSchema = new mongoose.Schema({
 		type: String,
 		required: false
 	},
+	projectImage: {
+		data: Buffer,
+		contentType: String 
+	  },
 	testcases: [
 		{
 			name: {
@@ -19,6 +23,10 @@ const ProjectSchema = new mongoose.Schema({
 				type: String,
 				required: true
 			},
+			testcaseImage: {
+				data: Buffer,
+				contentType: String
+			  },
 			linkedrequirements: [
 				{
 					type: mongoose.Schema.Types.ObjectId,

@@ -504,12 +504,15 @@ router.get('/:projectname/:testcasename/addteststep', async (req, res) => {
 
 //New Project Handle
 router.post('/addproject', (req, res) => {
+    let generatedIcon = req.body.generatedIcon;
     let projectname = req.body.projectname;
     let requirements = req.body.requirements;
     let projectshorthand = req.body.projectshorthand;
     let projects = req.body.projects;
     let user = req.user;
     let name = user.name;
+
+    console.log("Test: " + generatedIcon);
 
     let errors = [];
 
@@ -565,6 +568,10 @@ router.post('/addproject', (req, res) => {
                 const newProject = new Project({
                     projectname,
                     projectshorthand,
+                    projectImage: {
+                      data: generatedIcon,
+                      contentType: 'image/png'
+                    }
                 });
                 newProject.save()
                     .then(project => {

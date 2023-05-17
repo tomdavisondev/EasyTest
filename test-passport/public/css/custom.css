@@ -143,6 +143,28 @@ a[data-toggle="collapse"] {
     transform: translateY(-50%);
 }
 
+.projectimage {
+    width: 50px;
+    height: 50px;
+}
+
+.iconContainer {
+    border-radius: --bs-border-radius;
+    margin-top: 60px;
+    margin-left: 10px;
+}
+
+canvas {
+    /* CSS properties for the canvas element */
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+
+.form-item-check {
+    margin-right: 5px;
+}
+
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;

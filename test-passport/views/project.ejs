@@ -53,7 +53,7 @@
 					<h5 class="offcanvas-title" id="offcanvasCreateLabel">Create a new test case</h5><button type="button"
 						class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 				</div>
-				<form action="/projects/<%= project.projectname %>/addtestcase" method="POST">
+				<form action="/projects/<%= project.projectname %>/addtestcase" method="POST" >
 				<div class="offcanvas-body vstack gap-2">
 					<div class="form-group">
 						<label class="form-label" for="testcasename" name="testcasename">Name</label> <input type="text" id="testcasename" name="testcasename" class="form-control" placeholder="Test case name">
@@ -203,7 +203,7 @@
 								<td>
 									<% const images = ['/img/social/bootstrap.svg', '/img/social/mongodb.svg', '/img/social/angular.svg', '/img/social/javascript.svg']; %>
 									<% const randomImage = images[Math.floor(Math.random() * images.length)]; %>
-									<img alt="..." src="<%= randomImage %>?v=<%= Math.random().toString(36).substring(2) %>" class="avatar avatar-sm rounded-circle me-2">
+									<img alt="..." src="https://cdn-icons-png.flaticon.com/512/4484/4484590.png" class="avatar avatar-sm rounded-circle me-2">
 									<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcases[i].name %>"><%= testcases[i].name %></a>
 								<td>23-01-2022</td>
 								<td><span class="badge badge-lg badge-dot"><i class="bg-warning"></i>In progress</span></td>

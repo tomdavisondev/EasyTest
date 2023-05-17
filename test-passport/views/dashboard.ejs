@@ -70,22 +70,54 @@
 						<span class="d-block mt-2 text-sm text-muted">Make it unique.</span>
 					</div>
 					<hr class="my-0">
-					<div><label class="form-label">Project Image</label>
-						<div class="hstack gap-3">
-							<div class="form-item-checkable"><input class="form-item-check" type="radio" name="project-view"
-									id="project-view-kanban" checked="checked"> <label class="form-item"
-									for="project-view-kanban"><span
-										class="form-item-click d-inline-flex align-items-center justify-content-center form-control w-24 h-24 text-center text-muted"><i
-											class="bi bi-kanban" style="font-size:2rem"></i></span></label></div>
-							<div class="form-item-checkable"><input class="form-item-check" type="radio" name="project-view"
-									id="project-view-list"> <label class="form-item" for="project-view-list"><span
-										class="form-item-click d-inline-flex align-items-center justify-content-center form-control w-24 h-24 text-center text-muted"><i
-											class="bi bi-view-list" style="font-size:2rem"></i></span></label></div>
-							<div class="form-item-checkable"><input class="form-item-check" type="radio" name="project-view"
-									id="project-view-table"> <label class="form-item" for="project-view-table"><span
-										class="form-item-click d-inline-flex align-items-center justify-content-center form-control w-24 h-24 text-center text-muted"><i
-											class="bi bi-table" style="font-size:2rem"></i></span></label></div>
+					<div class="row">
+						<div class="col-lg-8">
+						<label class="form-label">Project Image</label>
+						<div class="hstack gap-3" style="display: flex; align-items: center;">
+							<div class="form-item-checkable" onclick="displayIcon('PR-001', '#ff405c')" style="display: flex; align-items: center;">
+								<input class="form-item-check" type="radio" name="project-view" id="project-view-color1" checked="checked">
+								<label class="form-item" for="project-view-color1">
+								  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #ff405c;"></span>
+								</label>
+							</div>
+						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#ff936b')" style="display: flex; align-items: center;">
+							<input class="form-item-check" type="radio" name="project-view" id="project-view-color2">
+							<label class="form-item" for="project-view-color2">
+							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #ff936b;"></span>
+							</label>
+						  </div>
+						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#ffd845')" style="display: flex; align-items: center;">
+							<input class="form-item-check" type="radio" name="project-view" id="project-view-color3">
+							<label class="form-item" for="project-view-color3">
+							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #ffd845;"></span>
+							</label>
+						  </div>
 						</div>
+						<div class="hstack gap-3" style="display: flex; align-items: center;">
+						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#8ee26b')" style="display: flex; align-items: center;">
+							<input class="form-item-check" type="radio" name="project-view" id="project-view-color4">
+							<label class="form-item" for="project-view-color4">
+							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #8ee26b;"></span>
+							</label>
+						  </div>
+						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#7dd5f4')" style="display: flex; align-items: center;">
+							<input class="form-item-check" type="radio" name="project-view" id="project-view-color5">
+							<label class="form-item" for="project-view-color5">
+							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #7dd5f4;"></span>
+							</label>
+						  </div>
+						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#ff405c')" style="display: flex; align-items: center;">
+							<input class="form-item-check" type="radio" name="project-view" id="project-view-custom-color">
+							<label class="form-item" for="project-view-custom-color">
+							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: transparent; border: 1px solid #000;"></span>
+							</label>
+						  </div>
+						</div>
+					  </div>
+					  <div class="col-lg-4">
+						<input type="hidden" id="generatedIcon" name="generatedIcon">
+						<div class="iconContainer" id="iconContainer"></div>
+					  </div>
 					</div>
 				</div>
 				<div class="modal-footer py-2 bg-surface-secondary">
@@ -170,7 +202,6 @@
 							<div class="row">
 								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Highlighted Project</span>
 									<span class="h6 font-bold mb-0"></span>
-										<a class="text-heading font-semibold" href="/project/<%= projects[0].projectname %>"><%= projects[0].projectname %></a>
 									</div>
 								<div class="col-auto">
 									<div class="icon icon-shape bg-primary text-white text-lg rounded-circle"><i
@@ -327,10 +358,16 @@
 							<% for (let i = 0; i < projects.length; i++) { %>
 							<tr>
 								<td>
-									<% const images = ['/img/social/bootstrap.svg', '/img/social/mongodb.svg', '/img/social/angular.svg', '/img/social/javascript.svg']; %>
-									<% const randomImage = images[Math.floor(Math.random() * images.length)]; %>
-									<img alt="..." src="<%= randomImage %>?v=<%= Math.random().toString(36).substring(2) %>" class="avatar avatar-sm rounded-circle me-2">
+									<% if (projects[i].projectImage && projects[i].projectImage.data) { %>
+										<% console.log(projects[i].projectImage); %>
+										<% const imageBase64 = projects[i].projectImage.data.toString('base64'); %>
+										<img alt="..." src="data:<%= projects[i].projectImage.contentType %>;base64,<%= imageBase64 %>" class="avatar avatar-sm rounded-circle me-2">
+									  <% } else { %>
+										<img alt="Default Image" src="/path/to/default/image.png" class="avatar avatar-sm rounded-circle me-2">
+									  <% } %>									  
+									  
 									<a class="text-heading font-semibold" href="/project/<%= projects[i].projectname %>"><%= projects[i].projectname %></a>
+								</td>
 								<td>23-01-2022</td>
 								<td><span class="badge badge-lg badge-dot"><i class="bg-warning"></i>In progress</span></td>
 								<td>
@@ -412,6 +449,8 @@
 		</div>
 	</div>
 </body>
+
+<script src="/js/icongenerator.js"
 
 
 <script>
