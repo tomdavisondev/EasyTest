@@ -74,19 +74,19 @@
 						<div class="col-lg-8">
 						<label class="form-label">Project Image</label>
 						<div class="hstack gap-3" style="display: flex; align-items: center;">
-							<div class="form-item-checkable" onclick="displayIcon('PR-001', '#ff405c')" style="display: flex; align-items: center;">
+							<div class="form-item-checkable" onclick="displayIcon(document.getElementById('projectshorthand').value, '#ff405c')" style="display: flex; align-items: center;">
 								<input class="form-item-check" type="radio" name="project-view" id="project-view-color1" checked="checked">
 								<label class="form-item" for="project-view-color1">
 								  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #ff405c;"></span>
 								</label>
 							</div>
-						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#ff936b')" style="display: flex; align-items: center;">
+						  <div class="form-item-checkable" onclick="displayIcon(document.getElementById('projectshorthand').value, '#ff936b')" style="display: flex; align-items: center;">
 							<input class="form-item-check" type="radio" name="project-view" id="project-view-color2">
 							<label class="form-item" for="project-view-color2">
 							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #ff936b;"></span>
 							</label>
 						  </div>
-						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#ffd845')" style="display: flex; align-items: center;">
+						  <div class="form-item-checkable" onclick="displayIcon(document.getElementById('projectshorthand').value, '#ffd845')" style="display: flex; align-items: center;">
 							<input class="form-item-check" type="radio" name="project-view" id="project-view-color3">
 							<label class="form-item" for="project-view-color3">
 							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #ffd845;"></span>
@@ -94,19 +94,19 @@
 						  </div>
 						</div>
 						<div class="hstack gap-3" style="display: flex; align-items: center;">
-						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#8ee26b')" style="display: flex; align-items: center;">
+						  <div class="form-item-checkable" onclick="displayIcon(document.getElementById('projectshorthand').value, '#8ee26b')" style="display: flex; align-items: center;">
 							<input class="form-item-check" type="radio" name="project-view" id="project-view-color4">
 							<label class="form-item" for="project-view-color4">
 							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #8ee26b;"></span>
 							</label>
 						  </div>
-						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#7dd5f4')" style="display: flex; align-items: center;">
+						  <div class="form-item-checkable" onclick="displayIcon(document.getElementById('projectshorthand').value, '#7dd5f4')" style="display: flex; align-items: center;">
 							<input class="form-item-check" type="radio" name="project-view" id="project-view-color5">
 							<label class="form-item" for="project-view-color5">
 							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #7dd5f4;"></span>
 							</label>
 						  </div>
-						  <div class="form-item-checkable" onclick="displayIcon('PR-001', '#ff405c')" style="display: flex; align-items: center;">
+						  <div class="form-item-checkable" onclick="displayIcon(document.getElementById('projectshorthand').value, '#ff405c')" style="display: flex; align-items: center;">
 							<input class="form-item-check" type="radio" name="project-view" id="project-view-custom-color">
 							<label class="form-item" for="project-view-custom-color">
 							  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: transparent; border: 1px solid #000;"></span>
@@ -358,14 +358,10 @@
 							<% for (let i = 0; i < projects.length; i++) { %>
 							<tr>
 								<td>
-									<% if (projects[i].projectImage && projects[i].projectImage.data) { %>
-										<% console.log(projects[i].projectImage); %>
-										<% const imageBase64 = projects[i].projectImage.data.toString('base64'); %>
-										<img alt="..." src="data:<%= projects[i].projectImage.contentType %>;base64,<%= imageBase64 %>" class="avatar avatar-sm rounded-circle me-2">
-									  <% } else { %>
-										<img alt="Default Image" src="/path/to/default/image.png" class="avatar avatar-sm rounded-circle me-2">
-									  <% } %>									  
-									  
+									<% const imageBase64 = projects[i].projectImage.data.toString(); %>
+									<img alt="..." src="<%= imageBase64 %> " class="avatar avatar-sm rounded-circle me-2">
+								</td>							  
+								<td>
 									<a class="text-heading font-semibold" href="/project/<%= projects[i].projectname %>"><%= projects[i].projectname %></a>
 								</td>
 								<td>23-01-2022</td>
