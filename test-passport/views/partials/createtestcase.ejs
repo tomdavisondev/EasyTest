@@ -1,0 +1,73 @@
+<div class="offcanvas offcanvas-end w-full w-lg-1/3" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1"
+id="offcanvasCreateTestCase" aria-labelledby="offcanvasCreateTestCaseLabel" aria-modal="true" role="dialog">
+<div class="offcanvas-header border-bottom py-5 bg-surface-secondary">
+    <h5 class="offcanvas-title" id="offcanvasCreateTestCaseLabel">Create a new test case</h5><button type="button"
+        class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+</div>
+<form action="/projects/<%= project.projectname %>/addtestcase" method="POST" >
+<div class="offcanvas-body vstack gap-2">
+    <div class="form-group">
+        <label class="form-label" for="testcasename" name="testcasename">Name</label> <input type="text" id="testcasename" name="testcasename" class="form-control" placeholder="Test case name">
+        <span class="d-block mt-2 text-sm text-muted">Make it unique.</span>
+        <label class="form-label" for="testcasedescription" name="testcasedescription">Description</label> <input type="text" id="testcasedescription" name="testcasedescription" class="form-control" placeholder="PR-001">
+        <span class="d-block mt-2 text-sm text-muted">Make it unique.</span>
+    </div>
+    <hr class="my-0">
+    <div class="row">
+        <div class="col-lg-8">
+        <label class="form-label">Requirement Image</label>
+        <div class="hstack gap-3" style="display: flex; align-items: center;">
+            <div class="form-item-checkable" onclick="displayIcon(document.getElementById('testcasedescription').value, '#ff405c', 'testcaseIconContainer')" style="display: flex; align-items: center;">
+                <input class="form-item-check" type="radio" name="testcase-view" id="testcase-view-color1" checked="checked">
+                <label class="form-item" for="testcase-view-color1">
+                  <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #ff405c;"></span>
+                </label>
+            </div>
+          <div class="form-item-checkable" onclick="displayIcon(document.getElementById('testcasedescription').value, '#ff936b', 'testcaseIconContainer')" style="display: flex; align-items: center;">
+            <input class="form-item-check" type="radio" name="testcase-view" id="testcase-view-color2">
+            <label class="form-item" for="testcase-view-color2">
+              <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #ff936b;"></span>
+            </label>
+          </div>
+          <div class="form-item-checkable" onclick="displayIcon(document.getElementById('testcasedescription').value, '#ffd845', 'testcaseIconContainer')" style="display: flex; align-items: center;">
+            <input class="form-item-check" type="radio" name="testcase-view" id="testcase-view-color3">
+            <label class="form-item" for="testcase-view-color3">
+              <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #ffd845;"></span>
+            </label>
+          </div>
+        </div>
+        <div class="hstack gap-3" style="display: flex; align-items: center;">
+          <div class="form-item-checkable" onclick="displayIcon(document.getElementById('testcasedescription').value, '#8ee26b', 'testcaseIconContainer')" style="display: flex; align-items: center;">
+            <input class="form-item-check" type="radio" name="testcase-view" id="testcase-view-color4">
+            <label class="form-item" for="testcase-view-color4">
+              <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #8ee26b;"></span>
+            </label>
+          </div>
+          <div class="form-item-checkable" onclick="displayIcon(document.getElementById('testcasedescription').value, '#7dd5f4', 'testcaseIconContainer')" style="display: flex; align-items: center;">
+            <input class="form-item-check" type="radio" name="testcase-view" id="testcase-view-color5">
+            <label class="form-item" for="testcase-view-color5">
+              <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: #7dd5f4;"></span>
+            </label>
+          </div>
+          <div class="form-item-checkable" onclick="displayIcon(document.getElementById('testcasedescription').value, '#ff405c', 'testcaseIconContainer')" style="display: flex; align-items: center;">
+            <input class="form-item-check" type="radio" name="testcase-view" id="testcase-view-custom-color">
+            <label class="form-item" for="testcase-view-custom-color">
+              <span class="form-item-click d-inline-flex align-items-center justify-content-center form-control text-center text-muted projectimage" style="background-color: transparent; border: 1px solid #000;"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <input type="hidden" id="generatedIcon" name="generatedIcon">
+        <div class="iconContainer" id="testcaseIconContainer"></div>
+      </div>
+    </div>
+</div>
+<div class="modal-footer py-2 bg-surface-secondary">
+    <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="offcanvas">Close</button> 
+    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+</div>
+</form>
+</div>
+
+<script src="/js/icongenerator.js"></script>

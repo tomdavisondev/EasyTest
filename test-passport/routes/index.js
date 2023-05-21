@@ -222,10 +222,8 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 			await cache.set("requirements", requirements);
 		}
 
-		if (projects == undefined) {
 			projects = await Project.find({}).exec();
 			await cache.set("projects", projects);
-		}
 
 		res.render('dashboard', {
 			getColor,

@@ -47,28 +47,9 @@
 			</ul>
 		  </div>
 		<div id="projects" class="page-content">
-			<div class="offcanvas offcanvas-end w-full w-lg-1/3" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1"
-				id="offcanvasCreate" aria-labelledby="offcanvasCreateLabel" aria-modal="true" role="dialog">
-				<div class="offcanvas-header border-bottom py-5 bg-surface-secondary">
-					<h5 class="offcanvas-title" id="offcanvasCreateLabel">Create a new test case</h5><button type="button"
-						class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-				</div>
-				<form action="/projects/<%= project.projectname %>/addtestcase" method="POST" >
-				<div class="offcanvas-body vstack gap-2">
-					<div class="form-group">
-						<label class="form-label" for="testcasename" name="testcasename">Name</label> <input type="text" id="testcasename" name="testcasename" class="form-control" placeholder="Test case name">
-						<span class="d-block mt-2 text-sm text-muted">Make it unique.</span>
-						<label class="form-label" for="testcasedescription" name="testcasedescription">Description</label> <input type="text" id="testcasedescription" name="testcasedescription" class="form-control" placeholder="PR-001">
-						<span class="d-block mt-2 text-sm text-muted">Make it unique.</span>
-					</div>
-					<hr class="my-0">
-				</div>
-				<div class="modal-footer py-2 bg-surface-secondary">
-					<button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="offcanvas">Close</button> 
-					<button type="submit" class="btn btn-sm btn-primary">Save</button>
-				</div>
-				</form>
-			</div>
+			<%- include('partials/createproject') %>
+			<%- include('partials/createrequirement') %>
+			<%- include('partials/createtestcase') %>
 		<% 
 		// Calculate percentage of requirements included in test cases across all projects
 		numRequirements = requirements.length;
@@ -177,7 +158,7 @@
 			<div class="container-fluid">
 				<div class="row align-items-center">
 					<div class="hstack gap-2">
-						<a href="#offcanvasCreate" class="btn btn-sm btn-primary" data-bs-toggle="offcanvas"><span class="pe-2"><i class="bi bi-plus-square-dotted"></i> </span><span>Create</span></a>
+						<a href="#offcanvasCreateTestCase" class="btn btn-sm btn-primary" data-bs-toggle="offcanvas"><span class="pe-2"><i class="bi bi-plus-square-dotted"></i> </span><span>Create</span></a>
 					</div>
 				</div>
 			</div>
@@ -249,7 +230,7 @@
 <script>
 
 function showOffcanvas() {
-  var offcanvas = document.getElementById("offcanvasCreate");
+  var offcanvas = document.getElementById("offcanvasCreateTestCase");
   offcanvas.classList.add("show");
 }
 
