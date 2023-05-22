@@ -52,7 +52,7 @@ function displayIcon(input, color, containerId) {
     const iconDataURL = icon.toDataURL();
 
     // Set the generated icon data to the hidden input field
-    const generatedIconInput = document.getElementById('generatedIcon');
+    const generatedIconInput = document.getElementById(containerId+'_generatedIcon');
     generatedIconInput.value = iconDataURL;
   } catch (error) {
     console.error(error);

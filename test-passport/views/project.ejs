@@ -50,29 +50,6 @@
 			<%- include('partials/createproject') %>
 			<%- include('partials/createrequirement') %>
 			<%- include('partials/createtestcase') %>
-		<% 
-		// Calculate percentage of requirements included in test cases across all projects
-		numRequirements = requirements.length;
-		numRequirementsWithTests = 0;
-		numTestCases = 0;
-		for (const project of projects) {
-		  for (const testcase of project.testcases) {
-			numTestCases++;
-			for (const reqId of testcase.linkedrequirements) {
-				const req = requirements.find(req => req._id.toString() === reqId.toString());
-				if (req) {
-				  numRequirementsWithTests++;
-				  break; // Found a linked requirement, move on to next test case
-				}
-			  }
-			}
-		  }
-		percentageWithTests = Math.round(numRequirementsWithTests / numRequirements * 100);
-		if (isNaN(percentageWithTests)) {
-		  percentageWithTests = 0;
-		}
-	
-    	%>
 		<div class="container-fluid">
 			<div class="row g-6 mb-6">
 				<div class="col-xl-3 col-sm-6 col-12">
@@ -182,10 +159,13 @@
 							<% for (let i = 0; i < testcases.length; i++) { %>
 							<tr>
 								<td>
-									<% const images = ['/img/social/bootstrap.svg', '/img/social/mongodb.svg', '/img/social/angular.svg', '/img/social/javascript.svg']; %>
-									<% const randomImage = images[Math.floor(Math.random() * images.length)]; %>
-									<img alt="..." src="https://cdn-icons-png.flaticon.com/512/4484/4484590.png" class="avatar avatar-sm rounded-circle me-2">
-									<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcases[i].name %>"><%= testcases[i].name %></a>
+									<% console.log(testcases[i].testcaseImage); %>
+									<% if (testcases[i].testcaseImage && testcases[i].testcaseImage.data) { %>
+										<% const imageBase64String = Buffer.from(testcases[i].testcaseImage.data.buffer); %>
+										<img alt="..." src="<%= imageBase64String %>" class="avatar avatar-sm rounded-circle me-2">	
+										<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcases[i].name %>"><%= testcases[i].name %></a>
+									<% } %>
+									
 								<td>23-01-2022</td>
 								<td><span class="badge badge-lg badge-dot"><i class="bg-warning"></i>In progress</span></td>
 								<td>

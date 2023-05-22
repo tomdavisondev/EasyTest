@@ -13,6 +13,9 @@ router.post('/addrequirement', async (req, res) => {
     let requirements = req.body.requirements;
     let user = req.user;
     let name = user.name;
+    let generatedIcon = req.body.requirementIconContainer_generatedIcon;
+
+    console.log(generatedIcon);
 
     let errors = [];
 
@@ -71,6 +74,10 @@ router.post('/addrequirement', async (req, res) => {
                     const newRequirement = new Requirement({
                         requirementname,
                         requirementid,
+                        requirementImage: {
+                          data: generatedIcon,
+                          contentType: 'image/png'
+                          },
                     });
                     newRequirement.save()
                         .then(requirement => {

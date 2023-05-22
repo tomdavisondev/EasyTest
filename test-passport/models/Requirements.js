@@ -15,6 +15,10 @@ const RequirementsSchema = new mongoose.Schema({
       ref: 'Project'
     }
   ],
+  requirementImage: {
+		data: Buffer,
+		contentType: String 
+	  },
   description: {
     type: String,
     required: false

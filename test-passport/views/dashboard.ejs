@@ -57,29 +57,6 @@
 		<div id="projects" class="page-content">
 			<%- include('partials/createproject') %>
 			<%- include('partials/createrequirement') %>
-		<% 
-		// Calculate percentage of requirements included in test cases across all projects
-		numRequirements = requirements.length;
-		numRequirementsWithTests = 0;
-		numTestCases = 0;
-		for (const project of projects) {
-		  for (const testcase of project.testcases) {
-			numTestCases++;
-			for (const reqId of testcase.linkedrequirements) {
-				const req = requirements.find(req => req._id.toString() === reqId.toString());
-				if (req) {
-				  numRequirementsWithTests++;
-				  break; // Found a linked requirement, move on to next test case
-				}
-			  }
-			}
-		  }
-		percentageWithTests = Math.round(numRequirementsWithTests / numRequirements * 100);
-		if (isNaN(percentageWithTests)) {
-		  percentageWithTests = 0;
-		}
-	
-    	%>
 		<div class="container-fluid">
 			<div class="row g-6 mb-6">
 				<% if (selectedTarget === 'projects') { %>
@@ -88,7 +65,7 @@
 						<div class="card-body">
 							<div class="row">
 								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Coverage</span>
-									<span class="h3 font-bold mb-0"><%= percentageWithTests %>%</span></div>
+									<span class="h3 font-bold mb-0">50%</span></div>
 								<div class="col-auto">
 									<div class="icon icon-shape bg-success text-white text-lg rounded-circle"><i
 											class="bi bi-check-all"></i>
@@ -166,7 +143,7 @@
 						<div class="card-body">
 							<div class="row">
 								<div class="col"><span class="h6 font-semibold text-muted text-sm d-block mb-2">Requirement Passrate</span>
-									<span class="h3 font-bold mb-0"><%= percentageWithTests %>%</span></div>
+									<span class="h3 font-bold mb-0"> 50%</span></div>
 								<div class="col-auto">
 									<div class="icon icon-shape bg-success text-white text-lg rounded-circle"><i
 											class="bi bi-check-all"></i>
@@ -266,9 +243,15 @@
 							<% for (let i = 0; i < projects.length; i++) { %>
 							<tr>
 								<td>
-									<% const imageBase64 = projects[i].projectImage.data.toString(); %>
-									<img alt="..." src="<%= imageBase64 %> " class="avatar avatar-sm rounded-circle me-2">
-									<a class="text-heading font-semibold" href="/project/<%= projects[i].projectname %>"><%= projects[i].projectname %></a>
+									<% if (!Buffer.isBuffer(projects[i].projectImage.data)) { %>
+										<% const imageBase64Stringproj = Buffer.from(projects[i].projectImage.data.buffer); %>
+										<img alt="..." src="<%= imageBase64Stringproj %>" class="avatar avatar-sm rounded-circle me-2">	
+										<a class="text-heading font-semibold" href="/project/<%= projects[i].projectname %>"><%= projects[i].projectname %></a>
+									<% } else { %>
+										<% const imageBase64Stringproj = Buffer.from(projects[i].projectImage.data); %>
+										<img alt="..." src="<%= imageBase64Stringproj %>" class="avatar avatar-sm rounded-circle me-2">	
+										<a class="text-heading font-semibold" href="/project/<%= projects[i].projectname %>"><%= projects[i].projectname %></a>
+									<% } %>
 								</td>							  
 								<td>23-01-2022</td>
 								<td><span class="badge badge-lg badge-dot"><i class="bg-warning"></i>In progress</span></td>
@@ -306,9 +289,9 @@
 								<% for (let i = 0; i < requirements.length; i++) { %>
 									<tr>
 										<td>
-											<% const images = ['/img/social/bootstrap.svg', '/img/social/mongodb.svg', '/img/social/angular.svg', '/img/social/javascript.svg']; %>
-											<% const randomImage = images[Math.floor(Math.random() * images.length)]; %>
-											<img alt="..." src="<%= randomImage %>?v=<%= Math.random().toString(36).substring(2) %>" class="avatar avatar-sm rounded-circle me-2">
+											<% console.log(requirements[i]); %>
+											<% const imageBase64Stringreq = Buffer.from(requirements[i].requirementImage.data); %>
+											<img alt="..." src="<%= imageBase64Stringreq %>" class="avatar avatar-sm rounded-circle me-2">	
 											<a class="text-heading font-semibold" href="/requirements/<%= requirements[i].requirementname %>"><%= requirements[i].requirementname %></a>
 										<td>23-01-2022</td>
 										<td><span class="badge badge-lg badge-dot"><i class="bg-warning"></i>In progress</span></td>
@@ -351,8 +334,6 @@
 		</div>
 	</div>
 </body>
-
-<script src="/js/icongenerator.js"
 
 
 <script>

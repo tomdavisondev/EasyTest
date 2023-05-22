@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 const { ensureAuthenticated } = require('../config/auth');
 
-const NodeCache = require( "node-cache" );
-const cache = new NodeCache();
-
 const Project = require('../models/Project');
 const Requirements = require('../models/Requirements');
+const ProjectCache = require('../config/projectcache');
+
+const projectCache = new ProjectCache();
+
+//Temp
+const NodeCache = require("node-cache");
+const cache = new NodeCache();
 
 Requirements.watch().on('change', async () => {
 	console.log('Requirement collection has changed, invalidating cache...');
@@ -15,37 +19,18 @@ Requirements.watch().on('change', async () => {
 	await cache.set("requirements", requirements);
   });
 
-Project.watch().on('change', async () => {
-	console.log('Projects collection has changed, invalidating cache...');
-	await cache.del('projects');
-	projects = await Project.find({}).exec();
-	await cache.set("projects", projects);
-  });
-
 router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 	try {
 		let requirements = await cache.get("requirements");
-		let projects = await cache.get("projects");
+		//let projects = await cache.get("projects");
+		let projects = await projectCache.getProjectList();
 
 		if (requirements == undefined) {
 			requirements = await Requirements.find({}).exec();
 			await cache.set("requirements", requirements);
 		}
 
-		if (projects == undefined) {
-			projects = await Project.find({}).exec(); 
-			await cache.set("projects", projects);
-		}
-
-		let project = await cache.get(`projects-${req.params.projectname}`);
-		if (!project) {
-			project = await Project.findOne({ projectname: req.params.projectname }).populate('project.testcases').exec();
-			if (project) {
-				await cache.set(`project-${req.params.projectname}`, project);
-			}
-		}
-
-		console.log(project);
+		let project = await projectCache.getProjectByName(req.params.projectname);
 
 		stat = getStatNumber(project);
 
@@ -74,19 +59,13 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 
 router.get('/requirements/:requirementname', ensureAuthenticated, async (req, res) => {
 	try {
-	let projects = await cache.get("projects");
+	let projects = await projectCache.getProjectList();
 	let requirements = await cache.get("requirements");
 	
 	if (requirements == undefined) {
 		requirements = await Requirements.find({}).exec();
 		await cache.set("requirements", requirements);
 	}
-
-	if (projects == undefined) {
-		projects = await Project.find({}).exec(); 
-		await cache.set("projects", projects);
-	}
-
 	const requirement = await Requirements.findOne({requirementname: req.params.requirementname});
 
 	if (requirement) {
@@ -111,25 +90,14 @@ router.get('/requirements/:requirementname', ensureAuthenticated, async (req, re
 router.get('/project/:projectname/:testcasename/edit', ensureAuthenticated, async (req, res) => {
 	try {
 		const requirements = await cache.get("requirements");
-		let projects = await cache.get("projects");
+		let projects = await projectCache.getProjectList();
 
 		if (!requirements) {
 			const requirements = await Requirements.find({}).exec();
 			await cache.set("requirements", requirements);
 		}
 
-		if (!projects) {
-			projects = await Project.find({}).exec();
-			await cache.set("projects", projects);
-		}
-
-		let project = await cache.get(`projects-${req.params.projectname}`);
-		if (!project) {
-			project = await Project.findOne({ projectname: req.params.projectname }).populate('project.testcases.linkedrequirements').exec();
-			if (project) {
-				await cache.set(`project-${req.params.projectname}`, project);
-			}
-		}
+		let project = await projectCache.getProjectByName(req.params.projectname);
 
 		if (project && projects) {
 			const testcase = project.testcases.find(obj => {
@@ -163,30 +131,22 @@ router.get('/project/:projectname/:testcasename/edit', ensureAuthenticated, asyn
 router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (req, res) => {
 	try {
 		const requirements = await cache.get("requirements");
-		let projects = await cache.get("projects");
+		let projects = await projectCache.getProjectList();
 
 		if (!requirements) {
 			const requirements = await Requirements.find({}).exec();
 			await cache.set("requirements", requirements);
 		}
 
-		if (!projects) {
-			projects = await Project.find({}).exec();
-			await cache.set("projects", projects);
-		}
+		let project = await projectCache.getProjectByName(req.params.projectname);
 
-		let project = await cache.get(`projects-${req.params.projectname}`);
-		if (!project) {
-			project = await Project.findOne({ projectname: req.params.projectname }).populate('project.testcases.linkedrequirements').exec();
-			if (project) {
-				await cache.set(`project-${req.params.projectname}`, project);
-			}
-		}
+		console.log("Project " + project);
+		console.log("testcases " + project.testcases);
 
-		if (project && projects) {
-			const testcase = project.testcases.find(obj => {
-				return obj.name === req.params.testcasename;
-			});
+		if (project) {
+		  const testcase = project.testcases.find(obj => {
+			return obj.name === req.params.testcasename;
+		  });
 
 			res.render('testcase', {
 				req: req,
@@ -215,15 +175,12 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 	try {
 		const selectedTarget = req.query.selectedTarget || 'projects';
 		let requirements = await cache.get("requirements");
-		let projects = await cache.get("projects");
+		let projects = await projectCache.getProjectList();
 
 		if (requirements == undefined) {
 			requirements = await Requirements.find({}).exec();
 			await cache.set("requirements", requirements);
 		}
-
-			projects = await Project.find({}).exec();
-			await cache.set("projects", projects);
 
 		res.render('dashboard', {
 			getColor,
@@ -262,8 +219,6 @@ function getStatNumber(project) {
 	});
 	
 	const numUniqueLinkedRequirements = uniqueLinkedRequirements.size;
-
-	console.log("Test: " + totalLinkedRequirements + numUniqueLinkedRequirements);
 	
 	return totalLinkedRequirements / numUniqueLinkedRequirements;
   }

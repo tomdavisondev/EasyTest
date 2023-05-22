@@ -152,7 +152,7 @@ router.post('/:projectname/:testcasename/updatedescription', (req, res) => {
 router.post('/:projectname/addtestcase', (req, res) => {
     let testcasename = req.body.testcasename;
     let testcasedescription = req.body.testcasedescription;
-    console.log(req.body.testcases);
+    let generatedIcon = req.body.testcaseIconContainer_generatedIcon;
     let errors = [];
 
     let user = req.user;
@@ -188,12 +188,16 @@ router.post('/:projectname/addtestcase', (req, res) => {
                                 { testcases: 
                                     {
                                         name: testcasename,
-                                        description: testcasedescription
+                                        description: testcasedescription,
+                                        testcaseImage: {
+                                          data: generatedIcon,
+                                          contentType: 'image/png'
+                                        }
                                     } 
                                 }
                             })
                         .then(project => {
-                            console.log("UserLog: Created new test case" + "\n" + "name: " + testcasename + "\n" + "description: " + testcasedescription);
+                            console.log("UserLog: Created new test case" + "\n" + "name: " + testcasename + "\n" + "description: " + testcasedescription + "image" + generatedIcon);
                             req.flash('success_msg', "Test case added successfully");
                             res.redirect('/project/' + projectname);
                         })
@@ -469,7 +473,6 @@ router.get('/:projectname/:testcasename/addteststep', async (req, res) => {
 
     // Find the test case within the project
     const testcase = project.testcases.find(tc => tc.name === testcasename);
-    console.log("test: " + testcase.teststeps.length + 1);
     if (!testcase) {
       req.flash('error', 'Test case not found');
       res.redirect('back');
@@ -511,8 +514,6 @@ router.post('/addproject', (req, res) => {
     let projects = req.body.projects;
     let user = req.user;
     let name = user.name;
-
-    console.log("Test: " + generatedIcon);
 
     let errors = [];
 
