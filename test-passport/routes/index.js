@@ -2,33 +2,26 @@ const express = require('express');
 const router = express.Router();
 const { ensureAuthenticated } = require('../config/auth');
 
-const Project = require('../models/Project');
-const Requirements = require('../models/Requirements');
 const ProjectCache = require('../config/projectcache');
+const RequirementCache = require('../config/requirementcache');
+const Project = require('../models/Project');
+const Requirement = require('../models/Requirements');
 
 const projectCache = new ProjectCache();
+const requirementCache = new RequirementCache();
 
-//Temp
-const NodeCache = require("node-cache");
-const cache = new NodeCache();
-
-Requirements.watch().on('change', async () => {
-	console.log('Requirement collection has changed, invalidating cache...');
-	await cache.del('requirements');
-	requirements = await Requirements.find({}).exec();
-	await cache.set("requirements", requirements);
+Project.watch().on('change', async () => {
+	await projectCache.refreshCache();
   });
 
+Requirement.watch().on('change', async () => {
+    await requirementCache.refreshCache();
+  });
+  
 router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 	try {
-		let requirements = await cache.get("requirements");
-		//let projects = await cache.get("projects");
+		let requirements = await requirementCache.getRequirementList();
 		let projects = await projectCache.getProjectList();
-
-		if (requirements == undefined) {
-			requirements = await Requirements.find({}).exec();
-			await cache.set("requirements", requirements);
-		}
 
 		let project = await projectCache.getProjectByName(req.params.projectname);
 
@@ -60,13 +53,9 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 router.get('/requirements/:requirementname', ensureAuthenticated, async (req, res) => {
 	try {
 	let projects = await projectCache.getProjectList();
-	let requirements = await cache.get("requirements");
+	let requirements = await requirementCache.getRequirementList();
 	
-	if (requirements == undefined) {
-		requirements = await Requirements.find({}).exec();
-		await cache.set("requirements", requirements);
-	}
-	const requirement = await Requirements.findOne({requirementname: req.params.requirementname});
+	const requirement = await requirementCache.getRequirementByName(req.params.requirementname);
 
 	if (requirement) {
 		res.render('requirement', {
@@ -89,13 +78,8 @@ router.get('/requirements/:requirementname', ensureAuthenticated, async (req, re
 
 router.get('/project/:projectname/:testcasename/edit', ensureAuthenticated, async (req, res) => {
 	try {
-		const requirements = await cache.get("requirements");
+		const requirements = await requirementCache.getRequirementList();
 		let projects = await projectCache.getProjectList();
-
-		if (!requirements) {
-			const requirements = await Requirements.find({}).exec();
-			await cache.set("requirements", requirements);
-		}
 
 		let project = await projectCache.getProjectByName(req.params.projectname);
 
@@ -130,13 +114,8 @@ router.get('/project/:projectname/:testcasename/edit', ensureAuthenticated, asyn
 
 router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (req, res) => {
 	try {
-		const requirements = await cache.get("requirements");
+		const requirements = await requirementCache.getRequirementList();
 		let projects = await projectCache.getProjectList();
-
-		if (!requirements) {
-			const requirements = await Requirements.find({}).exec();
-			await cache.set("requirements", requirements);
-		}
 
 		let project = await projectCache.getProjectByName(req.params.projectname);
 
@@ -174,13 +153,8 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (re
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 	try {
 		const selectedTarget = req.query.selectedTarget || 'projects';
-		let requirements = await cache.get("requirements");
+		let requirements = await requirementCache.getRequirementList();
 		let projects = await projectCache.getProjectList();
-
-		if (requirements == undefined) {
-			requirements = await Requirements.find({}).exec();
-			await cache.set("requirements", requirements);
-		}
 
 		res.render('dashboard', {
 			getColor,

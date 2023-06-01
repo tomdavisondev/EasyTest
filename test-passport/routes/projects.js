@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const ObjectId = require('mongodb').ObjectID;
 const methodOverride = require('method-override');
+const ProjectCache = require('../config/projectcache');
+const projectCache = new ProjectCache();
 
 // Project model
 const Project = require('../models/Project')
@@ -30,13 +32,14 @@ router.post('/:projectname/:testcasename/updatetest', (req, res) => {
         testcase.teststeps = req.body.updatedsteps;
 
         // save the updated project
-        project.save((err, updatedProject) => {
+        project.save(async (err, updatedProject) => {
           if (err) {
             console.error(err);
             req.flash('error_msg', "Error updating test case");
             res.redirect('/project/' + projectname + '/' + testcasename);
           } else {
             console.log(`Test case ${testcasename} updated successfully`);
+            await projectCache.refreshCache();
             req.flash('success_msg', "Project updated successfully");
             res.redirect('/project/' + projectname + '/' + testcasename);
           }
@@ -75,7 +78,8 @@ router.post('/:projectname/:testcasename/updatetestcasetitle', (req, res) => {
             {_id: project._id, "testcases._id": testcase._id},
             {$set: {"testcases.$.name": newTestCaseName}}
           )
-            .then(project => {
+            .then(async project => {
+              await projectCache.refreshCache();
               req.flash('success_msg', "Test name updated");
               res.redirect('/project/' + projectname + '/' + newTestCaseName);
             })
@@ -125,7 +129,8 @@ router.post('/:projectname/:testcasename/updatedescription', (req, res) => {
             {_id: project._id, "testcases._id": testcase._id},
             {$set: {"testcases.$.description": req.body.description}}
           )
-            .then(project => {
+            .then(async project => {
+              await projectCache.refreshCache();
               req.flash('success_msg', "Test description updated");
               res.redirect('/project/' + projectname + '/' + testcasename);
             })
@@ -196,7 +201,10 @@ router.post('/:projectname/addtestcase', (req, res) => {
                                     } 
                                 }
                             })
-                        .then(project => {
+                        .then(async project => {
+                            console.log("b4 " + projectCache.getProjectByName(project.projectname));
+                            await projectCache.refreshCache();
+                            console.log("after " + projectCache.getProjectByName(project.projectname));
                             console.log("UserLog: Created new test case" + "\n" + "name: " + testcasename + "\n" + "description: " + testcasedescription + "image" + generatedIcon);
                             req.flash('success_msg', "Test case added successfully");
                             res.redirect('/project/' + projectname);
@@ -243,6 +251,7 @@ router.post('/:projectname/:testcasename/clone-to', async (req, res) => {
       }
     }
 
+    await projectCache.refreshCache();
     req.flash('success_msg', "Test case cloned successfully");
     console.log("Cloned test case (" + testcasename + ") to: " + selectedProjects);
     res.redirect('/project/' + projectname);
@@ -274,6 +283,7 @@ router.get('/:projectname/:testcasename/clone-here', async (req, res) => {
       project.testcases.push(clonedTestcase);
       await project.save();
   
+      await projectCache.refreshCache();
       req.flash('success_msg', "Test case cloned successfully");
       console.log("Cloned test case: " + testcase);
       res.redirect('/project/' + projectname);
@@ -294,7 +304,8 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
       { projectname },
       { $pull: { testcases: { name: testcasename } } }
     )
-      .then(() => {
+      .then(async () => {
+        await projectCache.refreshCache();
         req.flash('success_msg', "Test case deleted successfully");
         console.log("Deleted test case " + testcasename);
         res.redirect('/project/' + projectname);
@@ -311,7 +322,8 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
     const { projectname } = req.params;
   
     Project.deleteOne({ projectname })
-      .then(() => {
+      .then(async() => {
+        await projectCache.refreshCache();
         console.log("Deleted project " + projectname);
         req.flash('success_msg', 'Project deleted successfully');
         res.redirect('/dashboard');
@@ -334,7 +346,8 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
       { projectname, 'testcases.name': testcasename },
       { $pull: { [`testcases.$.teststeps`]: { _id: stepId } } }
     )
-      .then(() => {
+      .then(async() => {
+        await projectCache.refreshCache();
         console.log("Test step(" + stepId + ") from testcase " + testcasename);
         req.flash('success_msg', 'Test step deleted successfully');
         res.redirect(`/project/${projectname}/${testcasename}`);
@@ -399,7 +412,8 @@ router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
                 }
             ]
         })
-        .then(() => {
+        .then(async () => {
+            await projectCache.refreshCache();
             console.log("Test step updated");
             req.flash('success_msg', "Step updated");
             res.redirect('/project/' + req.params.projectname + '/' + req.params.testcasename);
@@ -448,6 +462,7 @@ router.get('/:projectname/:testcasename/clone-step-here', async (req, res) => {
     // Save to database
     await project.save();
 
+    await projectCache.refreshCache();
     req.flash('success_msg', "Test case cloned successfully");
     console.log
     res.redirect('/project/' + projectname + '/' + testcasename);
@@ -492,6 +507,7 @@ router.get('/:projectname/:testcasename/addteststep', async (req, res) => {
 
     // Redirect back to the test case page with success message
     console.log("Added test step in " + projectname + testcasename);
+    await projectCache.refreshCache();
     req.flash('success_msg', 'Test step added successfully!');
     res.redirect(`/project/${projectname}/${testcasename}/edit`);
   } catch (error) {
@@ -507,7 +523,7 @@ router.get('/:projectname/:testcasename/addteststep', async (req, res) => {
 
 //New Project Handle
 router.post('/addproject', (req, res) => {
-    let generatedIcon = req.body.generatedIcon;
+    let generatedIcon = req.body.projectIconContainer_generatedIcon;
     let projectname = req.body.projectname;
     let requirements = req.body.requirements;
     let projectshorthand = req.body.projectshorthand;
@@ -575,8 +591,9 @@ router.post('/addproject', (req, res) => {
                     }
                 });
                 newProject.save()
-                    .then(project => {
+                    .then( async project => {
                         console.log("UserLog: Created new project" + "\n" + project);
+                        await projectCache.refreshCache();
                         req.flash('success_msg', "New project created");
                         res.redirect('../dashboard');
                     })
@@ -609,6 +626,7 @@ router.get('/:projectname/clone-project', async (req, res) => {
     const savedProject = await new Project(clonedProject).save();
 
     console.log("Cloning project " + projectname);
+    await projectCache.refreshCache();
     req.flash('success_msg', "Project cloned successfully");
     res.redirect('/dashboard');
   } catch (err) {
@@ -645,6 +663,7 @@ router.post('/clone-to', async (req, res) => {
       await project.save();
 
     }
+    await projectCache.refreshCache();
     req.flash('success_msg', "Project cloned successfully");
     res.redirect('/dashboard');
   } catch (err) {
@@ -692,6 +711,7 @@ router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
     // Send back a success response
     const redirectUrl = '/project/' + projectname + '/' + testcasename;
     console.log("Linking requirements " + requirementIds)
+    await projectCache.refreshCache();
     req.flash('success_msg', 'Requirement Linked');
     res.redirect(redirectUrl);
   } catch (err) {

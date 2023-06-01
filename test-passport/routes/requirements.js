@@ -6,93 +6,100 @@ const Project = require('../models/Project');
 const User = require('../models/User');
 const Requirement = require('../models/Requirements');
 
+const RequirementCache = require('../config/requirementcache');
+const requirementCache = new RequirementCache();
+
 router.post('/addrequirement', async (req, res) => {
-    let requirementname = req.body.requirementname;
-    let requirementid = req.body.requirementid;
-    let projects = req.body.projects;
-    let requirements = req.body.requirements;
-    let user = req.user;
-    let name = user.name;
-    let generatedIcon = req.body.requirementIconContainer_generatedIcon;
+  let requirementname = req.body.requirementname;
+  let requirementid = req.body.requirementid;
+  let projects = req.body.projects;
+  let requirements = req.body.requirements;
+  let user = req.user;
+  let name = user.name;
+  let generatedIcon = req.body.requirementIconContainer_generatedIcon;
 
-    console.log(generatedIcon);
+  let errors = [];
 
-    let errors = [];
+  if (!requirementname || !requirementid) {
+    errors.push({ msg: 'Please fill in all fields' });
+  }
 
-    if (!requirementname || !requirementid) {
-        errors.push({ msg: 'Please fill in all fields' });
+  if (requirements === undefined) {
+    try {
+      requirements = await Requirement.find({}).exec();
+    } catch (err) {
+      console.log(err);
     }
-
-    if (requirements === undefined) {
-        try {
-            requirements = await Requirement.find({}).exec();
-        } catch (err) {
-            console.log(err);
-        }
+  }
+  if (projects === undefined) {
+    try {
+      projects = await Project.find({}).exec();
+    } catch (err) {
+      console.log(err);
     }
-    if (projects === undefined) {
-        try {
-            projects = await Project.find({}).exec();
-        } catch (err) {
-            console.log(err);
-        }
-    }
+  }
 
-    Project.find({}).exec(function (err, projectlist) {
-        Requirement.find({}).exec(function (err, requirementlist) {
-            if (errors.length > 0) {
-                res.render('dashboard', {
-                    req,
-                    name,
-                    errors,
-                    user,
-                    projects: projectlist,
-                    requirements: requirementlist,
-                    selectedTarget: 'requirements',
-                    requirements,
-                    requirementname,
-                    requirementid
-                });
-            } else {
-              Requirement.findOne({
-                $or: [
-                    { requirementname: { $regex: new RegExp("^" + requirementname + "$", "i") } },
-                    { requirementid: { $regex: new RegExp("^" + requirementid + "$", "i") } }
-                ]
-            })
-            .then(requirement => {
-                if (requirement) {
-                    if (requirement.requirementname.toLowerCase() === requirementname.toLowerCase()) {
-                        //Requirement exists with the same requirementname
-                        req.flash('error_msg', "Requirement already exists under that name");
-                    } else {
-                        //Requirement exists with the same requirementid
-                        req.flash('error_msg', "Requirement already exists with that ID");
-                    }
-                    res.redirect('/dashboard?selectedTarget=requirements');
-                } else {
-                    const newRequirement = new Requirement({
-                        requirementname,
-                        requirementid,
-                        requirementImage: {
-                          data: generatedIcon,
-                          contentType: 'image/png'
-                          },
-                    });
-                    newRequirement.save()
-                        .then(requirement => {
-                            console.log("UserLog: Created new requirement" + "\n" + requirement);
-                            req.flash('success_msg', "New requirement created");
-                            res.redirect('/dashboard?selectedTarget=requirements');
-                        })
-                        .catch(err => console.log("ERROR: -- Could not create requirement", err));
-                }
-            })
-            .catch(err => console.log("ERROR: -- Could not create requirement", err));            
-            }
+  Project.find({}).exec(function (err, projectlist) {
+    Requirement.find({}).exec(async function (err, requirementlist) {
+      if (errors.length > 0) {
+        res.render('dashboard', {
+          req,
+          name,
+          errors,
+          user,
+          projects: projectlist,
+          requirements: requirementlist,
+          selectedTarget: 'requirements',
+          requirements,
+          requirementname,
+          requirementid,
         });
+      } else {
+        try {
+          const requirement = await Requirement.findOne({
+            $or: [
+              { requirementname: { $regex: new RegExp("^" + requirementname + "$", "i") } },
+              { requirementid: { $regex: new RegExp("^" + requirementid + "$", "i") } },
+            ],
+          });
+
+          if (requirement) {
+            if (requirement.requirementname.toLowerCase() === requirementname.toLowerCase()) {
+              //Requirement exists with the same requirementname
+              req.flash('error_msg', "Requirement already exists under that name");
+            } else {
+              //Requirement exists with the same requirementid
+              req.flash('error_msg', "Requirement already exists with that ID");
+            }
+            res.redirect('/dashboard?selectedTarget=requirements');
+          } else {
+            const newRequirement = new Requirement({
+              requirementname,
+              requirementid,
+              requirementImage: {
+                data: generatedIcon,
+                contentType: 'image/png',
+              },
+            });
+
+            try {
+              await newRequirement.save();
+              console.log("UserLog: Created new requirement" + "\n" + newRequirement);
+              await requirementCache.refreshCache();
+              req.flash('success_msg', "New requirement created");
+              res.redirect('/dashboard?selectedTarget=requirements');
+            } catch (err) {
+              console.log("ERROR: -- Could not create requirement", err);
+            }
+          }
+        } catch (err) {
+          console.log("ERROR: -- Could not create requirement", err);
+        }
+      }
     });
+  });
 });
+
 
 router.get('/:requirementname/clone-requirement', async (req, res) => {
     const { requirementname } = req.params;
@@ -115,6 +122,7 @@ router.get('/:requirementname/clone-requirement', async (req, res) => {
       const savedRequirement = await new Requirement(clonedRequirement).save();
   
       console.log("Cloning requirement: " + requirementname);
+      await requirementCache.refreshCache();
       req.flash('success_msg', "Requirement cloned successfully");
       res.redirect('/dashboard?selectedTarget=requirements');
     } catch (err) {
@@ -151,8 +159,9 @@ router.post('/edit', async (req, res) => {
 
         // Save the updated requirement
         requirement.save()
-          .then((updatedRequirement) => {
+          .then(async (updatedRequirement) => {
             console.log("Updating requirement " + requirement)
+            await requirementCache.refreshCache();
             req.flash('success_msg', 'Requirement updated successfully');
             res.redirect(`/requirements/${requirementname}`);
           })
@@ -179,7 +188,8 @@ router.post('/:requirementname/delete', (req, res) => {
     const { requirementname } = req.params;
   
     Requirement.deleteOne({ requirementname })
-      .then(() => {
+      .then( async () => {
+        await requirementCache.refreshCache();
         req.flash('success_msg', 'Requirement deleted successfully');
         res.redirect('/dashboard?selectedTarget=requirements');
       })

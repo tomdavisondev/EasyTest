@@ -3,6 +3,22 @@ const Project = require('../models/Project');
 const cache = new NodeCache();
 
 class ProjectCache {
+  constructor() {
+    this.cacheKey = "projectList";
+  }
+
+  async refreshCache() {
+    try {
+      const projectList = await Project.find().populate("testcases");
+      const projectsWithFixedImages = this.fixProjectImages(projectList);
+
+      cache.set(this.cacheKey, JSON.stringify(projectsWithFixedImages));
+      console.log("Cache refreshed.");
+    } catch (error) {
+      console.error("Error refreshing cache:", error);
+    }
+  }
+
   async getProjectList() {
     const cacheKey = "projectList";
   
