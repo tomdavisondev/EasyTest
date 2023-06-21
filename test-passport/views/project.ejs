@@ -159,12 +159,16 @@
 							<% for (let i = 0; i < testcases.length; i++) { %>
 							<tr>
 								<td>
-									<% if (testcases[i].testcaseImage && testcases[i].testcaseImage.data) { %>
-										<% const imageBase64String = Buffer.from(testcases[i].testcaseImage.data.buffer); %>
-										<img alt="..." src="<%= imageBase64String %>" class="avatar avatar-sm rounded-circle me-2">	
-										<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcases[i].name %>"><%= testcases[i].name %></a>
+									<% if (!Buffer.isBuffer(testcases[i].testcaseImage.data)) { %>
+										<% const imageBase64Stringtestc = Buffer.from(testcases[i].testcaseImage.data.buffer); %>
+										<img alt="..." src="<%= imageBase64Stringtestc %>" class="avatar avatar-sm rounded-circle me-2">	
+										<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcase[i].name %>"><%= testcase[i].name %></a>
+									<% } else { %>
+										<% const imageBase64Stringtestc = Buffer.from(testcases[i].testcaseImage.data); %>
+										<img alt="..." src="<%= imageBase64Stringtestc %>" class="avatar avatar-sm rounded-circle me-2">	
+										<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcases[i].name %>"><%= project.projectname %></a>
 									<% } %>
-									
+								</td>
 								<td>23-01-2022</td>
 								<td><span class="badge badge-lg badge-dot"><i class="bg-warning"></i>In progress</span></td>
 								<td>

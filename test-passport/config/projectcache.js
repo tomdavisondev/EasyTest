@@ -83,6 +83,16 @@ class ProjectCache {
             buffer: Buffer.from(project.projectImage.data.data),
           };
         }
+        project.testcases.forEach(testcase => {
+          if (testcase.testcaseImage && testcase.testcaseImage.data.type === 'Buffer') {
+            testcase.testcaseImage.data = {
+              _bsontype: 'Binary',
+              sub_type: 0,
+              position: 0,
+              buffer: Buffer.from(testcase.testcaseImage.data.data),
+            };
+          }
+        });
       });
       return projects;
     }
