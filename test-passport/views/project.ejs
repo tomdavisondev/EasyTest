@@ -159,7 +159,6 @@
 							<% for (let i = 0; i < testcases.length; i++) { %>
 							<tr>
 								<td>
-									<% console.log(testcases[i].testcaseImage); %>
 									<% if (testcases[i].testcaseImage && testcases[i].testcaseImage.data) { %>
 										<% const imageBase64String = Buffer.from(testcases[i].testcaseImage.data.buffer); %>
 										<img alt="..." src="<%= imageBase64String %>" class="avatar avatar-sm rounded-circle me-2">	

@@ -20,6 +20,7 @@ Requirement.watch().on('change', async () => {
   
 router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 	try {
+		await projectCache.refreshCache();
 		let requirements = await requirementCache.getRequirementList();
 		let projects = await projectCache.getProjectList();
 
@@ -33,7 +34,6 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 				name: req.user.name,
 				project: project,
 				testcases: project.testcases,
-				teststeps: project.testcases.teststeps,
 				projects: projects,
 				stat,
 				requirements: requirements
@@ -46,7 +46,7 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 			console.log(req.params);
 		}
 	} catch (error) {
-		console.log(error);
+		console.log("Index Error: " + error);
 	}
 });
 

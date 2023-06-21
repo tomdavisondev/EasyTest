@@ -187,7 +187,7 @@ router.post('/:projectname/addtestcase', (req, res) => {
                         req.flash('error_msg', "Test case with the same name already exists");
                         res.redirect('/project/' + projectname);
                     } else {
-                        Project.update(
+                        Project.updateOne(
                             { _id: project._id },
                             { $push: 
                                 { testcases: 
@@ -202,9 +202,7 @@ router.post('/:projectname/addtestcase', (req, res) => {
                                 }
                             })
                         .then(async project => {
-                            console.log("b4 " + projectCache.getProjectByName(project.projectname));
                             await projectCache.refreshCache();
-                            console.log("after " + projectCache.getProjectByName(project.projectname));
                             console.log("UserLog: Created new test case" + "\n" + "name: " + testcasename + "\n" + "description: " + testcasedescription + "image" + generatedIcon);
                             req.flash('success_msg', "Test case added successfully");
                             res.redirect('/project/' + projectname);
@@ -592,7 +590,6 @@ router.post('/addproject', (req, res) => {
                 });
                 newProject.save()
                     .then( async project => {
-                        console.log("UserLog: Created new project" + "\n" + project);
                         await projectCache.refreshCache();
                         req.flash('success_msg', "New project created");
                         res.redirect('../dashboard');

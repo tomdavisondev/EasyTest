@@ -20,9 +20,7 @@ class ProjectCache {
   }
 
   async getProjectList() {
-    const cacheKey = "projectList";
-  
-    const cachedData = cache.get(cacheKey);
+    const cachedData = cache.get(this.cacheKey);
     if (cachedData) {
       const projects = JSON.parse(cachedData);
       return this.fixProjectImages(projects); // Fix project images before returning
@@ -31,19 +29,26 @@ class ProjectCache {
     const projectList = await Project.find().populate("testcases");
     const projectsWithFixedImages = this.fixProjectImages(projectList); // Fix project images
   
-    cache.set(cacheKey, JSON.stringify(projectsWithFixedImages));
+    cache.set(this.cacheKey, JSON.stringify(projectsWithFixedImages));
   
     return projectsWithFixedImages;
   }
 
   async getProjectByName(projectName) {
-    const cachedData = cache.get(projectName);
+    const cachedData = cache.get(this.cacheKey);
     if (cachedData) {
       const project = JSON.parse(cachedData);
-      return this.fixProjectImages(project); // Fix project images before returning
+      if(project.projectname == projectName)
+        return this.fixProjectImages(project); // Fix project images before returning
     }
   
     const project = await Project.findOne({ projectname: projectName }).populate("testcases");
+  
+    if (!project) {
+      console.log("Could not return project!");
+      return null; // Return null if project not found
+    }
+  
     const projectWithFixedImages = this.fixProjectImages(project); // Fix project images
   
     cache.set(projectName, JSON.stringify(projectWithFixedImages));
