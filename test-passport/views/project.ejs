@@ -162,11 +162,11 @@
 									<% if (!Buffer.isBuffer(testcases[i].testcaseImage.data)) { %>
 										<% const imageBase64Stringtestc = Buffer.from(testcases[i].testcaseImage.data.buffer); %>
 										<img alt="..." src="<%= imageBase64Stringtestc %>" class="avatar avatar-sm rounded-circle me-2">	
-										<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcase[i].name %>"><%= testcase[i].name %></a>
+										<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcase[i].name %>"><%= testcases[i].name %></a>
 									<% } else { %>
 										<% const imageBase64Stringtestc = Buffer.from(testcases[i].testcaseImage.data); %>
 										<img alt="..." src="<%= imageBase64Stringtestc %>" class="avatar avatar-sm rounded-circle me-2">	
-										<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcases[i].name %>"><%= project.projectname %></a>
+										<a class="text-heading font-semibold" href="/project/<%= project.projectname %>/<%= testcases[i].name %>"><%= testcases[i].name %></a>
 									<% } %>
 								</td>
 								<td>23-01-2022</td>

@@ -229,7 +229,7 @@ function onSaveClicked() {
   .then(response => {
     if (response.ok) {
       console.log('Save successful');
-	  window.location.href = "/project/<%= project.projectname %>/<%= testcasename %>";
+	  window.location.href = "/project/<%= project.projectname %>/<%= testcase.name %>";
     } else {
       throw new Error('Save failed');
     }
