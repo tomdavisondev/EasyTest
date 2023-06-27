@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { ensureAuthenticated } = require('../config/auth');
+const logger = require('../logger');
 
 const ProjectCache = require('../config/projectcache');
 const RequirementCache = require('../config/requirementcache');
@@ -26,7 +27,7 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 
 		let project = await projectCache.getProjectByName(req.params.projectname);
 
-		stat = getStatNumber(project);
+		let stat = getStatNumber(project);
 
 		if (project) {
 			res.render('project', {
@@ -41,12 +42,10 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 		} else {
 			//TODO: Proper validation when a project is not found
 			// this shouldn't ever happen but eh, worth doing
-			console.log("Error: project not found error");
-			console.log(req.projectName);
-			console.log(req.params);
+			logger.server('Error', 'Project could not be found');
 		}
 	} catch (error) {
-		console.log("Index Error: " + error);
+		logger.server('Error', 'Index error ' + error);
 	}
 });
 
@@ -69,10 +68,10 @@ router.get('/requirements/:requirementname', ensureAuthenticated, async (req, re
 	} else {
 		//TODO: Proper validation when a requirement is not found
 		// this shouldn't ever happen but worth doing
-		console.log("Error: could not load requirementname" + req.params.requirementname);
+		logger.server('Error', 'Could not load requirement:' + req.params.requirementname);
 	}
 	} catch (error) {
-		console.log(error);
+		logger.server('error', 'Could not get requirement');
 	}
 });
 
@@ -103,11 +102,10 @@ router.get('/project/:projectname/:testcasename/edit', ensureAuthenticated, asyn
 		} else {
 			//TODO: Proper validation when a project is not found
 			// this shouldn't ever happen but worth doing
-			console.log("Error: project not found error");
-			console.log(req.params);
+			logger.server('Error', 'Could not find project');
 		}
 	} catch (error) {
-		console.log(error);
+		logger.server('error', 'Could not edit project: ' + error);
 	}
 });
 
@@ -119,13 +117,10 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (re
 
 		let project = await projectCache.getProjectByName(req.params.projectname);
 
-		console.log("Project " + project);
-		console.log("testcases " + project.testcases);
-
 		if (project) {
-		  const testcase = project.testcases.find(obj => {
+			const testcase = project.testcases.find(obj => {
 			return obj.name === req.params.testcasename;
-		  });
+		});
 
 			res.render('testcase', {
 				req: req,
@@ -142,11 +137,10 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (re
 		} else {
 			//TODO: Proper validation when a project is not found
 			// this shouldn't ever happen but worth doing
-			console.log("Error: project not found error");
-			console.log(req.params);
+			logger.server('error', 'Could not find project');
 		}
 	} catch (error) {
-		console.log(error);
+		logger.server('error', 'Could not get test case');
 	}
 });
 
@@ -165,7 +159,7 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 			req: req
 		});
 	} catch (error) {
-		console.log(error);
+		logger.server('error', 'Could not get dashboard: ' + error);
 	}
 });
 
@@ -186,10 +180,10 @@ function getStatNumber(project) {
 	let totalLinkedRequirements = 0;
 	
 	project.testcases.forEach(testcase => {
-	  testcase.linkedrequirements.forEach(requirement => {
+		testcase.linkedrequirements.forEach(requirement => {
 		uniqueLinkedRequirements.add(requirement.id);
 		totalLinkedRequirements++;
-	  });
+	});
 	});
 	
 	const numUniqueLinkedRequirements = uniqueLinkedRequirements.size;

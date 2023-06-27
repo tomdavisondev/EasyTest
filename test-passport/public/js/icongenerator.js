@@ -1,3 +1,5 @@
+//Connects to the icon generating tools for projects/requirements and test cases
+
 function generateIcon(input, color) {
   // Validate input length
   if (input.length > 6) {
@@ -41,8 +43,6 @@ function generateIcon(input, color) {
 
 function displayIcon(input, color, containerId) {
   try {
-
-    console.log(containerId);
     const icon = generateIcon(input, color);
     const iconContainer = document.getElementById(containerId);
     iconContainer.innerHTML = ''; // Clear any existing content

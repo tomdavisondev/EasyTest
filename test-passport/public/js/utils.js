@@ -1,5 +1,4 @@
 function populateTestcases(testcases) {
-	console.log('LOGGED')
 	const parsedTestcases = JSON.parse(testcases);
 	const tableBody = document.querySelector("#projects-table tbody");
 	tableBody.innerHTML = "";
@@ -65,7 +64,6 @@ function populateTestcases(testcases) {
 
   
   function submitSelectedRequirements() {
-	console.log("Submitting selected requirements");
     const form = document.forms['requirement-form'];
     const checkboxes = form.elements['selected-requirements'];
     let selectedRequirements = [];

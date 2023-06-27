@@ -1,15 +1,13 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const router = express.Router();
 const ObjectId = require('mongodb').ObjectID;
-const methodOverride = require('method-override');
 const ProjectCache = require('../config/projectcache');
+const logger = require('../logger');
 const projectCache = new ProjectCache();
 
 // Project model
 const Project = require('../models/Project')
 const Requirement = require('../models/Requirements')
-const User = require('../models/User');
 
 router.post('/:projectname/:testcasename/updatetest', (req, res) => {
   const projectname = req.params.projectname;
@@ -18,13 +16,14 @@ router.post('/:projectname/:testcasename/updatetest', (req, res) => {
   // find the project by name
   Project.findOne({ projectname: projectname }, (err, project) => {
     if (err) {
-      console.error(err);
-      req.flash('error_msg', "Project not found");
+      logger.err('Could not find project: ' + projectname + err);
+      req.flash('error_msg', 'Project not found');
     } else {
       // find the test case by name
       const testcase = project.testcases.find((tc) => tc.name === testcasename);
       if (!testcase) {
-        req.flash('error_msg', "Test case not found");
+        logger.err('Could not find test case: ' + testcase.name + err)
+        req.flash('error_msg', 'Test case not found');
       } else {
         // update the test case with the provided data
         testcase.name = req.body.title;
@@ -32,125 +31,21 @@ router.post('/:projectname/:testcasename/updatetest', (req, res) => {
         testcase.teststeps = req.body.updatedsteps;
 
         // save the updated project
-        project.save(async (err, updatedProject) => {
+        project.save(async (err) => {
           if (err) {
-            console.error(err);
-            req.flash('error_msg', "Error updating test case");
+            logger.server('error', 'Could not save project ' + project.projectname + err);
+            req.flash('error_msg', 'Error updating test case');
             res.redirect('/project/' + projectname + '/' + testcasename);
           } else {
-            console.log(`Test case ${testcasename} updated successfully`);
+            logger.info('Test case ' + testcasename + ' updated successfully');
             await projectCache.refreshCache();
-            req.flash('success_msg', "Project updated successfully");
+            req.flash('success_msg', 'Project updated successfully');
             res.redirect('/project/' + projectname + '/' + testcasename);
           }
         });
       }
     }
   });
-});
-
-
-
-router.post('/:projectname/:testcasename/updatetestcasetitle', (req, res) => {
-    let projectname = req.params.projectname;
-    let testcasename = req.params.testcasename;
-    console.log(req.body.title);
-    let newTestCaseName = req.body.title;
-
-    //Check if the newTestCaseName is empty
-    if (!newTestCaseName) {
-        req.flash('error_msg', "New name cannot be empty");
-        res.redirect('/project/' + projectname + '/' + testcasename);
-        return;
-    }
-    
-    console.log(`Updating name of test case "${testcasename}" in project "${projectname}" to "${newTestCaseName}"`);
-    
-    Project.findOne({projectname: projectname})
-    .then(project => {
-      if (project) {
-        var testcase = project.testcases.find(obj => {
-          return obj.name === testcasename
-        });
-    
-        if (testcase) {
-          Project.update(
-            {_id: project._id, "testcases._id": testcase._id},
-            {$set: {"testcases.$.name": newTestCaseName}}
-          )
-            .then(async project => {
-              await projectCache.refreshCache();
-              req.flash('success_msg', "Test name updated");
-              res.redirect('/project/' + projectname + '/' + newTestCaseName);
-            })
-            .catch(error => {
-              req.flash('error_msg', "Error updating test name");
-              res.redirect('/project/' + projectname + '/' + testcasename);
-            });
-        } else {
-          req.flash('error_msg', "Test case not found");
-          res.redirect('/projects');
-        }
-      } else {
-        req.flash('error_msg', "Project not found");
-        res.redirect('/projects');
-      }
-    })
-    .catch(error => {
-      req.flash('error_msg', "Error finding project");
-      res.redirect('/projects');
-    });
-});
-
-router.post('/:projectname/:testcasename/updatedescription', (req, res) => {
-    let projectname = req.params.projectname;
-    let testcasename = req.params.testcasename;
-    let description = req.body.description;
-    
-    //Check if the description is empty
-    if (!description) {
-        req.flash('error_msg', "Description cannot be empty");
-        res.redirect('/project/' + projectname + '/' + testcasename);
-        return;
-    }
-    // Your logic to update the description of a test case in the database
-  
-    console.log(`Updating description of test case "${testcasename}" in project "${projectname}" to "${description}"`);
-
-    Project.findOne({projectname: projectname})
-    .then(project => {
-      if (project) {
-        var testcase = project.testcases.find(obj => {
-          return obj.name === testcasename
-        });
-  
-        if (testcase) {
-          Project.update(
-            {_id: project._id, "testcases._id": testcase._id},
-            {$set: {"testcases.$.description": req.body.description}}
-          )
-            .then(async project => {
-              await projectCache.refreshCache();
-              req.flash('success_msg', "Test description updated");
-              res.redirect('/project/' + projectname + '/' + testcasename);
-            })
-            .catch(error => {
-              req.flash('error_msg', "Error updating test description");
-              res.redirect('/project/' + projectname + '/' + testcasename);
-            });
-        } else {
-          req.flash('error_msg', "Test case not found");
-          res.redirect('/projects');
-        }
-      } else {
-        req.flash('error_msg', "Project not found");
-        res.redirect('/projects');
-      }
-    })
-    .catch(error => {
-      req.flash('error_msg', "Error finding project");
-      res.redirect('/projects');
-    });
 });
 
 //New Test Case Handle
@@ -167,7 +62,7 @@ router.post('/:projectname/addtestcase', (req, res) => {
         errors.push({msg: 'Please fill in all fields'});
     }
     
-    Project.find({}).exec(function(err, projects) {
+    Project.find({}).exec(function() {
     
     if (errors.length > 0) {
         req.flash('error_msg', "Please fill in all fields");
@@ -201,16 +96,16 @@ router.post('/:projectname/addtestcase', (req, res) => {
                                     } 
                                 }
                             })
-                        .then(async project => {
+                          .then(async () => {
                             await projectCache.refreshCache();
-                            console.log("UserLog: Created new test case" + "\n" + "name: " + testcasename + "\n" + "description: " + testcasedescription + "image" + generatedIcon);
+                            logger.user('info', 'User: ' + req.user.name + 'has created a new test case: ' + testcasename + 'with the description ' + testcasedescription);
                             req.flash('success_msg', "Test case added successfully");
                             res.redirect('/project/' + projectname);
                         })
                     }
                 } else {
                     req.flash('error_msg', "Something went wrong, test case was not added");
-                    console.log("ERROR: -- Test case was not added" + "\n" + errors);
+                    logger.server('error', 'Test case was not added');
                     res.render('/project/' + projectname, {
                         errors,
                         projects,
@@ -251,11 +146,10 @@ router.post('/:projectname/:testcasename/clone-to', async (req, res) => {
 
     await projectCache.refreshCache();
     req.flash('success_msg', "Test case cloned successfully");
-    console.log("Cloned test case (" + testcasename + ") to: " + selectedProjects);
+    logger.user('info', 'User: ' + req.user.name + 'cloned testcase ' + testcasename + 'to: ' + selectedProjects);
     res.redirect('/project/' + projectname);
   } catch (err) {
-      console.log("ERROR: -- test case could not be cloned!");
-      console.log(err);
+      logger.server('error', 'Test case could not be cloned' + err);
       req.flash('error_msg', "Something went wrong, step could not be cloned");
       res.redirect('/project/' + projectname);
   }
@@ -283,11 +177,10 @@ router.get('/:projectname/:testcasename/clone-here', async (req, res) => {
   
       await projectCache.refreshCache();
       req.flash('success_msg', "Test case cloned successfully");
-      console.log("Cloned test case: " + testcase);
+      logger.user('info', 'User: ' + req.user.name + 'has cloned ' + testcase + ' to ' + projectname);
       res.redirect('/project/' + projectname);
     } catch (err) {
-        console.log("ERROR: -- test case could not be cloned-here!");
-        console.log(err);
+        logger.server('error', 'Test case could not be cloned here ' + err);
         req.flash('error_msg', "Something went wrong, step could not be cloned");
         res.redirect('/project/' + projectname);
     }
@@ -296,8 +189,6 @@ router.get('/:projectname/:testcasename/clone-here', async (req, res) => {
 router.post('/:projectname/:testcasename/delete', (req, res) => {
     const { projectname, testcasename } = req.params;
   
-    console.log("got here");
-  
     Project.findOneAndUpdate(
       { projectname },
       { $pull: { testcases: { name: testcasename } } }
@@ -305,12 +196,11 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
       .then(async () => {
         await projectCache.refreshCache();
         req.flash('success_msg', "Test case deleted successfully");
-        console.log("Deleted test case " + testcasename);
+        logger.user('info', 'User: ' + req.user.name + ' has deleted testcase ' +  testcasename);
         res.redirect('/project/' + projectname);
       })
       .catch((err) => {
-        console.log("ERROR: -- Test case could not be deleted!");
-        console.log(err);
+        logger.server('error', 'Test case could not be deleted ' + err);
         req.flash('error_msg', "Something went wrong, step could not be deleted");
         res.redirect('/project/' + projectname);
       });
@@ -322,13 +212,12 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
     Project.deleteOne({ projectname })
       .then(async() => {
         await projectCache.refreshCache();
-        console.log("Deleted project " + projectname);
+        logger.user('info', 'User: ' + req.user.name + ' deleted project ' + projectname);
         req.flash('success_msg', 'Project deleted successfully');
         res.redirect('/dashboard');
       })
       .catch((err) => {
-        console.log("ERROR: -- Project could not be deleted!");
-        console.log(err);
+        logger.server('error', 'Project could not be deleted ' + err);
         req.flash('error_msg', 'Something went wrong, project could not be deleted');
         res.redirect('/dashboard');
       });
@@ -336,9 +225,7 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
   
   router.post('/:projectname/:testcasename/deleteteststep', (req, res) => {
     const { projectname, testcasename } = req.params;
-    const { stepId, stepIndex } = req.body;
-
-    console.log("Test case steps" + Project.find({projectname, 'testcases.name': testcasename}) + "\n StepId" +stepId)
+    const { stepId } = req.body;
   
     Project.findOneAndUpdate(
       { projectname, 'testcases.name': testcasename },
@@ -346,13 +233,12 @@ router.post('/:projectname/:testcasename/delete', (req, res) => {
     )
       .then(async() => {
         await projectCache.refreshCache();
-        console.log("Test step(" + stepId + ") from testcase " + testcasename);
+        logger.user('info', 'User: ' + req.user.name + ' deleted test step in ' + testcasename);
         req.flash('success_msg', 'Test step deleted successfully');
         res.redirect(`/project/${projectname}/${testcasename}`);
       })
       .catch((err) => {
-        console.log("ERROR: -- Test step could not be deleted!");
-        console.log(err);
+        logger.server('error', 'Test step could not be deleted ' + err);
         req.flash('error_msg', 'Something went wrong, test step could not be deleted');
         res.redirect(`/project/${projectname}/${testcasename}`);
       });
@@ -412,14 +298,13 @@ router.post('/:projectname/:testcasename/updateteststep', (req, res) => {
         })
         .then(async () => {
             await projectCache.refreshCache();
-            console.log("Test step updated");
+            logger.user(req.user.name, 'info', 'User updated test step');
             req.flash('success_msg', "Step updated");
             res.redirect('/project/' + req.params.projectname + '/' + req.params.testcasename);
         })
         .catch(err => {
             req.flash('error_msg', "Something went wrong, step was not updated");
-            console.log("ERROR: -- Test step could not be updated!");
-            console.log(err);
+            logger.user(req.user.name, 'error', 'User could not update test step \n' + err);
             Project.find({}).exec((err, projects) => {
                 res.render('dashboard', {
                     errors: [{ msg: "Something went wrong, step was not updated" }],
@@ -436,15 +321,11 @@ router.get('/:projectname/:testcasename/clone-step-here', async (req, res) => {
   const { projectname, testcasename } = req.params;
   const { stepIndex, stepId } = req.query;
 
-  console.log(`stepIndex: ${stepIndex}, stepId: ${stepId}`);
-
   try {
     // Find the original test case
     const project = await Project.findOne({ projectname });
     const testcase = project.testcases.find(tc => tc.name === testcasename);
     const teststep = testcase.teststeps.find(ts => ts.stepnumber === parseInt(stepIndex) + 1);    
-
-    console.log(teststep);
 
     // Create cloned step with new stepnumber
     const clonedStep = {
@@ -462,11 +343,10 @@ router.get('/:projectname/:testcasename/clone-step-here', async (req, res) => {
 
     await projectCache.refreshCache();
     req.flash('success_msg', "Test case cloned successfully");
-    console.log
+    logger.user('info', 'User: ' + req.user.name + ' has cloned test case ' + testcasename + ' in ' + projectname);
     res.redirect('/project/' + projectname + '/' + testcasename);
   } catch (err) {
-      console.log("ERROR: -- Test step could not be cloned here!");
-      console.log(err);
+      logger.server('error', 'Test step could not be cloned here ' + err);
       req.flash('error_msg', "Something went wrong, step could not be cloned");
       res.redirect('/project/' + projectname + '/' + testcasename);
   }
@@ -504,13 +384,12 @@ router.get('/:projectname/:testcasename/addteststep', async (req, res) => {
     await project.save();
 
     // Redirect back to the test case page with success message
-    console.log("Added test step in " + projectname + testcasename);
     await projectCache.refreshCache();
+    logger.user('info', 'User: ' + req.user.name + ' has added test step in ' + testcasename);
     req.flash('success_msg', 'Test step added successfully!');
     res.redirect(`/project/${projectname}/${testcasename}/edit`);
   } catch (error) {
-    console.log("ERROR: -- A test step could not be added")
-    console.log(error);
+    logger.server('error', 'Could not add test step ' + error);
     req.flash('error_msg', 'An error occurred');
     res.redirect('back');
   }
@@ -541,16 +420,9 @@ router.post('/addproject', (req, res) => {
         errors.push({msg: 'Please fill in all fields'});
     }
 
-    if (!projects) {
-        Project.find({}).exec(function(err, projectlist) {
-            let projects = projectlist;
-        });
-    }
-
     Project.find({}).exec(function(err, projectlist) {
         projects = projectlist;
         if (errors.length > 0) {
-            console.log(errors);
             res.render('dashboard', {
                 errors,
                 name,
@@ -589,15 +461,16 @@ router.post('/addproject', (req, res) => {
                     }
                 });
                 newProject.save()
-                    .then( async project => {
+                      .then(async () => {
                         await projectCache.refreshCache();
+                        logger.user('info', 'User: ' + user.name + ' added new project' + projectname);
                         req.flash('success_msg', "New project created");
                         res.redirect('../dashboard');
                     })
-                    .catch(err => console.log(err));
+                    .catch(err => logger.server('error', 'Could not save project: ' + err));
             }
         })
-        .catch(err => console.log(err));        
+        .catch(err => logger.server('error', 'Could not save project: ' + err));        
         }
     });
 });
@@ -622,13 +495,13 @@ router.get('/:projectname/clone-project', async (req, res) => {
     // Add the cloned project to the database and save it
     const savedProject = await new Project(clonedProject).save();
 
-    console.log("Cloning project " + projectname);
+    logger.user('info', 'User: ' + req.user.name + ' cloned project ' + projectname)
     await projectCache.refreshCache();
+    logger.user(req.user.name, 'info', 'User cloned project: ' + projectname + 'successfully');
     req.flash('success_msg', "Project cloned successfully");
     res.redirect('/dashboard');
   } catch (err) {
-    console.log("ERROR: -- Cannot clone project");
-    console.log(err);
+    logger.server('error', 'Could not clone project: ' + err)
     req.flash('error_msg', "Something went wrong, project could not be cloned");
     res.redirect('/dashboard');
   }
@@ -636,9 +509,6 @@ router.get('/:projectname/clone-project', async (req, res) => {
 
 router.post('/clone-to', async (req, res) => {
   const { selectedProjects, selectedTestCase, containingProject } = req.body;
-  console.log('Selected projects:', selectedProjects);
-  console.log('Selected test case:', selectedTestCase);
-  console.log('Containing project case:', containingProject);
   try {
     // Find the selected test case
     const originalProject = await Project.findOne({ projectname: containingProject });
@@ -664,8 +534,7 @@ router.post('/clone-to', async (req, res) => {
     req.flash('success_msg', "Project cloned successfully");
     res.redirect('/dashboard');
   } catch (err) {
-    console.log("ERROR: -- Cannot clone to");
-    console.log(err);
+    logger.server('error', 'Could not clone to project: ' + err)
     req.flash('error_msg', "Something went wrong, project could not be cloned");
     res.redirect('/dashboard');
   }
@@ -686,15 +555,12 @@ router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
     const promises = linkedRequirements.map(async (requirementName) => {
       const requirement = await Requirement.findOne({ requirementid: requirementName });
       if (requirement) {
-        console.log("Found requirement:", requirement);
         requirementIds.push(requirement._id);
       } else {
-        console.log("No requirement found");
+        logger.server('error', 'Could not find requirement')
       }
     });
     await Promise.all(promises);
-
-    console.log(requirementIds);
     
     const updatedTestCase = await Project.findOneAndUpdate(
       { projectname, 'testcases.name': testcasename },
@@ -707,12 +573,12 @@ router.post('/:projectname/:testcasename/addrequirements', async (req, res) => {
     
     // Send back a success response
     const redirectUrl = '/project/' + projectname + '/' + testcasename;
-    console.log("Linking requirements " + requirementIds)
+    logger.user('info', 'User: ' + req.user.name + ' has linked requirements: ' + requirementIds + ' inside ' + projectname + testcasename)
     await projectCache.refreshCache();
     req.flash('success_msg', 'Requirement Linked');
     res.redirect(redirectUrl);
   } catch (err) {
-    console.error("Could not link requirement:", err);
+    logger.server('error', 'Could not link requirement: ' + err)
     req.flash('error_msg', 'Could not link requirement');
     const redirectUrl = '/project/' + projectname + '/' + testcasename;
     res.redirect(redirectUrl);

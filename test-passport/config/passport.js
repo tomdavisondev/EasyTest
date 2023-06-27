@@ -1,6 +1,6 @@
 const LocalStrategy = require('passport-local').Strategy;
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const logger = require('../logger');
 
 // Load User model
 const User = require('../models/User');
@@ -27,15 +27,17 @@ module.exports = function(passport) {
                         if (err) throw err;
 
                         if (isMatch) {
+                            logger.user('verbose', 'User' + user.name + ' logged in');
                             return done(null, user);
                         } else {
+                            logger.user('error','User: ' + user.name + 'Could not log in user');
                             return done(null, false, {
                                 message: 'Password incorrect'
                             });
                         }
                     });
                 })
-                .catch(err => console.log(err));
+                .catch(err => logger.server('error', 'Could not log in user' + '\n' + err));
         })
     );
 

@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const ObjectId = require('mongodb').ObjectID;
 
 const Project = require('../models/Project');
-const User = require('../models/User');
 const Requirement = require('../models/Requirements');
 
 const RequirementCache = require('../config/requirementcache');
+const logger = require('../logger');
 const requirementCache = new RequirementCache();
 
 router.post('/addrequirement', async (req, res) => {
@@ -28,14 +27,14 @@ router.post('/addrequirement', async (req, res) => {
     try {
       requirements = await Requirement.find({}).exec();
     } catch (err) {
-      console.log(err);
+      logger.server('error', 'Could not find requirement: ' + err)
     }
   }
   if (projects === undefined) {
     try {
       projects = await Project.find({}).exec();
     } catch (err) {
-      console.log(err);
+      logger.server('error', 'Could not find project: ' + err)
     }
   }
 
@@ -50,7 +49,6 @@ router.post('/addrequirement', async (req, res) => {
           projects: projectlist,
           requirements: requirementlist,
           selectedTarget: 'requirements',
-          requirements,
           requirementname,
           requirementid,
         });
@@ -58,18 +56,18 @@ router.post('/addrequirement', async (req, res) => {
         try {
           const requirement = await Requirement.findOne({
             $or: [
-              { requirementname: { $regex: new RegExp("^" + requirementname + "$", "i") } },
-              { requirementid: { $regex: new RegExp("^" + requirementid + "$", "i") } },
+              { requirementname: { $regex: new RegExp('^' + requirementname + '$', 'i') } },
+              { requirementid: { $regex: new RegExp('^' + requirementid + '$', 'i') } },
             ],
           });
 
           if (requirement) {
             if (requirement.requirementname.toLowerCase() === requirementname.toLowerCase()) {
               //Requirement exists with the same requirementname
-              req.flash('error_msg', "Requirement already exists under that name");
+              req.flash('error_msg', 'Requirement already exists under that name');
             } else {
               //Requirement exists with the same requirementid
-              req.flash('error_msg', "Requirement already exists with that ID");
+              req.flash('error_msg', 'Requirement already exists with that ID');
             }
             res.redirect('/dashboard?selectedTarget=requirements');
           } else {
@@ -84,16 +82,16 @@ router.post('/addrequirement', async (req, res) => {
 
             try {
               await newRequirement.save();
-              console.log("UserLog: Created new requirement" + "\n" + newRequirement);
+              logger.user('info', 'User: ' + req.user.name + ' has added a new requirement with name ' + newRequirement.requirementname)
               await requirementCache.refreshCache();
-              req.flash('success_msg', "New requirement created");
+              req.flash('success_msg', 'New requirement created');
               res.redirect('/dashboard?selectedTarget=requirements');
             } catch (err) {
-              console.log("ERROR: -- Could not create requirement", err);
+              logger.server('error', 'Could not create requirement: ' + err)
             }
           }
         } catch (err) {
-          console.log("ERROR: -- Could not create requirement", err);
+          logger.server('error', 'Could not link requirement: ' + err)
         }
       }
     });
@@ -119,16 +117,15 @@ router.get('/:requirementname/clone-requirement', async (req, res) => {
       clonedRequirement.requirementname = clonedName;
   
       // Add the cloned requirement to the database and save it
-      const savedRequirement = await new Requirement(clonedRequirement).save();
+      await new Requirement(clonedRequirement).save();
   
-      console.log("Cloning requirement: " + requirementname);
+      logger.user('info', 'User: ' + req.user.name + ' cloned requirement ' + requirementname)
       await requirementCache.refreshCache();
-      req.flash('success_msg', "Requirement cloned successfully");
+      req.flash('success_msg', 'Requirement cloned successfully');
       res.redirect('/dashboard?selectedTarget=requirements');
     } catch (err) {
-      console.log("ERROR: -- Could not clone requirement")
-      console.log(err);
-      req.flash('error_msg', "Something went wrong, requirement could not be cloned");
+      logger.server('error', 'Could not clone requirement: ' + err)
+      req.flash('error_msg', 'Something went wrong, requirement could not be cloned');
       res.redirect('/dashboard?selectedTarget=requirements');
     }
   });
@@ -160,22 +157,20 @@ router.post('/edit', async (req, res) => {
         // Save the updated requirement
         requirement.save()
           .then(async (updatedRequirement) => {
-            console.log("Updating requirement " + requirement)
+            logger.user('info', 'User: ' + req.user.name + ' updated requirement: ' + requirement)
             await requirementCache.refreshCache();
             req.flash('success_msg', 'Requirement updated successfully');
             res.redirect(`/requirements/${requirementname}`);
           })
           .catch((err) => {
-            console.log("ERROR: -- Could not submit edit for requirement")
-            console.log(err);
+            logger.server('error', 'Could not submit edit for requirement: ' + err)
             req.flash('error_msg', 'An error occurred while updating the requirement');
             res.redirect(`/requirements/${requirementname}`);
           });
       }
     })
     .catch((err) => {
-      console.log("ERROR: -- Could not submit edit for requirement")
-      console.log(err);
+      logger.server('error', 'Could not submit edit for requirement: ' + err)
       req.flash('error_msg', 'An error occurred while finding the requirement');
       res.redirect('/dashboard?selectedTarget=requirements');
     });
@@ -194,6 +189,7 @@ router.post('/:requirementname/delete', (req, res) => {
         res.redirect('/dashboard?selectedTarget=requirements');
       })
       .catch((err) => {
+        logger.err('Could not delete requirement: \n ' + err + '\n');
         req.flash('error_msg', 'Something went wrong, requirement could not be deleted');
         res.redirect('/dashboard?selectedTarget=requirements');
       });

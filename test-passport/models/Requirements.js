@@ -18,7 +18,7 @@ const RequirementsSchema = new mongoose.Schema({
   requirementImage: {
 		data: Buffer,
 		contentType: String 
-	  },
+  },
   description: {
     type: String,
     required: false

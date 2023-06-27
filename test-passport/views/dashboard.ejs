@@ -289,7 +289,6 @@
 								<% for (let i = 0; i < requirements.length; i++) { %>
 									<tr>
 										<td>
-											<% console.log(requirements[i]); %>
 											<% const imageBase64Stringreq = Buffer.from(requirements[i].requirementImage.data.buffer); %>
 											<img alt="..." src="<%= imageBase64Stringreq %>" class="avatar avatar-sm rounded-circle me-2">	
 											<a class="text-heading font-semibold" href="/requirements/<%= requirements[i].requirementname %>"><%= requirements[i].requirementname %></a>

@@ -3,40 +3,40 @@ const mongoose = require('mongoose');
 const ProjectSchema = new mongoose.Schema({
 	projectname: {
 		type: String,
-		required: true
+		required: true,
 	},
 	projectshorthand: {
 		type: String,
-		required: false
+		required: false,
 	},
 	projectImage: {
 		data: Buffer,
-		contentType: String 
-	  },
+		contentType: String,
+	},
 	testcases: [
 		{
 			name: {
-				type: String,	
-				required: true
+				type: String,
+				required: true,
 			},
 			description: {
 				type: String,
-				required: true
+				required: true,
 			},
 			testcaseImage: {
 				data: Buffer,
-				contentType: String
-			  },
+				contentType: String,
+			},
 			linkedrequirements: [
 				{
 					type: mongoose.Schema.Types.ObjectId,
-					ref: 'Requirements'
+					ref: 'Requirements',
 				},
 			],
-			teststeps: [ 
+			teststeps: [
 				{
 					stepnumber: {
-					type: Number,
+						type: Number,
 					},
 					stepmethod: {
 						type: String,
@@ -51,7 +51,7 @@ const ProjectSchema = new mongoose.Schema({
 			],
 		}
 	],
-},	{ versionKey: false });;
+},	{versionKey: false});;
 
 const Project = mongoose.model('Project', ProjectSchema);
 

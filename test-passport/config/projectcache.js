@@ -1,5 +1,6 @@
 const NodeCache = require("node-cache");
 const Project = require('../models/Project');
+const logger = require("../logger");
 const cache = new NodeCache();
 
 class ProjectCache {
@@ -13,7 +14,7 @@ class ProjectCache {
       const projectsWithFixedImages = this.fixProjectImages(projectList);
 
       cache.set(this.cacheKey, JSON.stringify(projectsWithFixedImages));
-      console.log("Cache refreshed.");
+      logger.server('info', 'Cache has been refreshed');
     } catch (error) {
       console.error("Error refreshing cache:", error);
     }
@@ -45,7 +46,7 @@ class ProjectCache {
     const project = await Project.findOne({ projectname: projectName }).populate("testcases");
   
     if (!project) {
-      console.log("Could not return project!");
+      logger.server('error', 'Could not return project!');
       return null; // Return null if project not found
     }
   

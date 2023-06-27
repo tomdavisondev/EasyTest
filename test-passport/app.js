@@ -8,6 +8,7 @@ const session = require('express-session');
 const passport = require('passport');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
+const logger = require('./logger');
 
 const PORT = process.env.PORT || 7000;
 const localhost = 'localhost'
@@ -32,8 +33,8 @@ const db = require('./config/keys').MongoURI;
 
 // Connect to Mongo
 mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
-	.then(() => console.log('MongoDB Connected...'))
-	.catch(err => console.log(err));
+	.then(() => logger.server('info', 'MongoDB Connected'))
+	.catch(err => logger.server('error', 'Could not connect to mongodb server: \n' + err));
 
 // EJS
 app.use(expressLayouts);
@@ -56,7 +57,7 @@ app.use(methodOverride('_method'));
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-console.log('Passport started')
+logger.server('info', 'Passport started');
 
 // Connect flash
 app.use(flash());

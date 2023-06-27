@@ -1,6 +1,7 @@
 const NodeCache = require("node-cache");
 const Requirement = require('../models/Requirements');
 const cache = new NodeCache();
+const logger = require('../logger');
 
 class RequirementCache {
     constructor() {
@@ -11,9 +12,9 @@ class RequirementCache {
         try {
           const requirements = await Requirement.find({}).exec();
           cache.set(this.cacheKey, JSON.stringify(requirements));
-          console.log("Cache refreshed.");
+          logger.server('info', 'Cache has been refreshed');
         } catch (error) {
-          console.error("Error refreshing cache:", error);
+          logger.server('error', 'Error refreshing cache: ' + error);
         }
       }
 
