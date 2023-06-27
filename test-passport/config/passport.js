@@ -11,16 +11,6 @@ module.exports = function(passport) {
             usernameField: 'email'
         }, (email, password, done) => {
             //For demo purposes only
-            if(email == "guest@example.com")
-            {
-                const guestUser = { 
-                    name: "Guest",
-                    email: "guest@example.com",
-                    password: "guest",
-                    date: null
-                }
-                return done(null, guestUser);
-            }
             // Match user
             User.findOne({
                     email: email
