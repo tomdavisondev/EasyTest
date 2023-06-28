@@ -37,7 +37,7 @@ router.post('/:projectname/:testcasename/updatetest', (req, res) => {
             req.flash('error_msg', 'Error updating test case');
             res.redirect('/project/' + projectname + '/' + testcasename);
           } else {
-            logger.info('Test case ' + testcasename + ' updated successfully');
+            logger.server('Test case ' + testcasename + ' updated successfully');
             await projectCache.refreshCache();
             req.flash('success_msg', 'Project updated successfully');
             res.redirect('/project/' + projectname + '/' + testcasename);
