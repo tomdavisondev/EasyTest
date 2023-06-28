@@ -9,13 +9,14 @@ const passport = require('passport');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const logger = require('./logger');
+require('dotenv').config();
 
 const PORT = process.env.PORT || 8000;
 const hostname = 'localhost';
 
 const httpsOptions = {
-	cert: fs.readFileSync(__dirname + '/ssl/selfsigned.crt'),
-	key: fs.readFileSync(__dirname + '/ssl/selfsigned.key')
+	cert: fs.readFileSync(process.env.cert),
+	key: fs.readFileSync(process.env.key)
 };
 
 const app = express();
