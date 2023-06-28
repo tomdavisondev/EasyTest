@@ -10,9 +10,8 @@ const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const logger = require('./logger');
 
-const PORT = process.env.PORT || 7000;
-const localhost = 'localhost'
-const hostname = 'easytest.tomdavisondev.com';
+const PORT = process.env.PORT || 8000;
+const hostname = 'localhost';
 
 const httpsOptions = {
 	cert: fs.readFileSync(__dirname + '/ssl/selfsigned.crt'),
@@ -76,4 +75,4 @@ app.use('/users', require('./routes/users'));
 app.use('/projects', require('./routes/projects'));
 app.use('/requirements', require('./routes/requirements'));
 
-httpsServer.listen(PORT, localhost);
+httpsServer.listen(PORT, hostname);

@@ -40,9 +40,9 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 				requirements: requirements
 			})
 		} else {
-			//TODO: Proper validation when a project is not found
-			// this shouldn't ever happen but eh, worth doing
 			logger.server('Error', 'Project could not be found');
+			req.flash('error_msg', 'Project could not be found');
+            res.redirect('/dashboard');
 		}
 	} catch (error) {
 		logger.server('Error', 'Index error ' + error);
@@ -66,8 +66,8 @@ router.get('/requirements/:requirementname', ensureAuthenticated, async (req, re
 			projects: projects
 		});
 	} else {
-		//TODO: Proper validation when a requirement is not found
-		// this shouldn't ever happen but worth doing
+		logger.server('Error', 'Requirement could not be found');
+		req.flash('error_msg', 'Requirement could not be found');
 		logger.server('Error', 'Could not load requirement:' + req.params.requirementname);
 	}
 	} catch (error) {
@@ -100,8 +100,8 @@ router.get('/project/:projectname/:testcasename/edit', ensureAuthenticated, asyn
 				requirements: requirements,
 			});
 		} else {
-			//TODO: Proper validation when a project is not found
-			// this shouldn't ever happen but worth doing
+			logger.server('Error', 'testcase could not be found');
+			req.flash('error_msg', 'tescase could not be found');
 			logger.server('Error', 'Could not find project');
 		}
 	} catch (error) {
@@ -135,8 +135,8 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (re
 				requirements: requirements,
 			});
 		} else {
-			//TODO: Proper validation when a project is not found
-			// this shouldn't ever happen but worth doing
+			logger.server('Error', 'Testcase could not be found');
+			req.flash('error_msg', 'Tescase could not be found');
 			logger.server('error', 'Could not find project');
 		}
 	} catch (error) {
