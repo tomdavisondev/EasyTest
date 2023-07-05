@@ -11,6 +11,7 @@ const bodyParser = require('body-parser');
 const logger = require('./logger');
 require('dotenv').config();
 
+const version = '0.4.0';
 const PORT = process.env.PORT || 8000;
 const hostname = 'localhost';
 
@@ -64,6 +65,7 @@ app.use(flash());
 
 // Global Vars
 app.use((req, res, next) => {
+	res.locals.version = version;
 	res.locals.success_msg = req.flash('success_msg');
 	res.locals.error_msg = req.flash('error_msg');
 	res.locals.error = req.flash('error');

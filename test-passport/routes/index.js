@@ -149,8 +149,10 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 		const selectedTarget = req.query.selectedTarget || 'projects';
 		let requirements = await requirementCache.getRequirementList();
 		let projects = await projectCache.getProjectList();
+		const version = res.locals.version;
 
 		res.render('dashboard', {
+			version,
 			getColor,
 			name: req.user.name,
 			projects: projects,
