@@ -8,6 +8,8 @@ const session = require('express-session');
 const passport = require('passport');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
+const marked = require('marked');
+const mangle = require('marked-mangle');
 const logger = require('./logger');
 require('dotenv').config();
 
@@ -21,6 +23,8 @@ const httpsOptions = {
 };
 
 const app = express();
+
+marked.use(mangle);
 
 const httpsServer = https.createServer(httpsOptions, app);
 

@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { ensureAuthenticated } = require('../config/auth');
 const logger = require('../logger');
+const fs = require('fs');
+const marked = require('marked');
+const sanitizeHtml = require('sanitize-html');
 
 const ProjectCache = require('../config/projectcache');
 const RequirementCache = require('../config/requirementcache');
@@ -141,6 +144,26 @@ router.get('/project/:projectname/:testcasename', ensureAuthenticated, async (re
 		}
 	} catch (error) {
 		logger.server('error', 'Could not get test case');
+	}
+});
+
+router.get('/changelog', ensureAuthenticated, async (req, res) => {
+	try {
+		const version = res.locals.version;
+		const changelog = fs.readFileSync('../changelog.md', 'utf-8');
+		const changelogmarked = marked.marked(changelog);
+		const sanitizedChangelogHtml = sanitizeHtml(changelogmarked);
+
+		res.render('changelog', {
+			version,
+			getColor,
+			name: req.user.name,
+			req: req,
+			changelogmarked, sanitizedChangelogHtml
+			
+		});
+	} catch (error) {
+		logger.server('error', 'Could not get dashboard: ' + error);
 	}
 });
 
