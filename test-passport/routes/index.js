@@ -3,13 +3,14 @@ const router = express.Router();
 const { ensureAuthenticated } = require('../config/auth');
 const logger = require('../logger');
 const fs = require('fs');
-const marked = require('marked');
-const sanitizeHtml = require('sanitize-html');
 
 const ProjectCache = require('../config/projectcache');
 const RequirementCache = require('../config/requirementcache');
 const Project = require('../models/Project');
 const Requirement = require('../models/Requirements');
+
+const marked = require('marked');
+const sanitizeHtml = require('sanitize-html');
 
 const projectCache = new ProjectCache();
 const requirementCache = new RequirementCache();
@@ -151,9 +152,14 @@ router.get('/changelog', ensureAuthenticated, async (req, res) => {
 	try {
 		const version = res.locals.version;
 		const changelog = fs.readFileSync('../changelog.md', 'utf-8');
-		const changelogmarked = marked.marked(changelog);
+		const options = {
+			mangle: false,
+			headerIds: false
+		};
+		const changelogmarked = marked.marked(changelog, options);
 		const sanitizedChangelogHtml = sanitizeHtml(changelogmarked);
 
+		logger.user('verbose', 'User clicked on changelog');
 		res.render('changelog', {
 			version,
 			getColor,
