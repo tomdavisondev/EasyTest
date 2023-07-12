@@ -72,7 +72,7 @@ router.get('/register', (req, res) => res.render('register', {req:req} ));
 							// Save user
 							newUser.save()
 							.then(user => {
-								logger.user('info', 'Created new user');
+								logger.user('info', 'Created new user ' + user.name);
 								req.flash('success_msg', 'You are now registered and can log in');
 								res.redirect('/users/login');
 							})
@@ -95,9 +95,9 @@ router.post('/login', (req, res, next) => {
 
 // Logout Handle
 router.get('/logout', (req, res) => {
+	logger.user(req.user.name, 'verbose', 'User logged out');
 	req.logout(function(err) {
 		if (err) { return next(err); }
-		logger.user(req.user.name, 'verbose', 'User logged out');
 		req.flash('success_msg', 'You are logged out');
 		res.redirect('/users/login');
 	});

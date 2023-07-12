@@ -33,9 +33,13 @@ require('./config/passport')(passport);
 const db = require('./config/keys').MongoURI;
 
 // Connect to Mongo
-mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
-	.then(() => logger.server('info', 'MongoDB Connected'))
-	.catch(err => logger.server('error', 'Could not connect to mongodb server: \n' + err));
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    logger.server('info', 'MongoDB Connected');
+    app.emit('mongodbConnected'); // Emit the event after successful connection
+  })
+  .catch(err => logger.server('error', 'Could not connect to mongodb server: \n' + err));
+
 
 // EJS
 app.use(expressLayouts);
@@ -79,3 +83,5 @@ app.use('/projects', require('./routes/projects'));
 app.use('/requirements', require('./routes/requirements'));
 
 httpsServer.listen(PORT, hostname);
+
+module.exports = app;

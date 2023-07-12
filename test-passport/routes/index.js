@@ -27,8 +27,6 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 
 		let project = await projectCache.getProjectByName(req.params.projectname);
 
-		let stat = getStatNumber(project);
-
 		if (project) {
 			res.render('project', {
 				req: req,
@@ -36,7 +34,6 @@ router.get('/project/:projectname', ensureAuthenticated, async (req, res) => {
 				project: project,
 				testcases: project.testcases,
 				projects: projects,
-				stat,
 				requirements: requirements
 			})
 		} else {
